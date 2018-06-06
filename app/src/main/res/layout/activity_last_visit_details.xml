@@ -1,0 +1,1577 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".LastVisitDetails"
+	android:background="#ffffff"
+
+	android:orientation="vertical"
+	>
+
+	<RelativeLayout
+		android:layout_height="46dp"
+		android:layout_width="fill_parent"
+		android:background="@drawable/custom_header_color"
+		android:paddingLeft="16dp"
+
+
+
+		android:id="@+id/rtv_hdr">
+
+		<ImageView
+			android:id="@+id/prevP2"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:src="@drawable/ic_back"
+			android:layout_alignParentLeft="true"
+			android:layout_centerVertical="true"/>
+		<TextView
+			android:id="@+id/order_detail"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textColor="#FFFFFF"
+			android:layout_toRightOf="@+id/backbutton"
+			android:paddingLeft="10dp"
+			android:layout_centerInParent="true"
+			android:gravity="center_horizontal|left"
+			android:shadowRadius="7"
+			android:shadowDy="4"
+			android:shadowDx="4"
+			android:textStyle="bold"
+			android:shadowColor="#80FFFFFF"
+			android:textSize="18sp"
+			android:text="Last Visit Details"/>
+
+	</RelativeLayout>
+
+
+
+
+	<!-- android:background="#5B9BD5" -->
+	<ScrollView android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="10">
+
+		<RelativeLayout android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:id="@+id/parentOfWholePage">
+
+			<TextView
+				android:id="@+id/txt_storeSummary"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="center_horizontal"
+				android:text="Anand Store Summary "
+				android:textSize="16dp"
+				android:layout_marginTop="10dp"
+				android:layout_alignParentLeft="true"
+				android:textStyle="bold" />
+
+			<!-- Visit Row Views Starts-->
+			<TextView
+				android:id="@+id/txt_visitDate"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="12dp"
+				android:text="Last Visit Date :"
+				android:textSize="12dp"
+				android:layout_marginLeft="15dp"
+				android:layout_below="@id/txt_storeSummary"
+				android:textStyle="bold" />
+
+			<TextView
+				android:id="@+id/txt_visitDate_Value"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignBaseline="@id/txt_visitDate"
+				android:layout_toRightOf="@id/txt_visitDate"
+				android:textSize="12dp"
+				android:text="10-06-2015"
+				android:layout_marginLeft="25dp"
+				android:textStyle="bold" />
+
+			<Button
+				android:id="@+id/txt_visitDate_Details"
+				android:layout_width="wrap_content"
+				android:layout_height="35dp"
+				android:layout_below="@id/txt_visitDate_Value"
+				android:layout_alignBaseline="@id/txt_visitDate_Value"
+				android:layout_toRightOf="@id/txt_visitDate_Value"
+				android:textSize="12dp"
+				android:text="Details"
+				android:background="@drawable/custom_button_new"
+				android:layout_marginTop="50dp"
+				android:textColor="#0563C1"
+				android:layout_marginLeft="65dp"
+				android:textStyle="bold"  />
+
+			<!-- Visit Row Views Ends-->
+
+			<!-- Orders Row Views Starts-->
+
+			<TextView
+				android:id="@+id/txt_orderDate"
+				android:layout_width="100dp"
+				android:layout_height="wrap_content"
+				android:layout_below="@id/txt_visitDate"
+				android:text="Last Order Date : "
+				android:textSize="12dp"
+				android:layout_marginLeft="15dp"
+				android:layout_alignParentLeft="true"
+				android:layout_marginTop="20dp"
+				android:textStyle="bold"
+				/>
+
+			<TextView
+				android:id="@+id/txt_orderDate_Value"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignBaseline="@id/txt_orderDate"
+				android:layout_toRightOf="@id/txt_orderDate"
+				android:textSize="12sp"
+				android:text="11-06-2015"
+				android:layout_below="@id/txt_visitDate_Value"
+				android:layout_alignLeft="@id/txt_visitDate_Value"
+				android:textStyle="bold"
+				/>
+
+			<Button
+				android:id="@+id/txt_orderDate_Details"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignBaseline="@id/txt_orderDate_Value"
+				android:layout_toRightOf="@id/txt_orderDate_Value"
+				android:textSize="12dp"
+				android:text="Details"
+				android:visibility="gone"
+				android:background="#ED7D31"
+				android:textColor="#0563C1"
+				android:layout_below="@id/txt_visitDate_Details"
+				android:layout_alignLeft="@id/txt_visitDate_Details"
+				android:textStyle="bold"  />
+
+			<!-- Order Row Views Ends-->
+
+			<TextView
+				android:id="@+id/txt_orderBY"
+				android:layout_width="100dp"
+				android:layout_height="wrap_content"
+				android:layout_below="@id/txt_orderDate"
+				android:text="Order Source : "
+				android:textSize="12dp"
+				android:layout_marginLeft="15dp"
+				android:layout_alignParentLeft="true"
+				android:layout_marginTop="10dp"
+				android:textStyle="bold"
+				/>
+
+			<TextView
+				android:id="@+id/txt_orderBY_Value"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignBaseline="@id/txt_orderBY"
+				android:layout_toRightOf="@id/txt_orderBY"
+				android:textSize="12sp"
+				android:text="SFA"
+				android:layout_below="@id/txt_orderDate_Value"
+				android:layout_alignLeft="@id/txt_orderDate_Value"
+				android:textStyle="bold"
+				/>
+
+
+			<!-- Execution Row Views Starts-->
+
+			<TextView
+				android:id="@+id/txt_execution"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_below="@id/txt_orderBY"
+				android:text="Execution Summary : "
+				android:textSize="12dp"
+				android:layout_marginLeft="15dp"
+
+				android:layout_alignParentLeft="true"
+				android:layout_marginTop="10dp"
+				android:textStyle="bold"
+				/>
+
+			<TextView
+				android:id="@+id/txt_execution_Value"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignBaseline="@id/txt_execution"
+				android:layout_toRightOf="@id/txt_execution"
+				android:textSize="12sp"
+				android:text="11-06-2015"
+
+				android:layout_below="@id/txt_orderDate_Value"
+				android:layout_alignLeft="@id/txt_orderDate_Value"
+				android:textStyle="bold"
+				android:visibility="gone"
+				/>
+
+			<Button
+				android:id="@+id/txt_execution_Details"
+				android:layout_width="wrap_content"
+				android:layout_height="35dp"
+				android:layout_alignBaseline="@id/txt_execution_Value"
+				android:layout_toRightOf="@id/txt_execution_Value"
+				android:textSize="12dp"
+				android:text="Details"
+				android:background="@drawable/custom_button_new"
+				android:textColor="#0563C1"
+				android:layout_below="@id/txt_orderDate_Details"
+				android:layout_alignLeft="@id/txt_orderDate_Details"
+				android:textStyle="bold"  />
+
+			<!-- Execution Row Views Ends-->
+
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:id="@+id/ll_gstDetails"
+                android:visibility="gone"
+				android:layout_below="@id/txt_execution"
+				android:layout_marginTop="10dp"
+				android:layout_marginLeft="10dp"
+				android:layout_marginRight="10dp">
+
+				<TextView
+					android:id="@+id/gstdetails"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:padding="2dp"
+					android:textStyle="bold"
+					android:layout_marginLeft="10dp"
+					android:layout_marginTop="10dp"
+					android:text="GST Details:-"
+
+					android:textSize="13dp"/>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="3dp"
+					android:layout_marginRight="3dp"
+					android:layout_marginTop="5dp"
+					android:layout_marginBottom="10dp"
+					android:background="@drawable/my_border_seprate"
+					android:orientation="vertical"
+					android:id="@+id/ll_forGst"
+					android:padding="8dp" >
+
+					<TextView
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:padding="2dp"
+						android:text="GST Compliance"
+						android:textColor="#1565C0"
+						android:id="@+id/gst_compliance_txt"/>"
+
+					<LinearLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center_horizontal">
+
+						<RadioButton
+							android:id="@+id/rb_gst_yes"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="Yes"
+							android:textColor="#000000"
+
+							android:checked="false"/>
+
+
+						<RadioButton
+							android:id="@+id/rb_gst_no"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="Not Required"
+							android:textColor="#000000"
+
+							android:checked="false"/>
+						<RadioButton
+							android:id="@+id/rb_pending"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="Pending"
+							android:textColor="#000000"
+							android:checked="false"/>
+
+					</LinearLayout>
+
+
+					<LinearLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:id="@+id/ll_gstDependent"
+						android:visibility="gone"
+						android:layout_marginTop="1dp">
+
+
+						<TextView
+							android:layout_width="0dp"
+							android:layout_weight="0.60"
+							android:layout_height="wrap_content"
+							android:text="GST No. :"
+							android:textColor="#1565C0"
+							android:paddingTop="2dp"
+							android:paddingBottom="2dp"
+							android:paddingLeft="2dp"
+							android:id="@+id/text_gstYes" />
+
+						<EditText
+							android:id="@+id/edit_gstYes"
+							android:layout_width="0dp"
+							android:layout_weight="0.90"
+							android:layout_height="wrap_content"
+							android:background="@drawable/edittxt_border"
+							android:maxLength="15"
+							android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+							android:padding="4dp"
+							android:enabled="false"
+							android:textSize="12sp"
+
+							android:textColor="#000000"/>
+
+						<Button
+							android:id="@+id/gst_Details_but"
+							android:layout_width="0dp"
+							android:layout_weight="0.50"
+							android:layout_height="30dp"
+							android:textSize="12dp"
+							android:text="Edit"
+							android:paddingTop="5dp"
+							android:paddingBottom="5dp"
+							android:layout_marginLeft="20dp"
+							android:layout_marginRight="20dp"
+							android:background="@drawable/custom_button_new"
+							android:textColor="#ffffff"
+							android:textStyle="bold"
+							android:visibility="gone"/>
+
+					</LinearLayout>
+
+				</LinearLayout>
+
+
+			</LinearLayout>
+
+			<!-- General Scheme Row Views Starts-->
+
+			<TextView
+				android:id="@+id/txt_generalScheme"
+				android:text="General Scheme :"
+				android:textSize="12dp"
+				android:gravity="left"
+				android:layout_width="wrap_content"
+				android:textStyle="bold"
+				android:layout_marginLeft="15dp"
+				android:visibility="gone"
+				android:layout_alignParentLeft="true"
+				android:layout_marginTop="20dp"
+
+				android:layout_below="@id/ll_gstDetails"
+				android:layout_height="wrap_content" />
+
+			<TextView
+				android:id="@+id/txt_GeneralScheme_Value"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignBaseline="@id/txt_generalScheme"
+				android:layout_toRightOf="@id/txt_generalScheme"
+				android:textSize="12sp"
+
+				android:visibility="gone"
+				android:layout_marginLeft="30dp"
+				android:textStyle="bold"
+
+				/>
+
+
+			<RelativeLayout
+				android:id="@+id/relLayout_for_generalScheme"
+				android:layout_width="match_parent"
+				android:layout_height="200dp"
+				android:layout_below="@id/txt_generalScheme"
+				android:layout_centerInParent="true"
+				android:layout_marginTop="0dp"
+				android:background="@drawable/my_border"
+				android:layout_marginLeft="10dp"
+				android:visibility="gone"
+				android:layout_marginRight="10dp"  >
+
+				<TableLayout
+					android:id="@+id/tabLayoutHeader2"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:background="#000000"
+					android:stretchColumns="*" >
+
+					<TableRow
+						android:id="@+id/trHeader2"
+						android:layout_margin="0.2dp" >
+
+						<TextView
+							android:layout_margin="0.2dp"
+							android:background="#d8e2ee"
+							android:scrollHorizontally="true"
+							android:layout_width="wrap_content"
+							android:text="@string/lastvisitdetails_schemedescription"
+							android:textSize="10sp"
+							android:gravity="left"
+							android:textStyle="bold" />
+
+					</TableRow>
+				</TableLayout>
+
+				<ScrollView
+					android:id="@+id/verticalScrollView12"
+					android:layout_width="match_parent"
+					android:layout_height="match_parent"
+					android:layout_below="@id/tabLayoutHeader2"
+					android:layout_centerInParent="true"
+					android:layout_marginLeft="0dp" >
+
+					<TableLayout
+						android:id="@+id/dyntable_SchemeApplicable"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:background="#000000"
+						android:stretchColumns="*" >
+
+					</TableLayout>
+				</ScrollView>
+
+
+
+			</RelativeLayout>
+
+			<RelativeLayout
+				android:id="@+id/relLayout_for_OutstandingsNew11111"
+				android:layout_width="match_parent"
+				android:layout_height="60dp"
+				android:layout_below="@id/relLayout_for_generalScheme"
+				android:layout_centerInParent="true"
+				android:layout_marginTop="0dp"
+				android:background="@drawable/my_border"
+				android:layout_marginLeft="10dp"
+				android:visibility="gone"
+				android:layout_marginRight="10dp"  >
+
+				<TableLayout
+					android:id="@+id/tabLayoutOut123456"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:background="#000000"
+					android:stretchColumns="*"
+					android:weightSum="3">
+
+					<TableRow
+						android:id="@+id/trHeaderOut1"
+						android:layout_margin="0.2dp"
+						android:background="#000000">
+
+						<TextView
+							android:layout_margin="0.2dp"
+							android:background="#d8e2ee"
+							android:scrollHorizontally="true"
+							android:layout_width="wrap_content"
+							android:text="Outstandings"
+							android:textSize="10sp"
+							android:gravity="left"
+							android:textStyle="bold"
+							android:layout_weight="3"/>
+
+					</TableRow>
+
+
+
+					<TableRow
+						android:id="@+id/trHeaderOut13"
+						android:layout_margin="0.2dp" >
+
+						<TextView
+							android:layout_margin="0.2dp"
+							android:background="#d8e2ee"
+
+							android:layout_width="wrap_content"
+							android:text="Due Amount"
+							android:textSize="10sp"
+							android:gravity="left"
+							android:textStyle="bold"
+							android:layout_weight="2"/>
+						<TextView
+							android:layout_margin="0.2dp"
+							android:background="#d8e2ee"
+							android:scrollHorizontally="true"
+							android:layout_width="wrap_content"
+							android:text="Rs/-1500"
+							android:textSize="10sp"
+							android:gravity="right"
+							android:textStyle="bold"
+							android:layout_weight="1"/>
+
+					</TableRow>
+					<TableRow
+						android:id="@+id/trHeaderOut12"
+						android:layout_margin="0.2dp" >
+
+						<TextView
+							android:layout_margin="0.2dp"
+							android:background="#d8e2ee"
+							android:scrollHorizontally="true"
+							android:layout_width="wrap_content"
+							android:text="Overdue Amount"
+							android:textSize="10sp"
+							android:gravity="left"
+							android:textStyle="bold"
+							android:layout_weight="2"/>
+
+						<TextView
+							android:layout_margin="0.2dp"
+							android:background="#d8e2ee"
+							android:scrollHorizontally="true"
+							android:layout_width="wrap_content"
+							android:text="Rs/-200"
+							android:textSize="10sp"
+							android:gravity="right"
+							android:textStyle="bold"
+							android:layout_weight="1"/>
+
+
+					</TableRow>
+				</TableLayout>
+
+
+			</RelativeLayout>
+
+			<RelativeLayout
+				android:id="@+id/relLayout_for_TrailSample"
+				android:layout_width="match_parent"
+				android:layout_height="30dp"
+				android:layout_below="@id/relLayout_for_OutstandingsNew11111"
+				android:layout_centerInParent="true"
+				android:layout_marginTop="0dp"
+				android:background="@drawable/my_border"
+				android:layout_marginLeft="10dp"
+				android:visibility="gone"
+				android:layout_marginRight="10dp"  >
+
+				<TableLayout
+					android:id="@+id/tabLayoutOut1234567"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:background="#000000"
+					android:stretchColumns="*"
+					android:weightSum="3">
+
+					<TableRow
+						android:id="@+id/trHeaderOut112"
+						android:layout_margin="0.2dp"
+						android:background="#000000">
+
+						<TextView
+							android:layout_margin="0.2dp"
+							android:background="#d8e2ee"
+							android:scrollHorizontally="true"
+							android:layout_width="wrap_content"
+							android:text="Trial Order/Sample Order"
+							android:textSize="10sp"
+							android:gravity="left"
+							android:textStyle="bold"
+							android:layout_weight="2"/>
+						<TextView
+							android:layout_margin="0.2dp"
+							android:background="#d8e2ee"
+
+							android:layout_width="wrap_content"
+							android:text="Feedback pending"
+							android:textSize="10sp"
+							android:gravity="right"
+							android:textStyle="bold"
+							android:layout_weight="1"/>
+
+					</TableRow>
+
+
+
+
+				</TableLayout>
+
+
+			</RelativeLayout>
+
+
+			<RelativeLayout
+				android:id="@+id/relLayout_for_pendingsteps"
+				android:layout_width="match_parent"
+				android:layout_height="30dp"
+				android:layout_below="@id/relLayout_for_TrailSample"
+				android:layout_centerInParent="true"
+				android:layout_marginTop="0dp"
+				android:background="@drawable/my_border"
+				android:layout_marginLeft="10dp"
+				android:visibility="gone"
+				android:layout_marginRight="10dp"  >
+
+				<TableLayout
+					android:id="@+id/tabLayoutOut12345678"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:background="#000000"
+					android:stretchColumns="*"
+					android:weightSum="3">
+
+					<TableRow
+						android:id="@+id/trHeaderOut1121"
+						android:layout_margin="0.2dp"
+						android:background="#000000">
+
+						<TextView
+							android:layout_margin="0.2dp"
+							android:background="#d8e2ee"
+							android:scrollHorizontally="true"
+							android:layout_width="wrap_content"
+							android:text="Pending Steps"
+							android:textSize="10sp"
+							android:gravity="left"
+							android:textStyle="bold"
+							android:layout_weight="1"/>
+
+
+						<TextView
+							android:layout_margin="0.2dp"
+							android:background="#d8e2ee"
+
+							android:layout_width="wrap_content"
+							android:text="Feedback to be taken"
+							android:textSize="10sp"
+							android:gravity="right"
+							android:textStyle="bold"
+							android:layout_weight="1"/>
+
+					</TableRow>
+
+
+
+					<TableRow
+						android:id="@+id/trHeaderOut13122"
+						android:layout_margin="0.2dp"
+						android:visibility="gone">
+
+						<TextView
+							android:layout_margin="0.2dp"
+							android:background="#d8e2ee"
+
+							android:layout_width="wrap_content"
+							android:text="Feedback to be taken"
+							android:textSize="10sp"
+							android:gravity="left"
+							android:textStyle="bold"
+							android:layout_weight="2"/>
+						<TextView
+							android:layout_margin="0.2dp"
+							android:background="#d8e2ee"
+							android:scrollHorizontally="true"
+							android:layout_width="wrap_content"
+							android:text="10"
+							android:textSize="10sp"
+							android:gravity="right"
+							android:textStyle="bold"
+							android:layout_weight="1"/>
+
+					</TableRow>
+					<TableRow
+						android:id="@+id/trHeaderOut124532"
+						android:layout_margin="0.2dp"
+						android:visibility="gone">
+
+						<TextView
+							android:layout_margin="0.1dp"
+							android:background="#d8e2ee"
+							android:scrollHorizontally="true"
+							android:layout_width="wrap_content"
+							android:text="Feedback Not required"
+							android:textSize="10sp"
+							android:gravity="left"
+							android:textStyle="bold"
+							android:layout_weight="2"/>
+
+						<TextView
+							android:layout_margin="0.2dp"
+							android:background="#d8e2ee"
+							android:scrollHorizontally="true"
+							android:layout_width="wrap_content"
+							android:text="2"
+							android:textSize="10sp"
+							android:gravity="right"
+							android:textStyle="bold"
+							android:layout_weight="1"/>
+
+
+					</TableRow>
+				</TableLayout>
+
+
+			</RelativeLayout>
+
+				<RelativeLayout
+				android:id="@+id/relLayout_for_Quotesteps"
+				android:layout_width="match_parent"
+				android:layout_height="30dp"
+				android:layout_below="@id/relLayout_for_pendingsteps"
+				android:layout_centerInParent="true"
+				android:layout_marginTop="5dp"
+				android:background="@drawable/my_border"
+				android:layout_marginLeft="10dp"
+				android:visibility="gone"
+				android:layout_marginRight="10dp"  >
+
+				<TableLayout
+					android:id="@+id/tabLayoutOut1234567232"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:background="#000000"
+					android:stretchColumns="*"
+					android:weightSum="2">
+
+					<TableRow
+						android:id="@+id/trHeaderOut11223223"
+						android:layout_margin="0.2dp"
+						android:background="#000000">
+
+						<TextView
+							android:layout_margin="0.2dp"
+							android:background="#d8e2ee"
+							android:scrollHorizontally="true"
+							android:layout_width="wrap_content"
+							android:text="Quotation"
+							android:textSize="10sp"
+							android:gravity="left"
+							android:textStyle="bold"
+							android:layout_weight="1"/>
+						<TextView
+							android:layout_margin="0.2dp"
+							android:background="#d8e2ee"
+
+							android:layout_width="wrap_content"
+							android:text="Approved quotation available"
+							android:textSize="10sp"
+							android:gravity="right"
+							android:textStyle="bold"
+							android:layout_weight="1"/>
+
+					</TableRow>
+
+
+
+
+				</TableLayout>
+
+			</RelativeLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/ll_dynamicData"
+				android:background="@drawable/my_border"
+				android:orientation="vertical"
+				android:layout_marginLeft="4dp"
+				android:layout_marginRight="4dp"
+				android:padding="2dp"
+				android:layout_marginTop="20dp"
+				android:layout_below="@+id/relLayout_for_pendingsteps"
+				>
+
+			</LinearLayout>
+
+			<LinearLayout
+				android:id="@+id/relLayout_for_healthrating"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_below="@id/ll_dynamicData"
+				android:layout_centerInParent="true"
+				android:layout_marginTop="5dp"
+				android:background="#fff"
+				android:layout_marginLeft="5dp"
+				android:orientation="horizontal"
+				android:visibility="gone"
+				android:layout_marginRight="10dp"  >
+
+				<TextView
+
+					android:id="@+id/textView8"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="5dp"
+					android:layout_weight="1"
+					android:text=" Health Relationship"
+					android:textSize="12sp"
+					android:textStyle="bold" />
+
+				<ImageView
+					android:layout_width="wrap_content"
+					android:src="@drawable/green_circle15"
+					android:gravity="center_vertical"
+					android:layout_height="wrap_content" />
+
+
+
+			</LinearLayout>
+
+
+
+			<!-- General Scheme Row Views Ends-->
+
+			<!-- Special Scheme Row Views Starts-->
+
+			<TextView
+				android:id="@+id/txt_specialScheme"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_below="@id/relLayout_for_generalScheme"
+				android:text="Special Scheme : "
+				android:textSize="12dp"
+				android:layout_marginLeft="15dp"
+				android:visibility="gone"
+				android:layout_alignParentLeft="true"
+				android:layout_marginTop="15dp"
+				android:textStyle="bold"
+				/>
+
+
+			<!-- Special Scheme Row Views Ends-->
+
+			<TextView
+				android:id="@+id/txt_specialScheme_Value"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignBaseline="@id/txt_specialScheme"
+				android:layout_toRightOf="@id/txt_specialScheme"
+				android:textSize="12sp"
+
+				android:visibility="gone"
+				android:layout_marginLeft="30dp"
+				android:textStyle="bold"
+
+				/>
+
+
+			<RelativeLayout
+				android:id="@+id/relLayout_for_specialScheme"
+				android:layout_width="match_parent"
+				android:layout_height="100dp"
+				android:layout_below="@id/txt_specialScheme"
+				android:layout_alignLeft="@id/txt_specialScheme"
+				android:visibility="gone"
+
+				android:background="@drawable/my_border"
+
+				android:layout_marginRight="10dp"  >
+
+				<TableLayout
+					android:id="@+id/tabLayoutHeader2_specialScheme"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:background="#000000"
+					android:stretchColumns="*" >
+
+					<TableRow
+						android:id="@+id/trHeader2_specialScheme"
+						android:layout_margin="0.2dp" >
+
+						<TextView
+							android:layout_margin="0.2dp"
+							android:background="#d8e2ee"
+							android:scrollHorizontally="true"
+							android:layout_width="wrap_content"
+							android:text="Special Scheme Description"
+							android:textSize="10sp"
+							android:gravity="left"
+							android:textStyle="bold" />
+
+					</TableRow>
+				</TableLayout>
+
+				<ScrollView
+					android:id="@+id/verticalScrollView12_specialScheme"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_below="@id/tabLayoutHeader2_specialScheme"
+					android:layout_centerInParent="true"
+					android:layout_marginLeft="0dp" >
+
+					<TableLayout
+						android:id="@+id/dyntable_SpecialSchemeApplicable"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:background="#000000"
+						android:stretchColumns="*" >
+
+					</TableLayout>
+				</ScrollView>
+
+
+
+			</RelativeLayout>
+
+
+			<!-- Special Scheme Row Views Ends-->
+
+
+			<TextView
+				android:id="@+id/txt_Quatation"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_below="@id/relLayout_for_OutstandingsNew11111"
+				android:text="Quotation Info : "
+				android:textSize="12dp"
+				android:layout_marginLeft="15dp"
+				android:visibility="gone"
+				android:layout_alignParentLeft="true"
+				android:layout_marginTop="15dp"
+				android:textStyle="bold"
+				/>
+
+
+			<!-- Special Scheme Row Views Ends-->
+
+			<TextView
+				android:id="@+id/txt_Quatation_Value"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignBaseline="@id/txt_Quatation"
+				android:layout_toRightOf="@id/txt_Quatation"
+				android:textSize="12sp"
+				android:text=""
+				android:visibility="gone"
+				android:layout_marginLeft="40dp"
+				android:textStyle="bold"
+
+				/>
+
+			<RelativeLayout
+				android:id="@+id/relLayout_for_Quatation"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_below="@id/txt_Quatation"
+				android:layout_alignLeft="@id/txt_Quatation"
+
+				android:visibility="gone"
+				android:background="@drawable/my_border"
+
+				android:layout_marginRight="10dp"  >
+
+				<TableLayout
+					android:id="@+id/tabLayoutHeader2_Quatation"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:background="#000000"
+					android:stretchColumns="*" >
+
+					<TableRow
+						android:id="@+id/trHeader2_Quatation"
+						>
+
+						<TextView
+							android:layout_margin="0.2dp"
+							android:background="#2886BC"
+							android:scrollHorizontally="true"
+							android:layout_width="0dp"
+							android:text="Quotation Code"
+							android:textSize="11sp"
+							android:textStyle="bold"
+							android:layout_weight="4"
+							android:textColor="#FFFFFF"
+							android:layout_height="match_parent"
+							android:gravity="left"
+							android:layout_marginLeft="10dp"/>
+
+						<TextView
+							android:layout_margin="0.2dp"
+							android:background="#2886BC"
+							android:scrollHorizontally="true"
+							android:layout_width="0dp"
+							android:text="Quot. Status"
+							android:textSize="11sp"
+							android:textStyle="bold"
+							android:textColor="#FFFFFF"
+							android:gravity="center_horizontal"
+							android:layout_weight="3" />
+
+						<TextView
+							android:layout_margin="0.2dp"
+							android:background="#2886BC"
+							android:scrollHorizontally="true"
+							android:layout_width="0dp"
+							android:text="Quot. Date"
+							android:layout_height="match_parent"
+							android:textSize="11sp"
+							android:textStyle="bold"
+							android:textColor="#FFFFFF"
+							android:gravity="center"
+							android:layout_weight="3"  />
+
+					</TableRow>
+				</TableLayout>
+
+				<ScrollView
+					android:id="@+id/QuatationListScroll"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_below="@id/tabLayoutHeader2_Quatation"
+
+					android:layout_marginLeft="0dp" >
+
+
+					<TableLayout
+						android:id="@+id/dynprodtableQuatation"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:background="#000000"
+						android:stretchColumns="*" >
+
+					</TableLayout>
+
+
+				</ScrollView>
+
+
+			</RelativeLayout>
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_below="@id/relLayout_for_Quotesteps"
+				android:id="@+id/ll"
+				android:orientation="vertical"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="10dp"
+				>
+				<Button android:layout_width="wrap_content"
+					android:layout_height="30dp"
+					android:text="New Quotation"
+					android:textSize="10sp"
+					android:layout_gravity="center_horizontal"
+					android:textColor="#c25"
+					android:visibility="gone"/>
+
+			</LinearLayout>
+			<TextView
+				android:id="@+id/paymntTxtview"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="20dp"
+				android:text="Payment Info :"
+				android:textSize="12dp"
+				android:layout_marginLeft="15dp"
+				android:layout_below="@id/ll"
+				android:visibility="gone"
+				android:textStyle="bold" />
+
+			<LinearLayout android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:layout_marginTop="10dp"
+				android:gravity="center"
+
+				android:layout_below="@id/relLayout_for_healthrating"
+				android:visibility="gone"
+				android:id="@+id/ll_regular_order_booked"
+				>
+
+				<TextView
+					android:id="@+id/textView"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:layout_marginLeft="15dp"
+					android:textStyle="bold"
+					android:textSize="12sp"
+					android:text="Regular Order Booked :" />
+
+				<TextView
+					android:layout_width="0dp"
+					android:layout_weight="1"
+					android:layout_height="wrap_content"
+					android:gravity="left"
+					android:text="Yes"
+					/>
+
+			</LinearLayout>
+			<LinearLayout
+				android:id="@+id/ll_TrialOrder"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:layout_marginTop="15dp"
+				android:gravity="center"
+
+				android:layout_below="@+id/ll_regular_order_booked"
+				android:visibility="gone"
+				>
+				<TextView
+					android:layout_width="0dp"
+					android:layout_weight="1"
+
+					android:layout_marginLeft="15dp"
+					android:layout_height="wrap_content"
+					android:textStyle="bold"
+					android:textSize="12sp"
+					android:text="Trial Order Status :"/>
+
+				<TextView
+					android:layout_width="0dp"
+					android:layout_weight="1"
+					android:layout_height="wrap_content"
+					android:gravity="left"
+					android:text="No Pending Trial Order"/>
+			</LinearLayout>
+			<LinearLayout
+				android:id="@+id/ll_sampleOrder"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:layout_marginTop="15dp"
+				android:gravity="center"
+
+				android:layout_below="@+id/ll_TrialOrder"
+				android:visibility="gone"
+				>
+				<TextView
+					android:layout_width="0dp"
+					android:layout_weight="1"
+					android:layout_marginLeft="15dp"
+					android:layout_height="wrap_content"
+					android:textStyle="bold"
+					android:textSize="12sp"
+					android:text="Sample Order Status :"/>
+				<TextView
+					android:layout_width="0dp"
+					android:layout_weight="1"
+					android:layout_height="wrap_content"
+					android:gravity="left"
+					android:text="No Pending Sample Order"/>
+			</LinearLayout>
+			<LinearLayout android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:layout_marginTop="4dp"
+
+				android:background="@drawable/shadow_with_5dp"
+				android:layout_below="@id/paymntTxtview"
+				android:visibility="gone"
+				android:id="@+id/parentOfAllPaymentStructure">
+
+				<LinearLayout android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:background="#0070AF"
+					android:gravity="center"
+
+					android:orientation="horizontal">
+					<TextView android:layout_width="0dp"
+						android:text="Payment Stage"
+						android:gravity="center"
+						android:id="@+id/paymentstagetextviewNew"
+						android:focusable="true"
+						android:focusableInTouchMode="true"
+						android:textColor="#fff"
+						android:layout_height="wrap_content"
+						android:layout_weight="2"/>
+					<View android:layout_width="1dp"
+						android:background="#000"
+						android:layout_height="match_parent"/>
+					<TextView android:layout_width="0dp"
+						android:text=" % age"
+						android:textColor="#fff"
+						android:focusable="true"
+						android:visibility="gone"
+						android:focusableInTouchMode="true"
+						android:id="@+id/percentageTextviewNew"
+						android:gravity="center"
+						android:layout_marginLeft="1dp"
+						android:layout_marginRight="1dp"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"/>
+					<View android:layout_width="1dp"
+						android:background="#000"
+						android:visibility="gone"
+						android:layout_height="match_parent"/>
+					<TextView android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:gravity="center"
+						android:text="Payment Mode"
+						android:focusable="true"
+						android:focusableInTouchMode="true"
+						android:id="@+id/paymentModeTextviewNew"
+						android:textColor="#fff"
+						android:layout_weight="2"/>
+					<View android:layout_width="1dp"
+						android:background="#000"
+						android:layout_height="match_parent"/>
+					<TextView android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:text="Credit Days"
+						android:textColor="#fff"
+						android:focusable="true"
+						android:focusableInTouchMode="true"
+						android:id="@+id/creditdaysTextboxNew"
+						android:gravity="center"
+						android:layout_marginLeft="1dp"
+						android:layout_marginRight="1dp"
+						android:layout_weight="1"/>
+					<View android:layout_width="1dp"
+						android:background="#000"
+						android:layout_height="match_parent"/>
+					<TextView android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:gravity="center"
+						android:id="@+id/CreditlimitTextboxNew"
+						android:textColor="#fff"
+						android:focusable="true"
+						android:focusableInTouchMode="true"
+						android:layout_marginLeft="1dp"
+						android:layout_marginRight="1dp"
+						android:text="Credit Limit"
+						android:layout_weight="1"/>
+
+
+				</LinearLayout>
+				<View android:layout_width="match_parent"
+					android:layout_height="1dp"
+					android:background="#000"/>
+				<LinearLayout android:layout_width="match_parent"
+					android:orientation="horizontal"
+					android:gravity="center"
+					android:layout_height="wrap_content">
+					<CheckBox android:layout_width="0dp"
+						android:text="Advance Before Delivery"
+						android:textSize="10dp"
+						android:layout_height="wrap_content"
+						android:id="@+id/AdvanceBeforeDeliveryCheckBoxNew"
+						android:layout_gravity="center"
+						android:layout_weight="2"/>
+					<View android:layout_width="1dp"
+						android:background="#000"
+						android:layout_height="match_parent"/>
+					<EditText android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:enabled="false"
+						android:textSize="14sp"
+						android:visibility="gone"
+						android:id="@+id/percentageOfAdvanceBeforeDelivery"
+						android:background="@drawable/edittext_with_nocolor_change"
+						android:gravity="center"
+						android:inputType="number"
+						android:layout_margin="1dp"
+						android:layout_weight="1"/>
+					<View android:layout_width="1dp"
+						android:visibility="gone"
+						android:background="#000"
+						android:layout_height="match_parent"/>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+
+						android:id="@+id/parentOfAdvanceBeforeDeliveryPayMentMode"
+						android:orientation="vertical"
+						android:layout_weight="2" >
+
+
+					</LinearLayout>
+					<View android:layout_width="1dp"
+						android:background="#000"
+						android:layout_height="match_parent"/>
+					<EditText android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:background="@android:color/transparent"
+						android:gravity="center"
+						android:hint="N/A"
+						android:textColorHint="#7c7c7c"
+						android:enabled="false"
+						android:textSize="14sp"
+						android:inputType="number"
+						android:layout_margin="1dp"
+						android:layout_weight="1"/>
+					<View android:layout_width="1dp"
+						android:background="#000"
+						android:layout_height="match_parent"/>
+					<EditText android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:textSize="14sp"
+						android:background="@android:color/transparent"
+						android:gravity="center"
+						android:enabled="false"
+						android:hint="N/A"
+						android:textColorHint="#7c7c7c"
+						android:inputType="number"
+						android:layout_margin="1dp"
+						android:layout_weight="1"/>
+				</LinearLayout>
+				<View android:layout_width="match_parent"
+					android:layout_height="1dp"
+					android:background="#000"/>
+				<LinearLayout android:layout_width="match_parent"
+					android:orientation="horizontal"
+					android:gravity="center"
+					android:layout_height="wrap_content">
+					<CheckBox android:layout_width="0dp"
+						android:text="On Delivery"
+						android:textSize="10dp"
+						android:layout_height="wrap_content"
+						android:id="@+id/OnDeliveryCheckBoxNew"
+						android:layout_gravity="center"
+						android:layout_weight="2"/>
+					<View android:layout_width="1dp"
+						android:background="#000"
+						android:layout_height="match_parent"/>
+					<EditText android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:background="@drawable/edittext_with_nocolor_change"
+						android:gravity="center"
+						android:inputType="number"
+						android:textSize="14sp"
+						android:id="@+id/percentageOfOnDelivery"
+						android:visibility="gone"
+						android:layout_margin="1dp"
+						android:enabled="false"
+						android:layout_weight="1"/>
+					<View android:layout_width="1dp"
+						android:background="#000"
+						android:visibility="gone"
+						android:layout_height="match_parent"/>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+
+						android:id="@+id/parentOfOnDeliveryPayMentMode"
+						android:orientation="vertical"
+						android:layout_weight="2" >
+
+
+					</LinearLayout>
+					<View android:layout_width="1dp"
+						android:background="#000"
+						android:layout_height="match_parent"/>
+					<EditText android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:background="@android:color/transparent"
+						android:gravity="center"
+						android:enabled="false"
+						android:textSize="14sp"
+						android:inputType="number"
+						android:id="@+id/creditDaysOfOnDelivery"
+						android:layout_margin="1dp"
+						android:layout_weight="1"/>
+					<View android:layout_width="1dp"
+						android:background="#000"
+						android:layout_height="match_parent"/>
+					<EditText android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:enabled="false"
+						android:hint="N/A"
+						android:textColorHint="#7c7c7c"
+						android:textSize="14sp"
+						android:background="@android:color/transparent"
+						android:layout_margin="1dp"
+						android:inputType="number"
+						android:gravity="center"
+						android:layout_weight="1"/>
+				</LinearLayout>
+				<View android:layout_width="match_parent"
+					android:layout_height="1dp"
+					android:background="#000"/>
+				<LinearLayout android:layout_width="match_parent"
+					android:orientation="horizontal"
+					android:gravity="center"
+					android:layout_height="wrap_content">
+					<CheckBox android:layout_width="0dp"
+						android:text="Credit"
+						android:textSize="10dp"
+						android:layout_height="wrap_content"
+						android:id="@+id/CreditCheckBoxNew"
+						android:layout_gravity="center"
+						android:layout_weight="2"/>
+					<View android:layout_width="1dp"
+						android:background="#000"
+						android:layout_height="match_parent"/>
+					<EditText android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:background="@drawable/edittext_with_nocolor_change"
+						android:gravity="center"
+						android:inputType="number"
+						android:visibility="gone"
+						android:textSize="14sp"
+						android:enabled="false"
+						android:id="@+id/PercentageOfCredit"
+						android:layout_margin="1dp"
+						android:layout_weight="1"/>
+					<View android:layout_width="1dp"
+						android:background="#000"
+						android:visibility="gone"
+						android:layout_height="match_parent"/>
+					<LinearLayout
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+
+						android:id="@+id/parentOfCreditPayMentMode"
+						android:orientation="vertical"
+						android:layout_weight="2" >
+
+
+					</LinearLayout>
+					<View android:layout_width="1dp"
+						android:background="#000"
+						android:layout_height="match_parent"/>
+					<EditText android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:background="@android:color/transparent"
+						android:gravity="center"
+						android:textSize="14sp"
+						android:inputType="number"
+						android:enabled="false"
+						android:id="@+id/creditDaysOfCredit"
+						android:layout_margin="1dp"
+						android:layout_weight="1"/>
+					<View android:layout_width="1dp"
+						android:background="#000"
+						android:layout_height="match_parent"/>
+					<EditText android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:background="@android:color/transparent"
+						android:gravity="center"
+						android:textSize="14sp"
+						android:enabled="false"
+						android:id="@+id/creditLimitOfCredit"
+						android:layout_margin="1dp"
+						android:inputType="number"
+
+						android:layout_weight="1"/>
+				</LinearLayout>
+				<View android:layout_width="match_parent"
+					android:layout_height="1dp"
+					android:layout_marginBottom="5dp"
+					android:background="#000"/>
+
+			</LinearLayout>
+
+		</RelativeLayout>
+
+	</ScrollView>
+
+
+	<LinearLayout
+		android:id="@+id/sixth"
+		android:orientation="horizontal"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_vertical"
+		android:layout_alignParentBottom="true"
+		android:gravity="center"
+		android:layout_marginTop="5dp"
+		android:layout_marginLeft="5dp"
+		android:layout_marginRight="5dp"
+		android:layout_marginBottom="5dp">
+
+		<!--         <Button
+                    android:id="@+id/prevP2"
+                   android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/custom_button"
+        android:textColor="#ffffff"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:text="@string/lastvisitdetails_back"
+                     />
+         -->
+
+		<Button
+			android:id="@+id/quotationBtn"
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:layout_marginLeft="5dp"
+			android:layout_weight="1"
+			android:background="@drawable/custom_button"
+			android:text="@string/lastvisitdetails_takequotation"
+			android:textColor="#ffffff"
+			android:textSize="10sp"
+			android:textStyle="bold"
+			android:visibility="gone"/>
+		<Button
+			android:id="@+id/quotationViewBtn"
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:layout_marginLeft="5dp"
+			android:layout_weight="1"
+			android:background="@drawable/custom_button"
+			android:text="View Quotation"
+			android:textColor="#ffffff"
+			android:textSize="10sp"
+			android:textStyle="bold"
+			android:visibility="gone"/>
+		<Button
+			android:id="@+id/nxtP4"
+			android:layout_height="match_parent"
+			android:layout_width="0dp"
+			android:layout_weight="1"
+			android:background="@drawable/custom_button"
+			android:textColor="#ffffff"
+			android:textSize="10sp"
+			android:textStyle="bold"
+			android:layout_marginLeft="25dp"
+			android:layout_marginRight="25dp"
+			android:text="Next" />
+
+		<Button
+			android:id="@+id/btn_Cancel"
+			android:layout_width="0dp"
+			android:layout_weight="1"
+			android:layout_height="match_parent"
+			android:layout_alignBottom="@+id/nxtP4"
+			android:layout_marginLeft="5dp"
+			android:textSize="11sp"
+			android:background="@drawable/custom_button"
+			android:text="Cancel Visit"
+			android:textStyle="bold"
+			android:textColor="#ffffff"
+			android:visibility="gone"/>
+
+		<Button
+			android:id="@+id/btn_Feedback"
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:layout_alignBottom="@+id/nxtP4"
+			android:layout_marginLeft="5dp"
+			android:layout_weight="1"
+			android:background="@drawable/custom_button"
+			android:text="Feed back"
+			android:textColor="#ffffff"
+			android:textSize="10sp"
+			android:textStyle="bold"
+			android:visibility="gone"/>
+		<Button
+			android:id="@+id/btn_NextSteps"
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:layout_alignBottom="@+id/nxtP4"
+			android:layout_marginLeft="5dp"
+			android:layout_weight="1"
+			android:background="@drawable/custom_button"
+			android:text="Next Steps"
+			android:textColor="#ffffff"
+			android:textSize="10sp"
+			android:textStyle="bold"
+			android:visibility="gone"/>
+
+
+
+	</LinearLayout>
+
+
+
+</LinearLayout>

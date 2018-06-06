@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="project.astix.com.ltfoodfsd">
+
+    <uses-sdk android:minSdkVersion="14" />
+
+    <!-- GCM Permissions - End here -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <permission
+        android:name="project.astix.com.ltfoodfsd.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" />
+
+    <!-- Permission to access data from network provider -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <!-- Permission for receiveing GCM message -->
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <!-- Permission to get the Gmail account(This is required only if you are developing application for lower than android version 4.0) -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.RECORD_VIDEO" />
+    <uses-permission android:name="android.permission.CLEAR_APP_CACHE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ltfood_logo"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/detailActivityTheme">
+        <receiver
+            android:name="project.astix.com.ltfoodfsd.BroadcastReceiverOnBootComplete"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name="project.astix.com.ltfoodfsd.SplashScreen"
+                  android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+
+        <activity android:name="project.astix.com.ltfoodfsd.AllButtonActivity" />
+        <activity android:name="project.astix.com.ltfoodfsd.StoreSelection"/>
+        <activity android:name="project.astix.com.ltfoodfsd.LastVisitDetails" />
+        <activity android:name="project.astix.com.ltfoodfsd.LastVisitDetailsSecondPart" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.ProductOrderFilterSearch"
+                  android:windowSoftInputMode="adjustPan" />
+        <activity android:name="project.astix.com.ltfoodfsd.OrderReview"
+                  android:windowSoftInputMode="adjustPan" />
+
+        <activity android:name=".DistributorSelectionForSKU" />
+        <activity android:name="project.astix.com.ltfoodfsd.Delivery_Details_Activity"
+                  android:theme="@style/detailActivityTheme" />
+
+
+        <activity android:name="project.astix.com.ltfoodfsd.SyncMaster" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.FeedBack_Activity"
+            android:windowSoftInputMode="stateHidden"
+                  android:theme="@style/detailActivityTheme" />
+
+        <activity android:name="com.example.gcm.NotificationActivity" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.WebViewQuatationOnlineActivity"
+                  android:theme="@android:style/Theme.NoTitleBar"
+                  android:windowSoftInputMode="stateHidden" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.DetailReportSummaryActivityForAll" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.ViewQuotation"
+                  android:theme="@android:style/Theme.Light.NoTitleBar" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.ViewVisitPlan" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.ViewAppointment" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.ViewOutStandingTask" />
+
+        <activity android:name=".HealthRelationshipActivity"
+                  android:theme="@style/detailActivityTheme" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.LastVisitDetail_AllButton" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.LauncherActivity" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.CheckDatabaseData" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.DistributorEntryActivity"
+                  android:windowSoftInputMode="adjustPan" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.TargetVsAchievedActivity"
+                  android:windowSoftInputMode="adjustPan" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.TargetVsAchievedActivityForAll"
+                  android:windowSoftInputMode="adjustPan" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.ReturnActivity"
+                  android:windowSoftInputMode="adjustPan" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.InvoiceSyncMaster" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.SKUWiseSummaryReport_ByTab"
+                  android:theme="@style/MyThemeTabWithdarktext" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.SKUWiseSummaryReport_ByTabForAll"
+                  android:theme="@style/MyThemeTabWithdarktext" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.SKUWiseSummaryReportMTD"
+                  android:theme="@android:style/Theme.Light.NoTitleBar" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.SKUWiseSummaryReportMTDForAll"
+                  android:theme="@android:style/Theme.Light.NoTitleBar" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.StoreWiseSummaryReportMTD"
+                  android:theme="@android:style/Theme.Light.NoTitleBar" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.StoreWiseSummaryReportMTDForAll"
+                  android:theme="@android:style/Theme.Light.NoTitleBar" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.StoreAndSKUWiseSummaryReportMTD"
+                  android:theme="@android:style/Theme.Light.NoTitleBar" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.StoreAndSKUWiseSummaryReportMTDForAll"
+                  android:theme="@android:style/Theme.Light.NoTitleBar" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.StoreWiseSummaryReport_ByTab"
+                  android:theme="@style/MyThemeTabWithdarktext" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.StoreWiseSummaryReport_ByTabForAll"
+                  android:theme="@style/MyThemeTabWithdarktext" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.StoreAndSKUWiseSummaryReport_ByTab"
+                  android:theme="@style/MyThemeTabWithdarktext" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.StoreAndSKUWiseSummaryReport_ByTabForAll"
+                  android:theme="@style/MyThemeTabWithdarktext" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.DetailReport_Activity" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.InvoiceStoreSelection" />
+        <activity android:name="project.astix.com.ltfoodfsd.InvoiceProductList"
+                  android:windowSoftInputMode="adjustPan" />
+
+        <activity android:name="com.example.gcm.HomeActivity" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.Add_New_Store_DynamicSectionWise"
+                  android:theme="@android:style/Theme.Light.NoTitleBar" />
+
+        <receiver
+            android:name="com.example.gcm.GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+
+                <category android:name="com.example.gcm" />
+            </intent-filter>
+        </receiver>
+
+        <meta-data android:name="com.google.android.gms.version"
+                   android:value="@integer/google_play_services_version" />
+
+        <service android:name="project.astix.com.ltfoodfsd.AppLocationService"
+                 android:enabled="true" />
+        <service android:name="com.example.gcm.GCMNotificationIntentService" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.ViewAddedStore"
+                  android:label="@string/title_activity_view_added_store" />
+        <activity android:name="project.astix.com.ltfoodfsd.QuotationActivity"
+                  android:label="@string/title_activity_quotation"
+                  android:screenOrientation="portrait"
+                  android:theme="@style/MyThemeTab" />
+
+        <meta-data android:name="com.google.android.geo.API_KEY"
+                   android:value="AIzaSyBMIU1l7_rqtkct_HKd1tTkfBmb9_1Yu_0" />
+
+        <service  android:name="project.astix.com.ltfoodfsd.GeocodeAddressIntentService"
+                  android:exported="false" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.SalesValueTarget" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.IncentiveActivity" />
+        <activity android:name="project.astix.com.ltfoodfsd.DetailReportSummaryActivity" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.StorelistActivity" />
+        <activity android:name="project.astix.com.ltfoodfsd.AddNewStore_DynamicSectionWiseSO"
+                  android:screenOrientation="portrait"/>
+
+        <activity android:name="project.astix.com.ltfoodfsd.DistributorMapActivity" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.WebViewDSRTrackerActivity"
+                  android:theme="@android:style/Theme.NoTitleBar"/>
+
+        <activity android:name="project.astix.com.ltfoodfsd.WebViewDSRDataReportActivity"
+                  android:windowSoftInputMode="stateHidden"/>
+
+        <activity android:name="project.astix.com.ltfoodfsd.FeedbackCompetitorActivity"
+                  android:theme="@style/detailActivityTheme" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.SpecialRemarksActivity"
+            android:windowSoftInputMode="stateHidden"
+            android:theme="@style/detailActivityTheme" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.CollectionActivityNew" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.DetailReportSummaryActivityForAllCategoryWise" />
+
+
+        <activity android:name="project.astix.com.ltfoodfsd.SyncMasterSO" />
+        <activity android:name="project.astix.com.ltfoodfsd.SyncMasterDistributor" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.CustomVideoCapture"
+                  android:theme="@style/detailActivityTheme" />
+
+
+        <activity android:name="project.astix.com.ltfoodfsd.VideoPlayerActivity"
+                  android:theme="@style/detailActivityTheme" />
+
+        <activity android:name="project.astix.com.ltfoodfsd.DialogDayEndSummaryActivity"
+            android:theme="@style/DayEndDialogTheme"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name="project.astix.com.ltfoodfsd.AddedOutletSummaryReportActivity"
+            android:theme="@style/detailActivityTheme"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name="project.astix.com.ltfoodfsd.WebViewManageDSRActivity"
+            android:theme="@style/detailActivityTheme"
+            android:screenOrientation="portrait"/>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="project.astix.com.ltfoodfsd.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+    </application>
+
+</manifest>

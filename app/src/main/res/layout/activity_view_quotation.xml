@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+    <RelativeLayout
+        android:layout_height="46dp"
+        android:layout_width="fill_parent"
+        android:background="@drawable/custom_header_color"
+        android:paddingLeft="16dp"
+
+
+
+        android:id="@+id/rtv_hdr">
+
+        <ImageView
+            android:id="@+id/prevP2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_back"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"/>
+        <TextView
+            android:id="@+id/order_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:layout_toRightOf="@+id/backbutton"
+            android:paddingLeft="10dp"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal|left"
+            android:shadowRadius="7"
+            android:shadowDy="4"
+            android:shadowDx="4"
+            android:textStyle="bold"
+            android:shadowColor="#80FFFFFF"
+            android:textSize="18sp"
+            android:text="Quotation View"/>
+
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="2"
+        android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+
+        android:background="@drawable/shadow_last"
+        android:layout_gravity="center"
+
+       >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+
+            android:text="Quotation in Process"
+            android:padding="5dp"/>
+
+
+
+        <!-- Special Scheme Row Views Ends-->
+
+        <TextView
+            android:id="@+id/txt_Quatation_Value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/txt_Quatation"
+            android:layout_toRightOf="@id/txt_Quatation"
+            android:textSize="12sp"
+            android:text=""
+
+            android:layout_marginLeft="40dp"
+            android:textStyle="bold"
+
+            />
+
+        <RelativeLayout
+            android:id="@+id/relLayout_for_Quatation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_Quatation"
+            android:layout_alignLeft="@id/txt_Quatation"
+
+
+            android:background="@drawable/my_border"
+
+            android:layout_marginRight="10dp"  >
+
+            <TableLayout
+                android:id="@+id/tabLayoutHeader2_Quatation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:stretchColumns="*" >
+
+                <TableRow
+                    android:id="@+id/trHeader2_Quatation"
+                    >
+
+                    <TextView
+                        android:layout_margin="0.2dp"
+                        android:background="#2886BC"
+                        android:scrollHorizontally="true"
+                        android:layout_width="0dp"
+                        android:text="Quotation Code"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:layout_weight="4"
+                        android:textColor="#FFFFFF"
+                        android:layout_height="match_parent"
+                        android:gravity="left"
+                        android:layout_marginLeft="10dp"/>
+
+                    <TextView
+                        android:layout_margin="0.2dp"
+                        android:background="#2886BC"
+                        android:scrollHorizontally="true"
+                        android:layout_width="0dp"
+                        android:text="Quot. Status"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="3" />
+
+                    <TextView
+                        android:layout_margin="0.2dp"
+                        android:background="#2886BC"
+                        android:scrollHorizontally="true"
+                        android:layout_width="0dp"
+                        android:text="Quot. Date"
+                        android:layout_height="match_parent"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"
+                        android:gravity="center"
+                        android:layout_weight="3"  />
+
+                </TableRow>
+            </TableLayout>
+
+            <ScrollView
+                android:id="@+id/QuatationListScroll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tabLayoutHeader2_Quatation"
+
+                android:layout_marginLeft="0dp" >
+
+
+                <TableLayout
+                    android:id="@+id/dynprodtableQuatation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#000000"
+                    android:stretchColumns="*" >
+
+                </TableLayout>
+
+
+            </ScrollView>
+
+
+        </RelativeLayout>
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:background="@drawable/shadow_last"
+
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+
+            android:padding="5dp"
+            android:text="Approved Quotation" />
+
+
+        <!-- Special Scheme Row Views Ends-->
+
+        <TextView
+            android:id="@+id/txt_Quatation_ValueAprvd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/txt_Quatation"
+            android:layout_marginLeft="40dp"
+            android:layout_toRightOf="@id/txt_Quatation"
+            android:text=""
+
+            android:textSize="12sp"
+            android:textStyle="bold"
+
+            />
+
+        <RelativeLayout
+            android:id="@+id/relLayout_for_QuatationAprvd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/txt_Quatation"
+            android:layout_below="@id/txt_Quatation"
+
+
+            android:layout_marginRight="10dp"
+
+            android:background="@drawable/my_border">
+
+            <TableLayout
+                android:id="@+id/tabLayoutHeader2_QuatationAprvd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:stretchColumns="*">
+
+                <TableRow android:id="@+id/trHeader2_QuatationAprvd">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="0.2dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="4"
+                        android:background="#2886BC"
+                        android:gravity="left"
+                        android:scrollHorizontally="true"
+                        android:text="Quotation Code"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_margin="0.2dp"
+                        android:layout_weight="3"
+                        android:background="#2886BC"
+                        android:gravity="center_horizontal"
+                        android:scrollHorizontally="true"
+                        android:text="Quot. Status"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="0.2dp"
+                        android:layout_weight="3"
+                        android:background="#2886BC"
+                        android:gravity="center"
+                        android:scrollHorizontally="true"
+                        android:text="Quot. Date"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                </TableRow>
+            </TableLayout>
+
+            <ScrollView
+                android:id="@+id/QuatationListScrollAprvd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tabLayoutHeader2_QuatationAprvd"
+
+                android:layout_marginLeft="0dp">
+
+
+                <TableLayout
+                    android:id="@+id/dynprodtableQuatationAprvd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#000000"
+                    android:stretchColumns="*">
+
+                </TableLayout>
+
+
+            </ScrollView>
+
+
+        </RelativeLayout>
+    </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

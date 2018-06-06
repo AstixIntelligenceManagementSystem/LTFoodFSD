@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_special_remarks"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/custom_header_color"
+    android:id="@+id/ll_header"
+    android:weightSum="2"
+    >
+    <ImageView
+        android:id="@+id/img_back"
+        android:layout_width="wrap_content"
+        android:layout_height="25dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="3dp"
+        android:src="@drawable/ic_back"/>
+
+
+    <TextView
+        android:id="@+id/bardd"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:text="Next Steps"
+        android:textStyle="bold"
+        android:textColor="#ffffff"
+        android:typeface="normal"
+           android:gravity="center"
+        android:textSize="18sp"
+        android:layout_weight="1.5"
+        />
+
+
+</LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/sixth"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp">
+    <Button
+        android:id="@+id/btn_save"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="5dp"
+        android:layout_weight="1"
+        android:background="@drawable/custom_button"
+        android:text="Save"
+        android:textColor="#ffffff"
+        android:textSize="14sp"
+        android:textStyle="bold"
+android:visibility="gone"
+        />
+
+
+    <Button
+        android:id="@+id/btn_Competitor"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="5dp"
+        android:layout_weight="1"
+        android:background="@drawable/custom_button"
+        android:text="Competitor"
+        android:textColor="#ffffff"
+        android:textSize="13sp"
+        android:textStyle="bold"
+
+        />
+    </LinearLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/sixth"
+        android:layout_below="@+id/ll_header"
+
+        >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/shadow_deep_orng"
+        >
+
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="vertical"
+       android:layout_marginLeft="5dp"
+       android:layout_marginRight="5dp"
+       >
+
+
+ <LinearLayout
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content"
+     android:layout_marginTop="4dp"
+     android:orientation="horizontal"
+     android:id="@+id/calltoschedule"
+
+     >
+
+
+     <CheckBox
+         android:layout_width="0dp"
+         android:layout_height="wrap_content"
+         android:id="@+id/cbCallToschedule"
+         android:layout_weight="0.5"
+         android:buttonTint="#a25611"
+         />
+     <TextView
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:text="Call to Schedule Metting"
+    android:textSize="14sp"
+    android:gravity="center_vertical"
+    android:layout_weight="2.9"
+    android:textColor="#a25611"
+
+
+    />
+
+     <ImageView
+         android:id="@+id/img_callToSchedule"
+         android:layout_width="0dp"
+         android:layout_height="wrap_content"
+         android:layout_weight="0.5"
+        android:src="@drawable/calendar_icon"
+         android:layout_gravity="center"
+         />
+     <TextView
+         android:id="@+id/txt_callToSchedule"
+         android:layout_width="0dp"
+         android:layout_height="wrap_content"
+         android:text=""
+         android:textSize="12sp"
+         android:layout_weight="1"
+         android:textColor="#000000"
+         />
+
+
+ </LinearLayout>
+<View
+    android:layout_width="match_parent"
+    android:layout_marginTop="2dp"
+    android:layout_height="1dp"
+    android:background="#000"
+
+    ></View>
+
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+
+
+        >
+
+        <CheckBox
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/cbExpectedCallBy"
+            android:layout_weight="0.5"
+            android:buttonTint="#a25611"
+            />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Expected Call By"
+            android:textSize="14sp"
+            android:gravity="center_vertical"
+            android:layout_weight="2.9"
+            android:textColor="#a25611"
+
+
+            />
+
+        <ImageView
+            android:id="@+id/img_expectedCallBy"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:src="@drawable/calendar_icon"
+            android:layout_gravity="center"
+            android:layout_marginLeft="3dp"
+
+            />
+        <TextView
+            android:id="@+id/txt_expectedCallBy"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="12sp"
+            android:layout_weight="1"
+            android:textColor="#000000"
+
+            />
+
+
+    </LinearLayout>
+       <View
+           android:layout_width="match_parent"
+           android:layout_marginTop="2dp"
+           android:layout_height="1dp"
+           android:background="#000"
+
+           ></View>
+
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="10dp"
+           android:orientation="horizontal"
+
+           >
+
+           <CheckBox
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:id="@+id/cbArrangeFactoryVisit"
+               android:layout_weight="0.2"
+               android:buttonTint="#a25611"
+
+               />
+
+           <TextView
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:text="Arrange Factory Visit"
+               android:textSize="14sp"
+               android:gravity="center_vertical"
+                android:layout_weight="2"
+               android:textColor="#a25611"
+
+               />
+
+       </LinearLayout>
+       <View
+           android:layout_width="match_parent"
+           android:layout_marginTop="2dp"
+           android:layout_height="1dp"
+           android:background="#000"
+
+           ></View>
+
+
+
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="10dp"
+           android:orientation="horizontal"
+
+           >
+
+           <CheckBox
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:id="@+id/cbSeniorVisit"
+               android:layout_weight="0.2"
+               android:buttonTint="#a25611"
+
+               />
+           <TextView
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:text="Senior Visit Required"
+               android:textSize="14sp"
+               android:gravity="center_vertical"
+
+               android:textColor="#a25611"
+
+               android:layout_weight="2" />
+
+
+       </LinearLayout>
+
+       <View
+           android:layout_width="match_parent"
+           android:layout_marginTop="2dp"
+           android:layout_height="1dp"
+           android:background="#000"
+
+           ></View>
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="10dp"
+           android:orientation="horizontal"
+           android:layout_marginBottom="1dp"
+           >
+
+           <CheckBox
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:id="@+id/cbQualityVisit"
+               android:layout_weight="0.2"
+               android:buttonTint="#a25611"
+
+               />
+
+
+           <TextView
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:text="Quality Resource Visit Required "
+               android:textSize="14sp"
+               android:gravity="center_vertical"
+               android:textColor="#a25611"
+
+               android:layout_weight="2" />
+
+
+       </LinearLayout>
+
+       <View
+           android:layout_width="match_parent"
+           android:layout_marginTop="2dp"
+           android:layout_height="1dp"
+           android:background="#000"
+
+           ></View>
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="10dp"
+           android:orientation="horizontal"
+
+           >
+
+
+           <CheckBox
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:id="@+id/cbColdLead"
+               android:layout_weight="0.2"
+               android:buttonTint="#a25611"
+               />
+
+           <TextView
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:text="Cold Lead"
+               android:textSize="14sp"
+               android:gravity="center_vertical"
+               android:layout_weight="2"
+               android:textColor="#a25611"
+
+/>
+
+       </LinearLayout>
+       <View
+           android:layout_width="match_parent"
+           android:layout_marginTop="1dp"
+           android:layout_height="1dp"
+           android:background="#000"
+           ></View>
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="vertical"
+           android:layout_marginTop="5dp"
+           android:layout_marginLeft="5dp"
+           android:layout_marginRight="5dp"
+           android:layout_marginBottom="10dp"
+
+           >
+
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Others"
+    android:textSize="14sp"
+    android:textColor="#a25611"
+
+    />
+
+           <EditText
+               android:layout_width="match_parent"
+               android:layout_height="100dp"
+               android:gravity="left"
+               android:background="@drawable/et_boundary_po_last"
+                android:inputType="text|textMultiLine"
+               android:hint="Comments"
+               android:id="@+id/txtComments"
+               android:textSize="14sp"
+               android:paddingTop="1dp"
+               android:paddingBottom="1dp"
+               android:imeOptions="actionGo"
+
+               android:digits="abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ -/.&amp;,"
+
+               />
+
+
+       </LinearLayout>
+
+   </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
+
+</RelativeLayout>

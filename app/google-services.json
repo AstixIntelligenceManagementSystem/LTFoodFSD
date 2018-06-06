@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "969503187922",
+    "firebase_url": "https://ltfoo-4a0bb.firebaseio.com",
+    "project_id": "ltfoo-4a0bb",
+    "storage_bucket": "ltfoo-4a0bb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:969503187922:android:4497e099461bcf73",
+        "android_client_info": {
+          "package_name": "project.astix.com.ltfoodfsd"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "969503187922-i836f438fmknf8qnisb4mtsjuf2kvppd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6g_oyKcGrvCQnuGbsiEv4oPm0s9JORh0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="3dp"
+    android:paddingBottom="3dp" >
+
+
+    <RelativeLayout
+        android:id="@+id/rlOutltActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:padding="2dp"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
+        android:background="@drawable/rounded_corner"
+        android:gravity="left"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/store_icon"/>
+
+        <TextView
+            android:id="@+id/tvOutletName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="56dp"
+
+            android:text="BTL Activity"
+            android:textColor="#1A5D66"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/imgVw_dtlOutlet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/arrow"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        android:visibility="visible">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:id="@+id/ll_img"
+            android:src="@drawable/appointmentscreenscho2"/>
+
+        </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Account Name"
+            android:background="@drawable/border_to_inflate_row"
+            android:padding="5dp"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textColor="#3F51B5"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/border_to_inflate_row"
+            android:layout_weight="1"
+            android:text="Appointment Desc"
+            android:padding="5dp"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textColor="#3F51B5"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/border_to_inflate_row"
+            android:layout_weight="1"
+            android:text="Appointment Date"
+            android:padding="5dp"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textColor="#3F51B5"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="2dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:id="@+id/ll_RowParent">
+
+
+    </LinearLayout>
+
+</LinearLayout>

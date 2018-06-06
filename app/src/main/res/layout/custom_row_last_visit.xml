@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:id="@+id/ll_singleRow"
+
+    >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_margin="4dp"
+            >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Outstanding"
+            android:textColor="#000000"
+            android:id="@+id/txt_section"
+            android:textSize="10sp"
+            android:padding="3dp"
+
+            android:background="@drawable/border_to_inflate_row"
+
+            />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textColor="#000000"
+            android:id="@+id/txt_value"
+            android:textSize="10sp"
+            android:padding="3dp"
+            android:visibility="visible"
+            android:background="@drawable/border_to_inflate_row"
+
+            />
+        </LinearLayout>
+</LinearLayout>

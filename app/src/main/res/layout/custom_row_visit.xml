@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="1dp"
+    android:orientation="horizontal"
+    android:padding="3dp"
+    android:id="@+id/customRow_parent">
+
+    <TextView
+        android:layout_width="0dp"
+        android:id="@+id/visitPlan_StrName"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text=""
+        android:background="@drawable/border_row"
+        android:padding="3dp"
+        android:textSize="11sp"
+        android:gravity="center"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:id="@+id/visitPlan_Desc"
+        android:layout_height="match_parent"
+        android:background="@drawable/border_row"
+        android:layout_weight="1"
+        android:text=""
+        android:padding="3dp"
+        android:textSize="11sp"
+        android:gravity="center"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:id="@+id/visitPlan_Date"
+        android:layout_height="match_parent"
+        android:background="@drawable/border_row"
+        android:layout_weight="1"
+        android:text=""
+        android:padding="3dp"
+        android:textSize="11sp"
+        android:gravity="center"
+        android:textStyle="bold"/>
+
+
+</LinearLayout>

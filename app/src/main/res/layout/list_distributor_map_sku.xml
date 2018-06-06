@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="1dp"
+        android:layout_marginRight="1dp"
+
+>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight=".7"
+            android:layout_height="match_parent"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:text="CH"
+            android:textSize="10sp"
+            android:id="@+id/textView_Shortname"
+
+            android:background="@drawable/border_left_right_bottom"
+            android:gravity="left"/>
+
+
+        <!--<EditText
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:inputType="number"
+            android:padding="2dp"
+            android:textSize="10sp"
+            android:maxLength="5"
+            android:gravity="center"
+            android:background="@android:drawable/editbox_background_normal"
+            android:layout_weight=".4"
+            android:id="@+id/edittxt_sampleStck"
+            />-->
+        <Spinner
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.7"
+            android:background="@drawable/spinner_distribtr_bckgrnd"
+            android:id="@+id/spinner_for_filter"
+            android:visibility="visible"
+            android:spinnerMode="dialog"
+            />
+
+        <TextView
+            android:id="@+id/spinnerDistributor"
+            android:layout_width="0dp"
+            android:layout_weight="0.7"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:background="@drawable/spinner_quotation"
+            android:gravity="center"
+            android:padding="3dp"
+            android:text="Select Distributor"
+            android:textColor="#000"
+            android:textSize="13sp"
+            />
+    </TableRow>
+</TableLayout>

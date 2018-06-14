@@ -168,7 +168,7 @@ public class ServiceWorker
 	            InputSource is = new InputSource();
 	            is.setCharacterStream(new StringReader(name));
 	            Document doc = db.parse(is);
-			System.out.println("shivam4");
+			//System.out.println("shivam4");
 	          
 	        //   dbengine.open();
 	            
@@ -218,8 +218,7 @@ public class ServiceWorker
 					
 		                if(StoreIDNode.getLength()>0)
 		                {
-							
-		                	StoreID=xmlParser.getCharacterDataFromElement(line);
+							StoreID=xmlParser.getCharacterDataFromElement(line);
 		                }
 	            	 }
 	                
@@ -231,8 +230,7 @@ public class ServiceWorker
 					
 		                if(StoreNameNode.getLength()>0)
 		                {
-							
-		                	StoreName=xmlParser.getCharacterDataFromElement(line);
+							StoreName=xmlParser.getCharacterDataFromElement(line);
 		                }
 	            	 }
 	       
@@ -245,8 +243,7 @@ public class ServiceWorker
 					
 		                if(StoreLatitudeNode.getLength()>0)
 		                {
-							
-		                	StoreLatitude=Double.parseDouble(xmlParser.getCharacterDataFromElement(line));
+							StoreLatitude=Double.parseDouble(xmlParser.getCharacterDataFromElement(line));
 		                }
 	            	 }
 	                
@@ -259,8 +256,7 @@ public class ServiceWorker
 					
 		                if(StoreLongitudeNode.getLength()>0)
 		                {
-							
-		                	StoreLongitude=Double.parseDouble(xmlParser.getCharacterDataFromElement(line));
+							StoreLongitude=Double.parseDouble(xmlParser.getCharacterDataFromElement(line));
 		                }
 	            	 }
                      
@@ -272,8 +268,7 @@ public class ServiceWorker
 					
 		                if(StoreTypeNode.getLength()>0)
 		                {
-							
-		                	StoreType=xmlParser.getCharacterDataFromElement(line);
+							StoreType=xmlParser.getCharacterDataFromElement(line);
 		                }
 	            	 }
 	                
@@ -285,8 +280,7 @@ public class ServiceWorker
 					
 		                if(LastTransactionDateNode.getLength()>0)
 		                {
-							
-		                	LastTransactionDate=xmlParser.getCharacterDataFromElement(line);
+							LastTransactionDate=xmlParser.getCharacterDataFromElement(line);
 		                }
 	            	 }
 	                
@@ -298,8 +292,7 @@ public class ServiceWorker
 					
 		                if(LastVisitDateNode.getLength()>0)
 		                {
-							
-		                	LastVisitDate=xmlParser.getCharacterDataFromElement(line);
+							LastVisitDate=xmlParser.getCharacterDataFromElement(line);
 		                }
 	            	 }
 	                
@@ -311,8 +304,7 @@ public class ServiceWorker
 					
 		                if(IsCloseNode.getLength()>0)
 		                {
-							
-		                	IsClose=Integer.parseInt(xmlParser.getCharacterDataFromElement(line));
+							IsClose=Integer.parseInt(xmlParser.getCharacterDataFromElement(line));
 		                }
 	            	 }
 	                
@@ -325,8 +317,7 @@ public class ServiceWorker
 					
 		                if(IsNextDatNode.getLength()>0)
 		                {
-							
-		                	IsNextDat=Integer.parseInt(xmlParser.getCharacterDataFromElement(line));
+							IsNextDat=Integer.parseInt(xmlParser.getCharacterDataFromElement(line));
 		                }
 	            	 }
 	                
@@ -338,8 +329,7 @@ public class ServiceWorker
 					
 		                if(RouteIDNode.getLength()>0)
 		                {
-							
-		                	StoreRouteID=Integer.parseInt(xmlParser.getCharacterDataFromElement(line));
+							StoreRouteID=Integer.parseInt(xmlParser.getCharacterDataFromElement(line));
 		                }
 	            	 }
 
@@ -19934,7 +19924,7 @@ public class ServiceWorker
 			client = new SoapObject(NAMESPACE, METHOD_NAME);
 
 			String StoreListOld="";
-			HashMap<String,String> hmapStoreIdSstat=dbengine.checkForStoreIdSstat();
+			HashMap<String,String> hmapStoreIdSstat=dbengine.checkForStoreIdSstatSO();
          /*if(dbengine.fncheckCountNearByStoreExistsOrNot(1000)==1)
          {
 

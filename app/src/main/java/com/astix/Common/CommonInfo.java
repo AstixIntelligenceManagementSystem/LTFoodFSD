@@ -12,9 +12,6 @@ public class CommonInfo
 
 
 
-
-
-
 	public static Uri uriSavedImage_savedInstance=null;
 
 	public static String userDate="0";
@@ -51,7 +48,6 @@ public class CommonInfo
 
 	public static String WebPageUrlQuatation="http://103.20.212.194/ltace/frmCostBreakUp.aspx";
 
-
 	public static String OrderSyncPath="http://103.20.212.194/ReadXML_LTFoodsFSDLive/DefaultFSDSFA.aspx";
 
 	public static String OrderSyncPathDistributorMap="http://103.20.212.194/ReadXML_LTFoodsFSDLive/DefaultSODistributorMapping.aspx";
@@ -69,10 +65,7 @@ public class CommonInfo
 
 	public static String OrderSyncPathSO="http://103.20.212.194/ReadXML_LTFoodsFSDLive/DefaultSO.aspx";
 
-
 	public static String VedioSyncPath="http://103.20.212.194/ReadXML_LTFoodsImagesFSDLive/frmReciveViedo.aspx";
-
-
 
 	public static String OrderXMLFolder="LTACEFSDXml";
 	public static String ImagesFolder="LTACEFSDImages";
@@ -101,7 +94,6 @@ public class CommonInfo
 
 	public static String ImagesnFolder="LTACEFSDImages";
 	public static String VideoFolder="LTAceFSDVideo";
-
 
 
 
@@ -395,6 +387,7 @@ public class CommonInfo
 
 	// Its for Test Release  Path on 194 server for SFA
 
+
 /*
 	public static Uri uriSavedImage_savedInstance=null;
 
@@ -482,5 +475,6 @@ public class CommonInfo
 	public static String ImagesnFolder="LTACESFAImages";
 	public static String VideoFolder="LTAceFSDVideo";
 */
+
 
 }

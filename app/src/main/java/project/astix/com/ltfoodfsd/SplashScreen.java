@@ -135,7 +135,10 @@ public class SplashScreen extends AppCompatActivity
       // imei="359495060489571";
 
        // imei="863408031291603_old";
-imei="35299064153201";//Live User
+        // imei="35299064153201";//Live User
+       // imei="869124026917219"; // Test Release given by varun sir
+       // imei="863408031291603";  /// Test Release given by varun sir
+
         CommonInfo.imei = imei;
         sPref=getSharedPreferences(CommonInfo.Preference, MODE_PRIVATE);
         Date date1 = new Date();
@@ -844,7 +847,7 @@ imei="35299064153201";//Live User
                     }
                     if(mm==3)
                     {
-                        int DatabaseVersion=CommonInfo.DATABASE_VERSIONID;
+                       /* int DatabaseVersion=CommonInfo.DATABASE_VERSIONID;
                         int ApplicationID=CommonInfo.Application_TypeID;
                         newservice = newservice.callfnSingleCallAllWebService(getApplicationContext(),ApplicationID,imei);
                         if(!newservice.director.toString().trim().equals("1"))
@@ -854,7 +857,7 @@ imei="35299064153201";//Live User
                                 chkFlgForErrorToCloseApp=1;
                             }
 
-                        }
+                        }*/
                      }
                     if(mm==4)
                     {

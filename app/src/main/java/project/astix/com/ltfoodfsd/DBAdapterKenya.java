@@ -11494,7 +11494,7 @@ close();
 		}
 	}
 	
-/*	public HashMap<String, String> checkForStoreIdSstat()
+	public HashMap<String, String> checkForStoreIdSstat()
 	{
 		Cursor cursor=db.rawQuery("Select StoreID,Sstat from tblStoreList where Sstat in(1,3,4,5,6)",null);
 		HashMap<String, String> hmapStoreIDSstat=new HashMap<String, String>();
@@ -11510,9 +11510,9 @@ close();
 			}
 		}
 		return hmapStoreIDSstat;
-	}*/
+	}
 
-    public HashMap<String, String> checkForStoreIdSstat()
+    public HashMap<String, String> checkForStoreIdSstatSO()
     {
 
         Cursor cursor=null;
@@ -27223,7 +27223,7 @@ public LinkedHashMap<String, String> fnGettblSalesQuotePaymentModeMstrAllValues(
 	}*/
 	public String getTodatAndTotalStores()
 	{
-		String StoresData="0";
+		String StoresData="0^0";
 		open();
 		try {
 			Cursor cur=db.rawQuery("Select TotStoreAdded , TodayStoreAdded from tblStoreCountDetails", null);

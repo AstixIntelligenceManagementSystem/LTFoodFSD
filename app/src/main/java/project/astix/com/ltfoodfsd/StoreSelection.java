@@ -5229,7 +5229,10 @@ public void fnCreateStoreListOnLoad() throws Exception
 					{
 
 
+						dbengine.open();
+						hmapStoreIdSstat=dbengine.checkForStoreIdSstat();
 
+						dbengine.close();
 
 						newservice = newservice.getallStores(getApplicationContext(), fDate, imei, rID);
 						if(newservice.flagExecutedServiceSuccesfully!=1)
@@ -6039,6 +6042,7 @@ public void fnCreateStoreListOnLoad() throws Exception
 			}
 			else
 			{
+				dbengine.fnInsertOrUpdate_tblAllServicesCalledSuccessfull(0);
 				Intent i=new Intent(StoreSelection.this,StorelistActivity.class);
 				startActivity(i);
 				finish();

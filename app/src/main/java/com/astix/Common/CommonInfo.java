@@ -13,7 +13,6 @@ public class CommonInfo
 
 
 
-/*
 
 
 	public static Uri uriSavedImage_savedInstance=null;
@@ -46,8 +45,8 @@ public class CommonInfo
 
 	public static int AnyVisit = 0;
 
-	public static int DATABASE_VERSIONID = 58;      // put this field value based on value in table on the server
-	public static String AppVersionID = "1.5";   // put this field value based on value in table on the server
+	public static int DATABASE_VERSIONID = 71;      // put this field value based on value in table on the server
+	public static String AppVersionID = "1.6";   // put this field value based on value in table on the server
 	public static int Application_TypeID = 5; //1=Parag Store Mapping,2=Parag SFA Indirect,3=Parag SFA Direct
 
 	public static String WebPageUrlQuatation="http://103.20.212.194/ltace/frmCostBreakUp.aspx";
@@ -104,7 +103,6 @@ public class CommonInfo
 	public static String VideoFolder="LTAceFSDVideo";
 
 
-*/
 
 
 
@@ -397,6 +395,7 @@ public class CommonInfo
 
 	// Its for Test Release  Path on 194 server for SFA
 
+/*
 	public static Uri uriSavedImage_savedInstance=null;
 
 	public static String userDate="0";
@@ -430,8 +429,8 @@ public class CommonInfo
 
 	public static int AnyVisit = 0;
 
-	public static int DATABASE_VERSIONID = 45;      // put this field value based on value in table on the server
-	public static String AppVersionID = "1.4";   // put this field value based on value in table on the server
+	public static int DATABASE_VERSIONID = 92;      // put this field value based on value in table on the server
+	public static String AppVersionID = "1.5";   // put this field value based on value in table on the server
 	public static int Application_TypeID = 5; //1=Parag Store Mapping,2=Parag SFA Indirect,3=Parag SFA Direct
 
 	public static String OrderSyncPath="http://103.20.212.194/ReadXML_LTFoodsTestRelease/DefaultFSDSFA.aspx";
@@ -482,5 +481,6 @@ public class CommonInfo
 
 	public static String ImagesnFolder="LTACESFAImages";
 	public static String VideoFolder="LTAceFSDVideo";
+*/
 
 }

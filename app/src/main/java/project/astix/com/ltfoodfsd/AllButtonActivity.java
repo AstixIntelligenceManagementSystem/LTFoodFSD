@@ -111,7 +111,6 @@ import java.util.zip.ZipOutputStream;
 
 public class AllButtonActivity extends BaseActivity implements LocationListener,GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener{
 
-
     String the_string_response="0";
     InputStream inputStream;
     public int IMGsyOK = 0;
@@ -186,7 +185,6 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
     public Date currDate;
     public SimpleDateFormat currDateFormat;
     public String currSysDate;
-
 
     ImageView imgVw_logout;
 
@@ -1191,9 +1189,10 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
     @Override
     protected void onResume() {
         super.onResume();
-
+        flgChangeRouteOrDayEnd=0;
         if(isDayEndClicked)
         {
+            flgChangeRouteOrDayEnd=1;
             DayEndCode();
         }
     }
@@ -1275,7 +1274,18 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
             }
             else
             {
-                showAlertForEveryOne("There is no Pending data for upload.");
+
+                //showAlertSingleButtonInfo(getResources().getString(R.string.NoPendingDataMsg));
+                if(isOnline()) {
+                    whereTo = "11";
+                    DayEndWithoutalert();
+                }else
+                {
+                    showAlertSingleButtonError(getResources().getString(R.string.NoDataConnectionFullMsg));
+                }
+
+
+               // showAlertForEveryOne("There is no Pending data for upload.");
                    /* if(isOnline())
                     {
                         DayEndWithoutalert();

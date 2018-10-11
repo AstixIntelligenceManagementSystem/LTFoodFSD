@@ -26,26 +26,25 @@ import android.provider.Settings;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -67,6 +66,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -81,8 +81,8 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -94,8 +94,32 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 
-public class DistributorMapActivity extends BaseActivity implements LocationListener,GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener,OnMapReadyCallback
+public class DistributorMapActivity extends BaseActivity implements LocationListener,GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,OnMapReadyCallback,CategoryCommunicatorCityState,DatePickerDialog.OnDateSetListener
 {
+
+    Calendar calendar ;
+    int Year, Month, Day ;
+    DatePickerDialog datePickerDialog ;
+    boolean dob_Bool=false;
+    boolean dom_Bool=false;
+    TextView txt_Dob_credential,Text_Dob,Text_mrgAnnvrsry;
+    boolean credential_dob_Bool=false;
+    LinkedHashMap<String,String> hmapCityAgainstState;
+    String defaultCity="";
+    boolean isSelectedSearch=false;
+
+
+    LinkedHashMap<String, String> hmapState_details=new LinkedHashMap<String, String>();
+    String previousSlctdState="Select";
+    String previousSlctdCity="Select";
+    LinkedHashMap<String, String> hmapCity_details=new LinkedHashMap<String, String>();
+    List<String> stateNames;
+    List<String> cityNames;
+    EditText etLocalArea,etPinCode,etOtherCity;
+    TextView etCity,etState;
+    TextView  txt_city,txt_state,txt_pincode;
+
     SharedPreferences sharedPref;
     DBAdapterKenya dbengine = new DBAdapterKenya(DistributorMapActivity.this);
     LinkedHashMap<String, String> hmapdsrIdAndDescr_details=new LinkedHashMap<String, String>();
@@ -210,9 +234,11 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
 
     String[] Distribtr_list;
 
-    LinearLayout ll_address_section,ll_local_area,ll_gstDetails;
+   /* LinearLayout ll_address_section,ll_local_area,ll_gstDetails;
     EditText etLocalArea, etPinCode, etCity, etState;
+*/
 
+    LinearLayout ll_gstDetails;
     TextView tvLocalArea,tvPinCode,tvCity,tvState,txt_gst;
 
     String DbrNodeId,DbrNodeType,DbrName;
@@ -242,6 +268,61 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
     TextView txt_rfrshCmnt;
     LinearLayout ll_refresh;
 
+    //new added on 27 march, 2018
+    EditText etPhoneNo,etMail,ed_FirstName,ed_LastName;
+    TextView txt_phone,txt_FirstName,txt_LastName,txt_Dob;
+
+
+
+    LinkedHashMap<String,String> hmapDbrContactInfo=new LinkedHashMap<>();
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        String[] MONTHS = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+        String mon=MONTHS[monthOfYear];
+
+        String dayOfMnth;
+        if(mon.length()<2){
+
+            mon = "0" + mon;
+        }
+        if(dayOfMonth<10){
+
+            if((String.valueOf(dayOfMonth)).length()<2)
+            {
+                dayOfMnth = "0" + dayOfMonth;
+            }
+            else
+            {
+                dayOfMnth=String.valueOf(dayOfMonth);
+            }
+
+        }
+        else
+        {
+            dayOfMnth=String.valueOf(dayOfMonth);
+        }
+        if(credential_dob_Bool)
+        {
+            txt_Dob_credential.setText(dayOfMnth+"/"+mon+"/"+year);
+        }
+        if(dob_Bool)
+        {
+            Text_Dob.setText(dayOfMnth+"/"+mon+"/"+year);
+        }
+        if(dom_Bool)
+        {
+            Text_mrgAnnvrsry.setText(dayOfMnth+"/"+mon+"/"+year);
+        }
+
+        credential_dob_Bool=false;
+        dob_Bool=false;
+        dom_Bool=false;
+
+
+
+    }
+
 
 
     private void getDSRDetail() throws IOException
@@ -270,51 +351,20 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
 
     public void customHeader()
     {
-
-
        // TextView tv_heading=(TextView) findViewById(R.id.tv_heading);
        // tv_heading.setText("Map Distributor");
        // ImageView imgVw_next=(ImageView) findViewById(R.id.imgVw_next);
        // imgVw_next.setVisibility(View.GONE);
 
-       /* ImageView imgVw_back=(ImageView) findViewById(R.id.img_back_Btn);
+        ImageView imgVw_back=(ImageView) findViewById(R.id.img_back_Btn);
         imgVw_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)
             {
-                AlertDialog.Builder alertDialogSubmitConfirm = new AlertDialog.Builder(DistributorMapActivity.this);
-                alertDialogSubmitConfirm.setTitle("Information");
-                alertDialogSubmitConfirm.setMessage("Have you saved your data before going back? \n");
-                alertDialogSubmitConfirm.setCancelable(false);
-
-                alertDialogSubmitConfirm.setNeutralButton("Yes", new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        dialog.dismiss();
-                        Intent i=new Intent(DistributorMapActivity.this,StorelistActivity.class);
-                        startActivity(i);
-                        finish();
-                    }
-                });
-
-                alertDialogSubmitConfirm.setNegativeButton("No", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-                alertDialogSubmitConfirm.setIcon(R.drawable.info_ico);
-
-                AlertDialog alert = alertDialogSubmitConfirm.create();
-
-                alert.show();
-
+               finish();
             }
-        });*/
-        ImageView img_side_popUp=(ImageView) findViewById(R.id.img_side_popUp);
+        });
+       /* ImageView img_side_popUp=(ImageView) findViewById(R.id.img_side_popUp);
         img_side_popUp.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -322,8 +372,84 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
             {
                 open_pop_up();
             }
+        });*/
+
+    }
+
+    public void getDateHandling()
+    {
+        Text_Dob= (TextView) findViewById(R.id.Text_Dob);
+        Text_mrgAnnvrsry= (TextView) findViewById(R.id.Text_mrgAnnvrsry);
+        Text_Dob.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                dob_Bool=true;
+                calendar = Calendar.getInstance();
+                Year = calendar.get(Calendar.YEAR) ;
+                Month = calendar.get(Calendar.MONTH);
+                Day = calendar.get(Calendar.DAY_OF_MONTH);
+                datePickerDialog = DatePickerDialog.newInstance(DistributorMapActivity.this, Year-18, Month, Day);
+
+                datePickerDialog.setThemeDark(false);
+
+                datePickerDialog.showYearPickerFirst(false);
+
+                Calendar calendarForSetDate = Calendar.getInstance();
+                calendarForSetDate.setTimeInMillis(System.currentTimeMillis());
+
+                // calendar.setTimeInMillis(System.currentTimeMillis()+24*60*60*1000);
+                //YOU can set min or max date using this code
+                // datePickerDialog.setMaxDate(Calendar.getInstance());
+                // datePickerDialog.setMinDate(calendar);
+
+                //  datePickerDialog.setMinDate(calendarForSetDate);
+                calendarForSetDate.set(Year - 18, Month, Day);
+                datePickerDialog.setMaxDate(calendarForSetDate);
+                datePickerDialog.setAccentColor(Color.parseColor("#544f88"));
+
+                datePickerDialog.setTitle(getResources().getString(R.string.txtSELECTDOB));
+                datePickerDialog.show(getFragmentManager(), "DatePickerDialog");
+
+            }
         });
 
+
+        Text_mrgAnnvrsry.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                dom_Bool=true;
+                calendar = Calendar.getInstance();
+                Year = calendar.get(Calendar.YEAR) ;
+                Month = calendar.get(Calendar.MONTH);
+                Day = calendar.get(Calendar.DAY_OF_MONTH);
+                datePickerDialog = DatePickerDialog.newInstance(DistributorMapActivity.this, Year, Month, Day);
+
+                datePickerDialog.setThemeDark(false);
+
+                datePickerDialog.showYearPickerFirst(false);
+
+                Calendar calendarForSetDate = Calendar.getInstance();
+                calendarForSetDate.setTimeInMillis(System.currentTimeMillis());
+
+                // calendar.setTimeInMillis(System.currentTimeMillis()+24*60*60*1000);
+                //YOU can set min or max date using this code
+                // datePickerDialog.setMaxDate(Calendar.getInstance());
+                // datePickerDialog.setMinDate(calendar);
+
+                //  datePickerDialog.setMinDate(calendarForSetDate);
+                calendarForSetDate.set(Year, Month, Day);
+                datePickerDialog.setMaxDate(calendarForSetDate);
+                datePickerDialog.setAccentColor(Color.parseColor("#544f88"));
+
+                datePickerDialog.setTitle(getResources().getString(R.string.txtSELECTDOB));
+                datePickerDialog.show(getFragmentManager(), "DatePickerDialog");
+
+            }
+        });
     }
 
     @Override
@@ -369,7 +495,9 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
         helperDb=new DBAdapterKenya(DistributorMapActivity.this);
 
         customHeader();
+
         try {
+            getDateHandling();
             getDSRDetail();
             //report alert
             getDistribtrList();
@@ -402,6 +530,11 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
         txt_rfrshCmnt= (TextView) findViewById(R.id.txt_rfrshCmnt);
         ll_refresh= (LinearLayout) findViewById(R.id.ll_refresh);
 
+        getStateDetails();
+        getCityDetails();
+        defaultCity=helperDb.getDefaultCity();
+        hmapCityAgainstState=helperDb.getCityAgainstState();
+
         address="";
         pincode="";
         city="";
@@ -413,7 +546,7 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
 
         if(imei==null)
         {
-            imei=CommonInfo.imei;
+            imei= CommonInfo.imei;
         }
         if(fDate==null)
         {
@@ -540,7 +673,7 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
             DbrSelNodeId=value.split(Pattern.quote("^"))[0];
             DbrSelNodeType=value.split(Pattern.quote("^"))[1];
             DbrSelName=value.split(Pattern.quote("^"))[2];
-            //flgReMap=Integer.parseInt(value.split(Pattern.quote("^"))[3]);
+            flgReMap=Integer.parseInt(value.split(Pattern.quote("^"))[3]);
 
             hmapDistrbtrList.put(DbrSelName,DbrSelNodeId+"^"+DbrSelNodeType);
             DbrArrayAlert.add(DbrSelName);
@@ -558,13 +691,6 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-
-
-    }
-
-    @Override
     protected void onResume()
     {
         super.onResume();
@@ -578,13 +704,16 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
             {
                 if(DbrArray.size() == 2)
                 {
-                    if(countSubmitClicked==1)
+                    if(flgReMap == 1)
                     {
-                        locationRetreivingAndSetToMap();
-                    }
-                    if(countSubmitClicked==0)
-                    {
-                        locationRetreivingAndSetToMap();
+                        if(countSubmitClicked==1)
+                        {
+                            locationRetreivingAndSetToMap();
+                        }
+                        if(countSubmitClicked==0)
+                        {
+                            locationRetreivingAndSetToMap();
+                        }
                     }
                 }
             }
@@ -593,11 +722,13 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
         {
             if(DbrArray.size() == 2)
             {
-                if (countSubmitClicked == 1) {
-                    locationRetreivingAndSetToMap();
-                }
-                if (countSubmitClicked == 0) {
-                    locationRetreivingAndSetToMap();
+                if(flgReMap == 1) {
+                    if (countSubmitClicked == 1) {
+                        locationRetreivingAndSetToMap();
+                    }
+                    if (countSubmitClicked == 0) {
+                        locationRetreivingAndSetToMap();
+                    }
                 }
             }
 
@@ -638,7 +769,7 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
         });
     }
 
-    void inflateAddressLayout()
+  /*  void inflateAddressLayout()
     {
         View viewLoc=getLayoutInflater().inflate(R.layout.location_details_layout_distributor, null);
         ll_locationDetails.addView(viewLoc);
@@ -669,6 +800,173 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
         SpannableStringBuilder text_Value3=textWithMandatory(tvState.getText().toString());
         tvState.setText(text_Value3);
 
+    }*/
+
+    void inflateAddressLayout()
+    {
+       // View viewLoc=getLayoutInflater().inflate(R.layout.location_details_layoutso, null);
+        View viewLoc=getLayoutInflater().inflate(R.layout.location_details_layout_with_phone, null);
+        ll_locationDetails.addView(viewLoc);
+
+        etMail= (EditText) viewLoc.findViewById(R.id.etMail);
+        etPhoneNo= (EditText) viewLoc.findViewById(R.id.etPhoneNo);
+
+        ed_FirstName= (EditText) findViewById(R.id.ed_FirstName);
+        ed_LastName= (EditText) findViewById(R.id.ed_LastName);
+
+        etLocalArea= (EditText) viewLoc.findViewById(R.id.etLocalArea);
+
+        etPinCode= (EditText) viewLoc.findViewById(R.id.etPinCode);
+        etCity= (TextView) viewLoc.findViewById(R.id.etCity);
+        etState= (TextView) viewLoc.findViewById(R.id.etState);
+        etState.setEnabled(false);
+        etOtherCity= (EditText) viewLoc.findViewById(R.id.etOtherCity);
+        txt_city= (TextView) viewLoc.findViewById(R.id.txt_city);
+        txt_state= (TextView) viewLoc.findViewById(R.id.txt_state);
+        txt_pincode= (TextView) viewLoc.findViewById(R.id.txt_pincode);
+
+        SpannableStringBuilder text_Value=textWithMandatory(txt_city.getText().toString());
+        txt_city.setText(text_Value);
+
+
+        SpannableStringBuilder Strtxt_pincode=textWithMandatory(txt_pincode.getText().toString());
+        txt_pincode.setText(Strtxt_pincode);
+        SpannableStringBuilder Strtxt_state=textWithMandatory(txt_state.getText().toString());
+        txt_state.setText(Strtxt_state);
+
+        txt_phone= (TextView) viewLoc.findViewById(R.id.txt_phone);
+
+        SpannableStringBuilder Strtxt_phone=textWithMandatory(txt_phone.getText().toString());
+        txt_phone.setText(Strtxt_phone);
+
+
+        txt_FirstName= (TextView) findViewById(R.id.txt_FirstName);
+        SpannableStringBuilder Strtxt_FirstName=textWithMandatory(txt_FirstName.getText().toString());
+        txt_FirstName.setText(Strtxt_FirstName);
+
+        txt_LastName= (TextView) findViewById(R.id.txt_LastName);
+        SpannableStringBuilder Strtxt_LastName=textWithMandatory(txt_LastName.getText().toString());
+        txt_LastName.setText(Strtxt_LastName);
+
+
+        txt_Dob= (TextView) findViewById(R.id.txt_Dob);
+        SpannableStringBuilder Strtxt_Dob=textWithMandatory(txt_Dob.getText().toString());
+        txt_Dob.setText(Strtxt_Dob);
+
+
+
+
+    /*    if(!address.equals("NA"))
+        {
+            etLocalArea.setText(address);
+        }
+        if(!pincode.equals("NA"))
+        {
+            etPinCode.setText(pincode);
+        }
+        if(!state.equals("NA"))
+        {
+            etState.setText(state);
+        }
+        boolean isCityFilled = false;
+        if(!city.equals("NA")) {
+
+
+            for (Map.Entry<String, String> entryCity : hmapCity_details.entrySet()) {
+                if (entryCity.getKey().equalsIgnoreCase(city.trim())) {
+                    etCity.setText(city);
+                    isCityFilled = true;
+                    defaultCity = entryCity.getKey();
+                    break;
+                }
+            }
+
+            if(isCityFilled)
+            {
+                if(!TextUtils.isEmpty(defaultCity))
+                {
+                    etCity.setText(defaultCity);
+                    if(defaultCity.equalsIgnoreCase("Others") || defaultCity.equalsIgnoreCase("Other"))
+                    {
+                        etState.setEnabled(true);
+                        etState.setText("Select");
+                    }
+                    else
+                    {
+                        if(hmapCityAgainstState!=null && hmapCityAgainstState.containsKey(defaultCity))
+                        {
+                            etState.setText(hmapCityAgainstState.get(defaultCity));
+                        }
+                        else
+                        {
+                            etState.setText("Select");
+                        }
+                    }
+
+                }
+                else
+                {
+                    etState.setText("Select");
+                }
+            }
+            else
+            {
+                etState.setText("Select");
+            }
+            //
+        }
+
+        else
+        {
+            if(!TextUtils.isEmpty(defaultCity))
+            {
+                etCity.setText(defaultCity);
+                if(defaultCity.equalsIgnoreCase("Others") || defaultCity.equalsIgnoreCase("Other"))
+                {
+                    etState.setEnabled(true);
+                }
+                else
+                {
+                    if(hmapCityAgainstState!=null && hmapCityAgainstState.containsKey(defaultCity))
+                    {
+                        etState.setText(hmapCityAgainstState.get(defaultCity));
+                    }
+                }
+
+            }
+        }*/
+
+        etCity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(cityNames!=null && cityNames.size()>0)
+                {
+                    customAlertStateCityList(1,cityNames,"Select City",previousSlctdCity);
+                }
+                else
+                {
+                    showErrorAlert("There is no city mapped to this phone");
+                }
+
+            }
+        });
+        etState.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                //img_State.setEnabled(false);
+                if(stateNames!=null && stateNames.size()>0)
+                {
+                    customAlertStateCityList(0,stateNames,"Select State",previousSlctdState);
+                }
+                else {
+                    showErrorAlert("There is no State mapped to this phone");
+                }
+            }
+        });
+
     }
 
     public SpannableStringBuilder textWithMandatory(String text_Value)
@@ -695,7 +993,9 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
     {
         helperDb.open();
 
-        Distribtr_list=helperDb.getDistributorDataMstr();
+        //Distribtr_list=helperDb.getDistributorDataMstr();
+
+        Distribtr_list=helperDb.getDistributorDataWithPhoneAndEmial();
 
         helperDb.close();
         for(int i=0;i<Distribtr_list.length;i++)
@@ -705,7 +1005,11 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
             DbrNodeType=value.split(Pattern.quote("^"))[1];
             DbrName=value.split(Pattern.quote("^"))[2];
             flgReMap=Integer.parseInt(value.split(Pattern.quote("^"))[3]);
+            String phoneNo=value.split(Pattern.quote("^"))[4];
+            String emailID=value.split(Pattern.quote("^"))[5];
+            hmapDbrContactInfo.put(DbrName,phoneNo+"^"+emailID);
             hmapDistributorListWithRemapFlg.put(DbrName,""+flgReMap+"^"+DbrNodeId+"^"+DbrNodeType);
+            //hmapDistributorListWithRemapFlg.put(DbrName,""+"1"+"^"+DbrNodeId+"^"+DbrNodeType);
             System.out.println("TEMP FETCHED DATA...."+DbrNodeId+"--"+DbrNodeType+"--"+DbrName+"--"+flgReMap);
             DbrArray.add(DbrName);
         }
@@ -767,7 +1071,11 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
                                 {}
                                 else
                                 {
-                                    locationRetreivingAndSetToMap();
+                                    if(DbrArray.size()>2)
+                                    {
+                                        locationRetreivingAndSetToMap();
+                                    }
+
                                 }
                             }
                         }
@@ -787,6 +1095,26 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
                             if (Integer.parseInt(flgRemap) == 0)
                             {
                                 btn_submit.setVisibility(View.GONE);
+
+                                if(hmapDbrContactInfo.get(text).split(Pattern.quote("^"))[0].equals("0"))
+                                {
+                                    etPhoneNo.setText("");
+                                }
+                                else
+                                {
+                                    etPhoneNo.setText(hmapDbrContactInfo.get(text).split(Pattern.quote("^"))[0]);
+                                }
+                                etPhoneNo.setEnabled(false);
+
+                                if(hmapDbrContactInfo.get(text).split(Pattern.quote("^"))[1].equals("NA"))
+                                {
+                                    etMail.setText("");
+                                }
+                                else
+                                {
+                                    etMail.setText(hmapDbrContactInfo.get(text).split(Pattern.quote("^"))[1]);
+                                }
+                                etMail.setEnabled(false);
 
                                 etLocalArea.setEnabled(false);
                                 etPinCode.setEnabled(false);
@@ -818,6 +1146,26 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
                             {
                                 btn_submit.setVisibility(View.VISIBLE);
 
+                                if(hmapDbrContactInfo.get(text).split(Pattern.quote("^"))[0].equals("0"))
+                                {
+                                    etPhoneNo.setText("");
+                                }
+                                else
+                                {
+                                    etPhoneNo.setText(hmapDbrContactInfo.get(text).split(Pattern.quote("^"))[0]);
+                                }
+                                etPhoneNo.setEnabled(true);
+
+                                if(hmapDbrContactInfo.get(text).split(Pattern.quote("^"))[1].equals("NA"))
+                                {
+                                    etMail.setText("");
+                                }
+                                else
+                                {
+                                    etMail.setText(hmapDbrContactInfo.get(text).split(Pattern.quote("^"))[1]);
+                                }
+                                etMail.setEnabled(true);
+
                                 etLocalArea.setEnabled(true);
                                 etPinCode.setEnabled(true);
                                 etCity.setEnabled(true);
@@ -846,9 +1194,12 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
             googleMap.clear();
             try {
                 googleMap.setMyLocationEnabled(false);
-            } catch (SecurityException e) {
+            }
+            catch(SecurityException e)
+            {
 
             }
+
             MarkerOptions marker = new MarkerOptions().position(new LatLng(Double.parseDouble(LattitudeFromLauncher), Double.parseDouble(LongitudeFromLauncher)));
             Marker locationMarker=googleMap.addMarker(marker);
             locationMarker.showInfoWindow();
@@ -864,8 +1215,10 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
             }
 
             try {
-                googleMap.setMyLocationEnabled(true);
-            } catch (SecurityException e) {
+                googleMap.setMyLocationEnabled(false);
+            }
+            catch(SecurityException e)
+            {
 
             }
             googleMap.moveCamera(CameraUpdateFactory.zoomIn());
@@ -995,12 +1348,12 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
     {
         try {
             PendingResult<Status> pendingResult = LocationServices.FusedLocationApi.requestLocationUpdates( mGoogleApiClient, mLocationRequest, this);
-
         }
         catch(SecurityException e)
         {
 
         }
+
 
     }
 
@@ -1058,6 +1411,7 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
         @Override
         public void onFinish()
         {
+            AllProvidersLocation="";
             isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
             String GpsLat="0";
             String GpsLong="0";
@@ -1285,33 +1639,104 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
                 }
                 String addr="NA";
                 String zipcode="NA";
-                String city="NA";
-                String state="NA";
+                String tempcity="NA";
+                String tempstate="NA";
 
 
                 if(!FullAddress.equals("NA"))
                 {
                     addr = FullAddress.split(Pattern.quote("^"))[0];
                     zipcode = FullAddress.split(Pattern.quote("^"))[1];
-                    city = FullAddress.split(Pattern.quote("^"))[2];
-                    state = FullAddress.split(Pattern.quote("^"))[3];
+                    tempcity = FullAddress.split(Pattern.quote("^"))[2];
+                    tempstate = FullAddress.split(Pattern.quote("^"))[3];
                 }
                 //surbhi
                 if(!addr.equals("NA"))
                 {
                     etLocalArea.setText(addr);
+                    address=addr;
                 }
                 if(!zipcode.equals("NA"))
                 {
                     etPinCode.setText(zipcode);
+                    pincode=zipcode;
                 }
-                if(!city.equals("NA"))
+
+              /*  if(!city.equals("NA"))
                 {
                     etCity.setText(city);
                 }
                 if(!state.equals("NA"))
                 {
                     etState.setText(state);
+                }*/
+                boolean isCityFilled = false;
+                if(!tempcity.equals("NA")) {
+
+                    city=tempcity;
+                    state=tempstate;
+                    for (Map.Entry<String, String> entryCity : hmapCity_details.entrySet()) {
+                        if (entryCity.getKey().equalsIgnoreCase(city.trim())) {
+                            etCity.setText(city);
+                            isCityFilled = true;
+                            defaultCity = entryCity.getKey();
+                            break;
+                        }
+                    }
+
+                    if(isCityFilled)
+                    {
+                        if(!TextUtils.isEmpty(defaultCity))
+                        {
+                            etCity.setText(defaultCity);
+                            if(defaultCity.equalsIgnoreCase("Others") || defaultCity.equalsIgnoreCase("Other"))
+                            {
+                                etState.setEnabled(true);
+                                etState.setText("Select");
+                            }
+                            else
+                            {
+                                if(hmapCityAgainstState!=null && hmapCityAgainstState.containsKey(defaultCity))
+                                {
+                                    etState.setText(hmapCityAgainstState.get(defaultCity));
+                                }
+                                else
+                                {
+                                    etState.setText("Select");
+                                }
+                            }
+
+                        }
+                        else
+                        {
+                            etState.setText("Select");
+                        }
+                    }
+                    else
+                    {
+                        etState.setText("Select");
+                    }
+                    //
+                }
+
+                else
+                {
+                    if(!TextUtils.isEmpty(defaultCity))
+                    {
+                        etCity.setText(defaultCity);
+                        if(defaultCity.equalsIgnoreCase("Others") || defaultCity.equalsIgnoreCase("Other"))
+                        {
+                            etState.setEnabled(true);
+                        }
+                        else
+                        {
+                            if(hmapCityAgainstState!=null && hmapCityAgainstState.containsKey(defaultCity))
+                            {
+                                etState.setText(hmapCityAgainstState.get(defaultCity));
+                            }
+                        }
+
+                    }
                 }
 
                 if(pDialog2STANDBY.isShowing())
@@ -1463,7 +1888,7 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
             }
             String txtFileNamenew="FinalGPSLastLocation.txt";
             File file = new File(jsonTxtFolder,txtFileNamenew);
-            String fpath = Environment.getExternalStorageDirectory()+"/"+CommonInfo.FinalLatLngJsonFile+"/"+txtFileNamenew;
+            String fpath = Environment.getExternalStorageDirectory()+"/"+ CommonInfo.FinalLatLngJsonFile+"/"+txtFileNamenew;
 
             // If file does not exists, then create it
             if (file.exists()) {
@@ -1543,7 +1968,7 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
             }
             String txtFileNamenew="GPSLastLocation.txt";
             File file = new File(jsonTxtFolder,txtFileNamenew);
-            String fpath = Environment.getExternalStorageDirectory()+"/"+CommonInfo.AppLatLngJsonFile+"/"+txtFileNamenew;
+            String fpath = Environment.getExternalStorageDirectory()+"/"+ CommonInfo.AppLatLngJsonFile+"/"+txtFileNamenew;
 
 
             // If file does not exists, then create it
@@ -1610,7 +2035,7 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
             }
             String txtFileNamenew="FinalGPSLastLocation.txt";
             File file = new File(jsonTxtFolder,txtFileNamenew);
-            String fpath = Environment.getExternalStorageDirectory()+"/"+CommonInfo.FinalLatLngJsonFile+"/"+txtFileNamenew;
+            String fpath = Environment.getExternalStorageDirectory()+"/"+ CommonInfo.FinalLatLngJsonFile+"/"+txtFileNamenew;
 
 
             // If file does not exists, then create it
@@ -1648,40 +2073,6 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
         finally{
 
         }
-    }
-
-    public String getAddressOfProviders(String latti, String longi){
-
-        StringBuilder FULLADDRESS2 =new StringBuilder();
-        Geocoder geocoder;
-        List<Address> addresses;
-        geocoder = new Geocoder(DistributorMapActivity.this, Locale.ENGLISH);
-
-
-
-        try {
-            addresses = geocoder.getFromLocation(Double.parseDouble(latti), Double.parseDouble(longi), 1);
-
-            if (addresses == null || addresses.size()  == 0 || addresses.get(0).getAddressLine(0)==null)
-            {
-                FULLADDRESS2=  FULLADDRESS2.append("NA");
-            }
-            else
-            {
-                FULLADDRESS2 =FULLADDRESS2.append(addresses.get(0).getAddressLine(0));
-            }
-
-        } catch (NumberFormatException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-
-
-        return FULLADDRESS2.toString();
-
     }
 
    /* public String getAddressOfProviders(String latti, String longi){
@@ -1739,6 +2130,40 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
         return FULLADDRESS2.toString();
 
     }*/
+
+    public String getAddressOfProviders(String latti, String longi){
+
+        StringBuilder FULLADDRESS2 =new StringBuilder();
+        Geocoder geocoder;
+        List<Address> addresses;
+        geocoder = new Geocoder(DistributorMapActivity.this, Locale.ENGLISH);
+
+
+
+        try {
+            addresses = geocoder.getFromLocation(Double.parseDouble(latti), Double.parseDouble(longi), 1);
+
+            if (addresses == null || addresses.size()  == 0 || addresses.get(0).getAddressLine(0)==null)
+            {
+                FULLADDRESS2=  FULLADDRESS2.append("NA");
+            }
+            else
+            {
+                FULLADDRESS2 =FULLADDRESS2.append(addresses.get(0).getAddressLine(0));
+            }
+
+        } catch (NumberFormatException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+
+        return FULLADDRESS2.toString();
+
+    }
 
     public void checkHighAccuracyLocationMode(Context context) {
         int locationMode = 0;
@@ -1849,9 +2274,8 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
 
                 if(addresses.get(0).getAddressLine(1)!=null){
                     addr=addresses.get(0).getAddressLine(1);
-                    this.address=addr;
+                    address=addr;
                 }
-
 
                 if(addresses.get(0).getLocality()!=null){
                     city=addresses.get(0).getLocality();
@@ -1872,22 +2296,21 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
                         break;
                     }
                 }
-
                 if(addresses.get(0).getAddressLine(0)!=null && addr.equals("NA")){
                     String countryname="NA";
                     if(addresses.get(0).getCountryName()!=null){
                         countryname=addresses.get(0).getCountryName();
                     }
 
-                    addr=  getAddressNewWay(addresses.get(0).getAddressLine(0),city,state,zipcode,countryname);
+                    address=  getAddressNewWay(addresses.get(0).getAddressLine(0),city,state,zipcode,countryname);
                 }
 
-
-                NewStoreFormSO recFragment = (NewStoreFormSO)getFragmentManager().findFragmentByTag("NewStoreFragment");
+                /*NewStoreForm recFragment = (NewStoreForm)getFragmentManager().findFragmentByTag("NewStoreFragment");
                 if(null != recFragment)
                 {
                     recFragment.setFreshAddress();
-                }
+                }*/
+                setFreshAddress();
             }
             else{FULLADDRESS3.append("NA");}
         } catch (IOException e) {
@@ -1895,9 +2318,11 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
             e.printStackTrace();
         }
         finally{
-            return fullAddress=addr+"^"+zipcode+"^"+city+"^"+state;
+            return fullAddress=address+"^"+zipcode+"^"+city+"^"+state;
         }
     }
+
+
 
     public String getAddressNewWay(String ZeroIndexAddress,String city,String State,String pincode,String country){
         String editedAddress=ZeroIndexAddress;
@@ -1979,36 +2404,32 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
             showAlertForEveryOne("Please Select Distributor.");
             return false;
         }
-       /* else if(flgGSTCapture.equals("1") && rb_gstNo.isChecked()== false && rb_gstYes.isChecked()== false && rb_gstPending.isChecked()== false)
+        else if(TextUtils.isEmpty(ed_FirstName.getText().toString()))
         {
-            showAlertForEveryOne("Please Select Gst Compliance.");
+            showAlertForEveryOne("Please fill First Name.");
             return false;
         }
-        else if(rb_gstYes.isChecked()== true && edit_gstYesVal.getText().toString().trim().equals(null))
+        else if(TextUtils.isEmpty(ed_LastName.getText().toString()))
         {
-            showAlertForEveryOne("Please Fill Gst Compliance Value.");
+            showAlertForEveryOne("Please fill Last name.");
             return false;
         }
-        else if(rb_gstYes.isChecked()== true && edit_gstYesVal.getText().toString().trim().equals("NA"))
+        else if(Text_Dob.getText().toString().trim().equals("Select Date")  )
         {
-            showAlertForEveryOne("Please Fill Gst Compliance Value.");
+            showAlertForEveryOne("Please Select DOB ");
+            //Toast.makeText(getApplicationContext(), "Please Select DOB", Toast.LENGTH_SHORT).show();
             return false;
         }
-        else if(rb_gstYes.isChecked()== true && edit_gstYesVal.getText().toString().trim().equals("0"))
+        else if(etPhoneNo.getText().toString().trim().length()<10)
         {
-            showAlertForEveryOne("Please Fill Gst Compliance Value.");
+            showAlertForEveryOne("Please fill proper phone number.");
             return false;
         }
-        else if(rb_gstYes.isChecked()== true && edit_gstYesVal.getText().toString().trim().equals(""))
+        else if(etMail.getText().toString().trim().length()>0 && (!validEmailAddress(etMail.getText().toString().trim())))
         {
-            showAlertForEveryOne("Please Fill Gst Compliance Value.");
+            showAlertForEveryOne("Please fill proper email address.");
             return false;
         }
-        else if(rb_gstYes.isChecked()== true && edit_gstYesVal.getText().toString().trim().length()<15)
-        {
-            showAlertForEveryOne("Gst Compliance Value cannot be less then 15 character.");
-            return false;
-        }*/
         else if(TextUtils.isEmpty(etLocalArea.getText().toString()) ||
                 etLocalArea.getText().toString().trim().equals(null) ||
                 etLocalArea.getText().toString().trim().equals("NA")||
@@ -2036,7 +2457,7 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
             showAlertForEveryOne("Pin Code value cannot be less than 6 digits.");
             return false;
         }
-        else if(TextUtils.isEmpty(etCity.getText().toString()) ||
+       /* else if(TextUtils.isEmpty(etCity.getText().toString()) ||
                 etCity.getText().toString().trim().equals(null) ||
                 etCity.getText().toString().trim().equals("NA")||
                 etCity.getText().toString().trim().equals("0")||
@@ -2053,11 +2474,33 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
         {
             showAlertForEveryOne("Please Fill State Value.");
             return false;
+        }*/
+        else if(!fnValidateStateCity())
+        {
+            return  false;
         }
         else
         {
             return true;
         }
+    }
+
+    public boolean validEmailAddress(String emailID)
+    {
+        Boolean value;
+        //String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        String emailPattern = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+                + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+
+        if (emailID.matches(emailPattern) && emailID.length() > 0)
+        {
+            value=true;
+        }
+        else
+        {
+            value=false;
+        }
+        return value;
     }
 
     public void showAlertForEveryOne(String msg)
@@ -2092,9 +2535,17 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
         String val3 = tokens.nextToken().trim();
         String val4 = tokens.nextToken().trim();
         cxz = tokens.nextToken().trim();
+        String imei=null;
+        try
+        {
+            TelephonyManager tManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+            imei = tManager.getDeviceId();
+        }
+        catch (SecurityException e)
+        {
 
-        TelephonyManager tManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        String imei = tManager.getDeviceId();
+        }
+
         String IMEIid =  imei.substring(9);
 
         cxz = IMEIid +"-"+cxz+"-"+VisitStartTS.replace(" ", "").replace(":", "").trim();
@@ -2221,8 +2672,50 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
         String finalCity=etCity.getText().toString().trim();
         String finalState=etState.getText().toString().trim();
 
+        if((!etCity.getText().toString().trim().equalsIgnoreCase("Other")) && (!etCity.getText().toString().trim().equalsIgnoreCase("Others")) )
+        {
+            finalCity=etCity.getText().toString().trim();
+
+        }
+        else
+        {
+            if(etOtherCity.getVisibility()==View.VISIBLE)
+            {
+                finalCity=etOtherCity.getText().toString().trim();
+
+            }
+
+        }
+
+        String cityID=hmapCity_details.get(etCity.getText().toString().trim());
+        String StateID=hmapState_details.get(etState.getText().toString().trim());
+        String MapAddress=address;
+        String MapPincode=pincode;
+        String MapCity=city;
+        String MapState=state;
+
+        String phoneNo=etPhoneNo.getText().toString();
+        String emailID="NA";
+        if(TextUtils.isEmpty(etMail.getText().toString().trim()) || etMail.getText().toString().equals(null))
+        {
+            emailID="NA";
+        }
+        else
+        {
+            emailID=etMail.getText().toString().trim();
+        }
+
+        String FirstName=ed_FirstName.getText().toString().trim();
+        String LastName=ed_LastName.getText().toString().trim();
+        String DOB=Text_Dob.getText().toString().trim();
+        String DOM="";
+        if(!Text_mrgAnnvrsry.getText().toString().trim().equals("Select Date"))
+        {
+            DOM=Text_mrgAnnvrsry.getText().toString().trim();
+        }
+
         helperDb.open();
-        helperDb.savetblDistributorMappingData(UniqueDistribtrMapId,DbrNodeId,DbrNodeType,flgGSTCapture,flgGSTCompliance,
+       /* helperDb.savetblDistributorMappingData(UniqueDistribtrMapId,DbrNodeId,DbrNodeType,flgGSTCapture,flgGSTCompliance,
                 GSTNumber,finalAddress,finalPinCode,finalCity,finalState,SOLattitudeFromLauncher,SOLongitudeFromLauncher,
                 SOAccuracyFromLauncer,"0",SOProviderFromLauncher,SOAllProvidersLocationFromLauncher,fnAddressFromLauncher,
                 SOGpsLatFromLauncher,SOGpsLongFromLauncher,SOGpsAccuracyFromLauncher,SOGpsAddressFromLauncher,
@@ -2230,8 +2723,19 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
                 SOFusedLatFromLauncher,SOFusedLongFromLauncher,SOFusedAccuracyFromLauncher,SOFusedAddressFromLauncher,
                 SOFusedLocationLatitudeWithFirstAttemptFromLauncher,SOFusedLocationLongitudeWithFirstAttemptFromLauncher,
                 SOFusedLocationAccuracyWithFirstAttemptFromLauncher,3,flgLocationServicesOnOff,flgGPSOnOff,flgNetworkOnOff,flgFusedOnOff,flgInternetOnOffWhileLocationTracking,flgRestart);
+*/
+        helperDb.savetblDistributorMappingData(UniqueDistribtrMapId,DbrNodeId,DbrNodeType,flgGSTCapture,flgGSTCompliance,
+                GSTNumber,finalAddress,finalPinCode,finalCity,finalState,SOLattitudeFromLauncher,SOLongitudeFromLauncher,
+                SOAccuracyFromLauncer,"0",SOProviderFromLauncher,SOAllProvidersLocationFromLauncher,fnAddressFromLauncher,
+                SOGpsLatFromLauncher,SOGpsLongFromLauncher,SOGpsAccuracyFromLauncher,SOGpsAddressFromLauncher,
+                SONetworkLatFromLauncher,SONetworkLongFromLauncher,SONetworkAccuracyFromLauncher,SONetwAddressFromLauncher,
+                SOFusedLatFromLauncher,SOFusedLongFromLauncher,SOFusedAccuracyFromLauncher,SOFusedAddressFromLauncher,
+                SOFusedLocationLatitudeWithFirstAttemptFromLauncher,SOFusedLocationLongitudeWithFirstAttemptFromLauncher,
+                SOFusedLocationAccuracyWithFirstAttemptFromLauncher,3,flgLocationServicesOnOff,flgGPSOnOff,
+                flgNetworkOnOff,flgFusedOnOff,flgInternetOnOffWhileLocationTracking,flgRestart, cityID, StateID,
+                MapAddress, MapCity, MapPincode, MapState,phoneNo,emailID,FirstName,LastName,DOB,DOM);
 
-        System.out.println("TEMP SAVE DATA...."+UniqueDistribtrMapId+"--"+DbrNodeId+"--"+DbrNodeType);
+        //System.out.println("TEMP SAVE DATA...."+UniqueDistribtrMapId+"--"+DbrNodeId+"--"+DbrNodeType);
 
         helperDb.close();
         try
@@ -2290,7 +2794,7 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
             SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss",Locale.ENGLISH);
             String StampEndsTime = df.format(dateobj);
             SimpleDateFormat df1 = new SimpleDateFormat("dd.MMM.yyyy.HH.mm.ss",Locale.ENGLISH);
-            newfullFileName=CommonInfo.imei+"."+ df1.format(dateobj);
+            newfullFileName= CommonInfo.imei+"."+ df1.format(dateobj);
             LinkedHashMap<String,String> hmapstlist=new LinkedHashMap<String, String>();
 
 
@@ -2350,6 +2854,7 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
                     syncIntent.putExtra("xmlPathForSync", Environment.getExternalStorageDirectory() + "/" + CommonInfo.OrderXMLFolder + "/" + newfullFileName + ".xml");
                     syncIntent.putExtra("OrigZipFileName", newfullFileName);
                     syncIntent.putExtra("whereTo", "Regular");
+                    syncIntent.putExtra("whereTo", "Regular");
                     startActivity(syncIntent);
                     finish();
                 }
@@ -2371,809 +2876,6 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
         }
     }
 
-    protected void open_pop_up()
-    {
-        dialog = new Dialog(DistributorMapActivity.this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.selection_header_custom);
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        dialog.getWindow().getAttributes().windowAnimations = R.style.side_dialog_animation;
-        WindowManager.LayoutParams parms = dialog.getWindow().getAttributes();
-        parms.gravity = Gravity.TOP | Gravity.LEFT;
-        parms.height=parms.MATCH_PARENT;
-        parms.dimAmount = (float) 0.5;
-
-        final Button btnDSRTrack = (Button) dialog.findViewById(R.id.btnDSRTrack);
-        btnDSRTrack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view)
-            {
-                /*Intent intent=new Intent(DistributorMapActivity.this,WebViewDSRTrackerActivity.class);
-                startActivity(intent);*/
-                openDSRTrackerAlert();
-            }
-        });
-
-        final Button btnExecution = (Button) dialog.findViewById(R.id.btnExecution);
-        btnExecution.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                GetInvoiceForDay task = new GetInvoiceForDay(DistributorMapActivity.this);
-                task.execute();
-            }
-        });
-
-
-        final   Button butn_Change_dsr = (Button) dialog.findViewById(R.id.butn_Change_dsr);
-        butn_Change_dsr.setVisibility(View.GONE);
-
-        final   Button btnDistributorMap = (Button) dialog.findViewById(R.id.btnDistributorMap);
-        btnDistributorMap.setVisibility(View.GONE);
-
-
-        final   Button butHome = (Button) dialog.findViewById(R.id.butHome);
-        butHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view)
-            {
-                Intent intent=new Intent(DistributorMapActivity.this,AllButtonActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-        final   Button btnDistributorStock = (Button) dialog.findViewById(R.id.btnDistributorStock);
-        btnDistributorStock.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view)
-            {
-                int CstmrNodeId=0,CstomrNodeType= 0;
-                //changes
-                if(imei==null)
-                {
-                    imei=CommonInfo.imei;
-                }
-                if(fDate==null)
-                {
-                    Date date1 = new Date();
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
-                    fDate = sdf.format(date1).toString().trim();
-                }
-
-                Intent i=new Intent(DistributorMapActivity.this,DistributorEntryActivity.class);
-                i.putExtra("imei", imei);
-                i.putExtra("CstmrNodeId", CstmrNodeId);
-                i.putExtra("CstomrNodeType", CstomrNodeType);
-                i.putExtra("fDate", fDate);
-                startActivity(i);
-                finish();
-            }
-        });
-
-
-        final   Button butMarketVisit = (Button) dialog.findViewById(R.id.butMarketVisit);
-        butMarketVisit.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-               /* Intent intent = new Intent(DetailReportSummaryActivityForAll.this, AllButtonActivity.class);
-                startActivity(intent);
-                finish();*/
-                int checkDataNotSync = dbengine.CheckUserDoneGetStoreOrNot();
-                Date date1 = new Date();
-                SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
-                fDate = sdf.format(date1).toString().trim();
-                if (checkDataNotSync == 1)
-                {
-                    dbengine.open();
-                    String rID = dbengine.GetActiveRouteID();
-                    dbengine.close();
-
-                    // Date date=new Date();
-                    sdf = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
-                    String fDateNew = sdf.format(date1).toString();
-                    //fDate = passDate.trim().toString();
-
-
-                    // In Splash Screen SP, we are sending this Format "dd-MMM-yyyy"
-                    // But InLauncher Screen SP, we are sending this Format "dd-MM-yyyy"
-
-
-                    Intent storeIntent = new Intent(DistributorMapActivity.this, StoreSelection.class);
-                    storeIntent.putExtra("imei", imei);
-                    storeIntent.putExtra("userDate", fDate);
-                    storeIntent.putExtra("pickerDate", fDateNew);
-                    storeIntent.putExtra("rID", rID);
-                    startActivity(storeIntent);
-                    finish();
-
-                }
-                else
-                {
-                   /* Intent i=new Intent(DetailReportSummaryActivityForAll.this,AllButtonActivity.class);
-                    startActivity(i);
-                    finish();*/
-
-                    openMarketVisitAlert();
-                }
-            }
-        });
-
-
-
-
-        final   Button butn_store_validation = (Button) dialog.findViewById(R.id.butn_store_validation);
-        butn_store_validation.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                Intent intent = new Intent(DistributorMapActivity.this, StorelistActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-
-
-
-
-        final Button btnVersion = (Button) dialog.findViewById(R.id.btnVersion);
-        btnVersion.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-
-
-
-                btnVersion.setBackgroundColor(Color.GREEN);
-                dialog.dismiss();
-            }
-        });
-
-        dbengine.open();
-        String ApplicationVersion=dbengine.AppVersionID;
-        dbengine.close();
-        btnVersion.setText("Version No-V"+ApplicationVersion);
-
-        // Version No-V12
-
-        final Button but_SalesSummray = (Button) dialog.findViewById(R.id.btnSalesSummary);
-        but_SalesSummray.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-
-
-                String rID="0";
-                but_SalesSummray.setBackgroundColor(Color.GREEN);
-                dialog.dismiss();
-                // Intent intent = new Intent(StoreSelection.this, My_Summary.class);
-                //  Intent intent = new Intent(StoreSelection.this, DetailReport_Activity.class);
-                /*Intent intent = new Intent(StorelistActivity.this, DetailReportSummaryActivityForAll.class);
-                intent.putExtra("imei", imei);
-                intent.putExtra("userDate", CommonInfo.userDate);
-                intent.putExtra("pickerDate", CommonInfo.pickerDate);
-                intent.putExtra("rID", rID);
-                intent.putExtra("back", "0");
-                startActivity(intent);
-                finish();*/
-                openReportAlert();
-
-            }
-        });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.show();
-    }
-
-    void openMarketVisitAlert()
-    {
-        final android.support.v7.app.AlertDialog.Builder alert=new android.support.v7.app.AlertDialog.Builder(DistributorMapActivity.this);
-        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.market_visit_alert, null);
-        alert.setView(view);
-
-        alert.setCancelable(false);
-
-        final RadioButton rb_myVisit= (RadioButton) view.findViewById(R.id.rb_myVisit);
-        final RadioButton rb_dsrVisit= (RadioButton) view.findViewById(R.id.rb_dsrVisit);
-        final RadioButton rb_jointWorking= (RadioButton) view.findViewById(R.id.rb_jointWorking);
-        final Spinner spinner_dsrVisit= (Spinner) view.findViewById(R.id.spinner_dsrVisit);
-        final Spinner spinner_jointWorking= (Spinner) view.findViewById(R.id.spinner_jointWorking);
-        Button btn_proceed= (Button) view.findViewById(R.id.btn_proceed);
-        Button btn_cancel= (Button) view.findViewById(R.id.btn_cancel);
-
-        final android.support.v7.app.AlertDialog dialog=alert.create();
-        dialog.show();
-
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        btn_proceed.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-                dialog.dismiss();
-                if(rb_myVisit.isChecked())
-                {
-                    /*String SONodeIdAndNodeType= dbengine.fnGetPersonNodeIDAndPersonNodeTypeForSO();
-
-                    CommonInfo.PersonNodeID=Integer.parseInt(SONodeIdAndNodeType.split(Pattern.quote("^"))[0]);
-                    CommonInfo.PersonNodeType=Integer.parseInt(SONodeIdAndNodeType.split(Pattern.quote("^"))[1]);*/
-
-
-                    String SONodeIdAndNodeType= dbengine.fnGetPersonNodeIDAndPersonNodeTypeForSO();
-
-                    int tempSalesmanNodeId=Integer.parseInt(SONodeIdAndNodeType.split(Pattern.quote("^"))[0]);
-                    int tempSalesmanNodeType=Integer.parseInt(SONodeIdAndNodeType.split(Pattern.quote("^"))[1]);
-                    shardPrefForSalesman(tempSalesmanNodeId,tempSalesmanNodeType);
-                    flgDataScopeSharedPref(1);
-
-                    shardPrefForCoverageArea(0,0);
-                    flgDSRSOSharedPref(1);
-                    Intent i=new Intent(DistributorMapActivity.this,LauncherActivity.class);
-                    startActivity(i);
-                    finish();
-                }
-                else if(rb_dsrVisit.isChecked())
-                {
-                    if(!SelectedDSRValue.equals("") && !SelectedDSRValue.equals("Select DSM") && !SelectedDSRValue.equals("No DSM") )
-                    {
-
-                        String DSRNodeIdAndNodeType= dbengine.fnGetDSRNodeIdAndNodeType(SelectedDSRValue);
-                        int tempCoverageAreaNodeID=Integer.parseInt(DSRNodeIdAndNodeType.split(Pattern.quote("^"))[0]);
-                        int tempCoverageAreaNodeType=Integer.parseInt(DSRNodeIdAndNodeType.split(Pattern.quote("^"))[1]);
-                        shardPrefForCoverageArea(tempCoverageAreaNodeID,tempCoverageAreaNodeType);
-                        flgDSRSOSharedPref(2);
-
-
-                        String DSRPersonNodeIdAndNodeType= dbengine.fnGetDSRPersonNodeIdAndNodeType(SelectedDSRValue);
-                        int tempSalesmanNodeId=Integer.parseInt(DSRPersonNodeIdAndNodeType.split(Pattern.quote("^"))[0]);
-                        int tempSalesmanNodeType=Integer.parseInt(DSRPersonNodeIdAndNodeType.split(Pattern.quote("^"))[1]);
-                        shardPrefForSalesman(tempSalesmanNodeId,tempSalesmanNodeType);
-                        flgDataScopeSharedPref(2);
-                        Intent i = new Intent(DistributorMapActivity.this, LauncherActivity.class);
-                        startActivity(i);
-                        finish();
-                    }
-                    else
-                    {
-                        showAlertForEveryOne("Please select DSM to Proceeds.");
-                    }
-                }
-                else if(rb_jointWorking.isChecked())
-                {
-                    if(!SelectedDSRValue.equals("") && !SelectedDSRValue.equals("Select DSM") && !SelectedDSRValue.equals("No DSM") )
-                    {
-                        // Find GPS
-                       /* String DSRNodeIdAndNodeType= dbengine.fnGetDSRNodeIdAndNodeType(SelectedDSRValue);
-                        CommonInfo.CoverageAreaNodeID=Integer.parseInt(DSRNodeIdAndNodeType.split(Pattern.quote("^"))[0]);
-                        CommonInfo.CoverageAreaNodeType=Integer.parseInt(DSRNodeIdAndNodeType.split(Pattern.quote("^"))[1]);
-                        CommonInfo.FlgDSRSO=2;
-
-
-                        String DSRPersonNodeIdAndNodeType= dbengine.fnGetDSRPersonNodeIdAndNodeType(SelectedDSRValue);
-                        CommonInfo.SalesmanNodeId=Integer.parseInt(DSRPersonNodeIdAndNodeType.split(Pattern.quote("^"))[0]);
-                        CommonInfo.SalesmanNodeType=Integer.parseInt(DSRPersonNodeIdAndNodeType.split(Pattern.quote("^"))[1]);
-                        CommonInfo.flgDataScope=2;
-                        Intent i = new Intent(AllButtonActivity.this, LauncherActivity.class);
-                        startActivity(i);
-                        finish();*/
-                    }
-                    else
-                    {
-                        showAlertForEveryOne("Please select DSM to Proceeds.");
-                    }
-                }
-                else
-                {
-                    showAlertForEveryOne("Please select atleast one option to Proceeds.");
-                }
-            }
-        });
-
-        rb_myVisit.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if(rb_myVisit.isChecked())
-                {
-                    rb_dsrVisit.setChecked(false);
-                    rb_jointWorking.setChecked(false);
-                    spinner_dsrVisit.setVisibility(View.GONE);
-                    spinner_jointWorking.setVisibility(View.GONE);
-                }
-            }
-        });
-
-        rb_dsrVisit.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if(rb_dsrVisit.isChecked())
-                {
-                    rb_myVisit.setChecked(false);
-                    rb_jointWorking.setChecked(false);
-                    spinner_jointWorking.setVisibility(View.GONE);
-
-                    ArrayAdapter adapterCategory=new ArrayAdapter(DistributorMapActivity.this, android.R.layout.simple_spinner_item,drsNames);
-                    adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spinner_dsrVisit.setAdapter(adapterCategory);
-                    spinner_dsrVisit.setVisibility(View.VISIBLE);
-
-                    spinner_dsrVisit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-                    {
-
-                        @Override
-                        public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3)
-                        {
-                            // TODO Auto-generated method stub
-                            SelectedDSRValue = spinner_dsrVisit.getSelectedItem().toString();
-
-                        }
-
-                        @Override
-                        public void onNothingSelected(AdapterView<?> arg0)
-                        {
-                            // TODO Auto-generated method stub
-
-                        }
-                    });
-
-                }
-            }
-        });
-
-        rb_jointWorking.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if(rb_jointWorking.isChecked())
-                {
-                    rb_myVisit.setChecked(false);
-                    rb_dsrVisit.setChecked(false);
-                    spinner_dsrVisit.setVisibility(View.GONE);
-
-                    ArrayAdapter adapterCategory=new ArrayAdapter(DistributorMapActivity.this, android.R.layout.simple_spinner_item,drsNames);
-                    adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spinner_jointWorking.setAdapter(adapterCategory);
-                    spinner_jointWorking.setVisibility(View.VISIBLE);
-
-                    spinner_jointWorking.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-                    {
-
-                        @Override
-                        public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3)
-                        {
-                            // TODO Auto-generated method stub
-                            SelectedDSRValue = spinner_jointWorking.getSelectedItem().toString();
-
-                        }
-
-                        @Override
-                        public void onNothingSelected(AdapterView<?> arg0)
-                        {
-                            // TODO Auto-generated method stub
-
-                        }
-                    });
-
-                }
-            }
-        });
-
-        dialog.show();
-    }
-
-    void openReportAlert()
-    {
-        final android.support.v7.app.AlertDialog.Builder alert=new android.support.v7.app.AlertDialog.Builder(DistributorMapActivity.this);
-        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.report_visit_alert, null);
-        alert.setView(view);
-
-        alert.setCancelable(false);
-
-        final RadioButton rb_myReport= (RadioButton) view.findViewById(R.id.rb_myReport);
-        final RadioButton rb_dsrReport= (RadioButton) view.findViewById(R.id.rb_dsrReport);
-        final RadioButton rb_WholeReport= (RadioButton) view.findViewById(R.id.rb_WholeReport);
-        final Spinner spinner_dsrVisit= (Spinner) view.findViewById(R.id.spinner_dsrVisit);
-
-        final RadioButton rb_distrbtrScope= (RadioButton) view.findViewById(R.id.rb_distrbtrScope);
-        final Spinner spinner_distrbtrScope= (Spinner) view.findViewById(R.id.spinner_distrbtrScope);
-
-        Button btn_proceed= (Button) view.findViewById(R.id.btn_proceed);
-        Button btn_cancel= (Button) view.findViewById(R.id.btn_cancel);
-
-        final android.support.v7.app.AlertDialog dialog=alert.create();
-        dialog.show();
-
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        btn_proceed.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-                dialog.dismiss();
-                if(rb_myReport.isChecked())
-                {
-                    String SONodeIdAndNodeType= dbengine.fnGetPersonNodeIDAndPersonNodeTypeForSO();
-
-                    int tempSalesmanNodeId=Integer.parseInt(SONodeIdAndNodeType.split(Pattern.quote("^"))[0]);
-                    int tempSalesmanNodeType=Integer.parseInt(SONodeIdAndNodeType.split(Pattern.quote("^"))[1]);
-                    shardPrefForSalesman(tempSalesmanNodeId,tempSalesmanNodeType);
-
-                    flgDataScopeSharedPref(1);
-                   /* CommonInfo.SalesmanNodeId=0;
-                    CommonInfo.SalesmanNodeType=0;
-                    CommonInfo.flgDataScope=1;*/
-                    Intent i=new Intent(DistributorMapActivity.this,DetailReportSummaryActivityForAll.class);
-                    startActivity(i);
-                    finish();
-                }
-                else if(rb_WholeReport.isChecked())
-                {
-                    /*String SONodeIdAndNodeType= dbengine.fnGetPersonNodeIDAndPersonNodeTypeForSO();
-
-                    CommonInfo.PersonNodeID=Integer.parseInt(SONodeIdAndNodeType.split(Pattern.quote("^"))[0]);
-                    CommonInfo.PersonNodeType=Integer.parseInt(SONodeIdAndNodeType.split(Pattern.quote("^"))[1]);*/
-                    shardPrefForSalesman(0,0);
-                    flgDataScopeSharedPref(3);
-                    Intent i=new Intent(DistributorMapActivity.this,DetailReportSummaryActivityForAll.class);
-                    startActivity(i);
-                    finish();
-                }
-                else if(rb_dsrReport.isChecked())
-                {
-                    if(!SelectedDSRValue.equals("") && !SelectedDSRValue.equals("Select DSM") && !SelectedDSRValue.equals("No DSM") )
-                    {
-
-                        String DSRNodeIdAndNodeType= dbengine.fnGetDSRPersonNodeIdAndNodeType(SelectedDSRValue);
-                        int tempSalesmanNodeId=Integer.parseInt(DSRNodeIdAndNodeType.split(Pattern.quote("^"))[0]);
-                        int tempSalesmanNodeType=Integer.parseInt(DSRNodeIdAndNodeType.split(Pattern.quote("^"))[1]);
-                        shardPrefForSalesman(tempSalesmanNodeId,tempSalesmanNodeType);
-                        flgDataScopeSharedPref(2);
-                        Intent i = new Intent(DistributorMapActivity.this, DetailReportSummaryActivityForAll.class);
-                        startActivity(i);
-                        finish();
-                    }
-                    else
-                    {
-                        showAlertForEveryOne("Please select DSM to Proceeds.");
-                    }
-                }
-                else if(rb_distrbtrScope.isChecked())
-                {
-                    if(!SelectedDistrbtrName.equals("") && !SelectedDistrbtrName.equals("Select Distributor") && !SelectedDistrbtrName.equals("No Distributor") )
-                    {
-                        String DbrNodeIdAndNodeType= hmapDistrbtrList.get(SelectedDistrbtrName);
-                        int tempSalesmanNodeId=Integer.parseInt(DbrNodeIdAndNodeType.split(Pattern.quote("^"))[0]);
-                        int tempSalesmanNodeType=Integer.parseInt(DbrNodeIdAndNodeType.split(Pattern.quote("^"))[1]);
-
-                        shardPrefForSalesman(tempSalesmanNodeId,tempSalesmanNodeType);
-
-                        flgDataScopeSharedPref(4);
-                        Intent i = new Intent(DistributorMapActivity.this, DetailReportSummaryActivityForAll.class);
-                        startActivity(i);
-                        finish();
-                    }
-                    else
-                    {
-                        showAlertForEveryOne("Please select Distributor to Proceed.");
-                    }
-                }
-                else
-                {
-                    showAlertForEveryOne("Please select atleast one option to Proceeds.");
-                }
-            }
-        });
-
-        rb_myReport.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if(rb_myReport.isChecked())
-                {
-                    rb_dsrReport.setChecked(false);
-                    rb_WholeReport.setChecked(false);
-                    spinner_dsrVisit.setVisibility(View.GONE);
-                    rb_distrbtrScope.setChecked(false);
-                    spinner_distrbtrScope.setVisibility(View.GONE);
-                }
-            }
-        });
-        rb_WholeReport.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if(rb_WholeReport.isChecked())
-                {
-                    rb_dsrReport.setChecked(false);
-                    rb_myReport.setChecked(false);
-                    spinner_dsrVisit.setVisibility(View.GONE);
-                    rb_distrbtrScope.setChecked(false);
-                    spinner_distrbtrScope.setVisibility(View.GONE);
-                }
-            }
-        });
-
-        rb_dsrReport.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if(rb_dsrReport.isChecked())
-                {
-                    rb_myReport.setChecked(false);
-                    rb_WholeReport.setChecked(false);
-                    rb_distrbtrScope.setChecked(false);
-                    spinner_distrbtrScope.setVisibility(View.GONE);
-
-                    ArrayAdapter adapterCategory=new ArrayAdapter(DistributorMapActivity.this, android.R.layout.simple_spinner_item,drsNames);
-                    adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spinner_dsrVisit.setAdapter(adapterCategory);
-                    spinner_dsrVisit.setVisibility(View.VISIBLE);
-
-                    spinner_dsrVisit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-                    {
-
-                        @Override
-                        public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3)
-                        {
-                            // TODO Auto-generated method stub
-                            SelectedDSRValue = spinner_dsrVisit.getSelectedItem().toString();
-                            /*ReasonText=spinnerReasonSelected;
-                            int check=dbengine.fetchFlgToShowTextBox(spinnerReasonSelected);
-                            ReasonId=dbengine.fetchReasonIdBasedOnReasonDescr(spinnerReasonSelected);
-                            if(check==0)
-                            {
-                                et_Reason.setVisibility(View.INVISIBLE);
-                            }
-                            else
-                            {
-                                et_Reason.setVisibility(View.VISIBLE);
-                            }*/
-
-
-                            //ReasonId,ReasonText
-                        }
-
-                        @Override
-                        public void onNothingSelected(AdapterView<?> arg0)
-                        {
-                            // TODO Auto-generated method stub
-
-                        }
-                    });
-
-                }
-            }
-        });
-
-        rb_distrbtrScope.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if(rb_distrbtrScope.isChecked())
-                {
-                    rb_myReport.setChecked(false);
-                    rb_WholeReport.setChecked(false);
-                    rb_dsrReport.setChecked(false);
-
-                    ArrayAdapter adapterCategory=new ArrayAdapter(DistributorMapActivity.this, android.R.layout.simple_spinner_item,DbrArrayAlert);
-                    adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spinner_distrbtrScope.setAdapter(adapterCategory);
-                    spinner_distrbtrScope.setVisibility(View.VISIBLE);
-
-                    spinner_distrbtrScope.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-                    {
-                        @Override
-                        public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3)
-                        {
-                            SelectedDistrbtrName = spinner_distrbtrScope.getSelectedItem().toString();
-                        }
-
-                        @Override
-                        public void onNothingSelected(AdapterView<?> arg0)
-                        {
-                        }
-                    });
-                }
-            }
-        });
-
-        dialog.show();
-    }
-
-    private class GetInvoiceForDay extends AsyncTask<Void, Void, Void>
-    {
-        ServiceWorker newservice = new ServiceWorker();
-        String rID="0";
-        int chkFlgForErrorToCloseApp=0;
-
-        ProgressDialog pDialogGetInvoiceForDay;
-
-        public GetInvoiceForDay(DistributorMapActivity activity)
-        {
-            pDialogGetInvoiceForDay = new ProgressDialog(activity);
-        }
-
-
-        @Override
-        protected void onPreExecute()
-        {
-            super.onPreExecute();
-
-
-            pDialogGetInvoiceForDay.setTitle(getText(R.string.PleaseWaitMsg));
-            pDialogGetInvoiceForDay.setMessage(getText(R.string.RetrivingDataMsg));
-            pDialogGetInvoiceForDay.setIndeterminate(false);
-            pDialogGetInvoiceForDay.setCancelable(false);
-            pDialogGetInvoiceForDay.setCanceledOnTouchOutside(false);
-            pDialogGetInvoiceForDay.show();
-
-
-        }
-
-        @Override
-        protected Void doInBackground(Void... params)
-        {
-
-            try {
-
-                HashMap<String,String> hmapInvoiceOrderIDandStatus=new HashMap<String, String>();
-                hmapInvoiceOrderIDandStatus=dbengine.fetchHmapInvoiceOrderIDandStatus();
-
-                for(int mm = 1; mm < 5  ; mm++)
-                {
-                    if(mm==1)
-                    {
-                        newservice = newservice.callInvoiceButtonStoreMstr(getApplicationContext(), fDate, imei, rID,hmapInvoiceOrderIDandStatus);
-
-                        if(!newservice.director.toString().trim().equals("1"))
-                        {
-                            if(chkFlgForErrorToCloseApp==0)
-                            {
-                                chkFlgForErrorToCloseApp=1;
-                            }
-
-                        }
-
-                    }
-                    if(mm==2)
-                    {
-                        newservice = newservice.callInvoiceButtonProductMstr(getApplicationContext(), fDate, imei, rID);
-
-                        if(!newservice.director.toString().trim().equals("1"))
-                        {
-                            if(chkFlgForErrorToCloseApp==0)
-                            {
-                                chkFlgForErrorToCloseApp=1;
-                            }
-
-                        }
-
-                    }
-                    if(mm==3)
-                    {
-                        newservice = newservice.callInvoiceButtonStoreProductwiseOrder(getApplicationContext(), fDate, imei, rID,hmapInvoiceOrderIDandStatus);
-                    }
-                    if(mm==4)
-                    {
-                        dbengine.open();
-                        int check1=dbengine.counttblCatagoryMstr();
-                        dbengine.close();
-                        if(check1==0)
-                        {
-                            newservice = newservice.getCategory(getApplicationContext(), imei);
-                        }
-                    }
-
-
-
-                }
-
-
-            } catch (Exception e)
-            {
-                Log.i("SvcMgr", "Service Execution Failed!", e);
-            }
-
-            finally
-            {
-                Log.i("SvcMgr", "Service Execution Completed...");
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onCancelled()
-        {
-            Log.i("SvcMgr", "Service Execution Cancelled");
-        }
-
-        @Override
-        protected void onPostExecute(Void result)
-        {
-            super.onPostExecute(result);
-
-
-            if(pDialogGetInvoiceForDay.isShowing())
-            {
-                pDialogGetInvoiceForDay.dismiss();
-            }
-
-            Date currDate = new Date();
-            SimpleDateFormat currDateFormat = new SimpleDateFormat("dd-MMM-yyyy",Locale.ENGLISH);
-
-            String currSysDate = currDateFormat.format(currDate).toString();
-
-            Intent storeIntent = new Intent(DistributorMapActivity.this, InvoiceStoreSelection.class);
-            storeIntent.putExtra("imei", imei);
-            storeIntent.putExtra("userDate", currSysDate);
-            storeIntent.putExtra("pickerDate", fDate);
-
-
-            if(chkFlgForErrorToCloseApp==0)
-            {
-                chkFlgForErrorToCloseApp=0;
-                startActivity(storeIntent);
-                finish();
-            }
-            else
-            {
-                android.support.v7.app.AlertDialog.Builder alertDialogNoConn = new android.support.v7.app.AlertDialog.Builder(DistributorMapActivity.this);
-                alertDialogNoConn.setTitle("Information");
-                alertDialogNoConn.setMessage("There is no Invoice Pending");
-                alertDialogNoConn.setCancelable(false);
-                alertDialogNoConn.setNeutralButton(R.string.AlertDialogOkButton,
-                        new DialogInterface.OnClickListener()
-                        {
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-                                dialog.dismiss();
-                                // but_Invoice.setEnabled(true);
-                                chkFlgForErrorToCloseApp=0;
-                            }
-                        });
-                alertDialogNoConn.setIcon(R.drawable.info_ico);
-                android.support.v7.app.AlertDialog alert = alertDialogNoConn.create();
-                alert.show();
-                return;
-
-            }
-        }
-    }
     public void shardPrefForCoverageArea(int coverageAreaNodeID,int coverageAreaNodeType) {
 
 
@@ -3305,4 +3007,315 @@ public class DistributorMapActivity extends BaseActivity implements LocationList
         dialog.show();
     }
 
+    private void getStateDetails()
+    {
+
+        hmapState_details=helperDb.fngetDistinctState();
+
+        int index=0;
+        if(hmapState_details!=null && hmapState_details.size()>0)
+        {
+            stateNames=new ArrayList<String>();
+            for(Map.Entry<String, String> entry:hmapState_details.entrySet())
+            {
+                stateNames.add(entry.getKey().toString());
+            }
+
+        }
+
+
+    }
+
+    private void getCityDetails()
+    {
+
+        hmapCity_details=helperDb.fngetCityList();
+
+        int index=0;
+        if(hmapCity_details!=null && hmapCity_details.size()>0)
+        {
+            cityNames=new ArrayList<String>();
+            for(Map.Entry<String, String> entry:hmapCity_details.entrySet())
+            {
+                cityNames.add(entry.getKey().toString());
+            }
+        }
+
+
+    }
+
+
+    public void customAlertStateCityList(int flgCityState,final List<String> listOption, String sectionHeader,String StateCityName)
+    {
+
+        final Dialog listDialog = new Dialog(DistributorMapActivity.this);
+        listDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        listDialog.setContentView(R.layout.search_list);
+        listDialog.setCanceledOnTouchOutside(false);
+        listDialog.setCancelable(false);
+        WindowManager.LayoutParams parms = listDialog.getWindow().getAttributes();
+        parms.gravity = Gravity.CENTER;
+        //there are a lot of settings, for dialog, check them all out!
+        parms.dimAmount = (float) 0.5;
+        isSelectedSearch=false;
+
+
+
+        TextView txt_section=(TextView) listDialog.findViewById(R.id.txt_section);
+        txt_section.setText(sectionHeader);
+        TextView txtVwCncl=(TextView) listDialog.findViewById(R.id.txtVwCncl);
+        //    TextView txtVwSubmit=(TextView) listDialog.findViewById(R.id.txtVwSubmit);
+
+        final EditText ed_search=(AutoCompleteTextView) listDialog.findViewById(R.id.ed_search);
+        ed_search.setVisibility(View.GONE);
+        final ListView list_store=(ListView) listDialog.findViewById(R.id.list_store);
+        final CardArrayAdapterCityState cardArrayAdapter = new CardArrayAdapterCityState(DistributorMapActivity.this,flgCityState,listOption,listDialog,StateCityName);
+
+
+
+
+
+
+
+        list_store.setAdapter(cardArrayAdapter);
+        //	editText.setBackgroundResource(R.drawable.et_boundary);
+
+
+        boolean isSingleLine=true;
+
+        txtVwCncl.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                listDialog.dismiss();
+                isSelectedSearch=false;
+
+            }
+        });
+
+
+
+
+        //now that the dialog is set up, it's time to show it
+        listDialog.show();
+
+    }
+
+    @Override
+    public void selectedCityState(String selectedCategory, Dialog dialog, int flgCityState)
+    {
+        dialog.dismiss();
+        if(flgCityState==1)
+        {
+            etCity.setText(selectedCategory);
+            helperDb.updateAllDefaultCity(hmapCity_details.get(selectedCategory));
+            previousSlctdCity=selectedCategory;
+            if(selectedCategory.equalsIgnoreCase("Others") || selectedCategory.equalsIgnoreCase("Other"))
+            {
+                if(etOtherCity.getVisibility()==View.GONE)
+                {
+                    etOtherCity.setVisibility(View.VISIBLE);
+
+                }
+                etState.setText("Select");
+                etState.setEnabled(true);
+            }
+            else
+            {
+                if(etOtherCity.getVisibility()==View.VISIBLE)
+                {
+                    etOtherCity.setVisibility(View.GONE);
+                }
+
+                if(hmapCityAgainstState!=null && hmapCityAgainstState.containsKey(selectedCategory))
+                {
+                    etState.setText(hmapCityAgainstState.get(selectedCategory));
+                }
+                etState.setEnabled(false);
+            }
+        }
+        else
+        {
+            previousSlctdCity=selectedCategory;
+            etState.setText(selectedCategory);
+        }
+
+    }
+
+    public boolean fnValidateStateCity()
+    {
+        boolean boolValidateStateCity=true;
+        if((!(etCity.getText().toString()).equalsIgnoreCase("Select")) && (!(etState.getText().toString()).equalsIgnoreCase("Select")) && (!(etCity.getText().toString()).equalsIgnoreCase("Others"))&& (!(etCity.getText().toString()).equalsIgnoreCase("Other")))
+        {
+            boolValidateStateCity=true;
+        }
+        else if(((etCity.getText().toString()).equalsIgnoreCase("Others")) || ((etCity.getText().toString()).equalsIgnoreCase("Other")))
+        {
+            if(TextUtils.isEmpty(etOtherCity.getText().toString().trim()))
+            {
+                boolValidateStateCity= false;
+                showErrorAlert("Please Fill Other City Name");
+            }
+            else
+            {
+
+                if((etCity.getText().toString()).equalsIgnoreCase("Select"))
+                {
+                    showErrorAlert("Please Select City Name");
+                    boolValidateStateCity= false;
+
+                }
+                else if((etState.getText().toString()).equalsIgnoreCase("Select"))
+                {
+                    showErrorAlert("Please Select State Name");
+                    boolValidateStateCity= false;
+
+                }
+
+
+            }
+        }
+        else
+        {
+
+            if((etCity.getText().toString()).equalsIgnoreCase("Select"))
+            {
+                showErrorAlert("Please Select City Name");
+                boolValidateStateCity= false;
+
+            }
+            else if((etState.getText().toString()).equalsIgnoreCase("Select"))
+            {
+                showErrorAlert("Please Select State Name");
+                boolValidateStateCity= false;
+
+            }
+
+
+        }
+        return boolValidateStateCity;
+    }
+
+
+    public void showErrorAlert(String message)
+    {
+        AlertDialog.Builder alertDialogNoConn = new AlertDialog.Builder(DistributorMapActivity.this);
+        alertDialogNoConn.setTitle("Error");
+        alertDialogNoConn.setMessage(message);
+        alertDialogNoConn.setNeutralButton("OK",
+                new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
+                        // finish();
+                    }
+                });
+
+        AlertDialog alert = alertDialogNoConn.create();
+        alert.show();
+
+    }
+
+    public  void setFreshAddress()
+    {
+
+        if(!address.equals("NA"))
+        {
+            EditText edAddressFinal=null;
+
+
+            if(edAddressFinal!=null)
+            {
+                edAddressFinal.setText("\n\n"+address);
+            }
+
+        }
+        if(!pincode.equals("NA"))
+        {
+            etPinCode.setText(pincode);
+        }
+        if(!state.equals("NA"))
+        {
+            etState.setText(state);
+        }
+        boolean isCityFilled = false;
+        etCity.setText("Select");
+        previousSlctdCity="Select";
+
+        if(!AddNewStore_DynamicSectionWiseSO.city.equals("NA")) {
+
+            for (Map.Entry<String, String> entryCity : hmapCity_details.entrySet()) {
+                if (entryCity.getKey().equalsIgnoreCase(AddNewStore_DynamicSectionWiseSO.city.trim())) {
+                    etCity.setText(AddNewStore_DynamicSectionWiseSO.city);
+                    isCityFilled = true;
+                    defaultCity = entryCity.getKey();
+                    break;
+                }
+            }
+
+            if(isCityFilled)
+            {
+                if(!TextUtils.isEmpty(defaultCity))
+                {
+                    etCity.setText(defaultCity);
+                    if(defaultCity.equalsIgnoreCase("Others") || defaultCity.equalsIgnoreCase("Other"))
+                    {
+                        etState.setEnabled(true);
+                        etState.setText("Select");
+                    }
+                    else
+                    {
+                        if(hmapCityAgainstState!=null && hmapCityAgainstState.containsKey(defaultCity))
+                        {
+                            etState.setText(hmapCityAgainstState.get(defaultCity));
+                        }
+                        else
+                        {
+                            etState.setText("Select");
+                        }
+                    }
+
+                }
+                else
+                {
+                    etState.setText("Select");
+                }
+            }
+            else
+            {
+                etState.setText("Select");
+            }
+            //
+        }
+
+        else
+        {
+            if(!TextUtils.isEmpty(defaultCity))
+            {
+                etCity.setText(defaultCity);
+                if(defaultCity.equalsIgnoreCase("Others") || defaultCity.equalsIgnoreCase("Other"))
+                {
+                    etState.setEnabled(true);
+                }
+                else
+                {
+                    if(hmapCityAgainstState!=null && hmapCityAgainstState.containsKey(defaultCity))
+                    {
+                        etState.setText(hmapCityAgainstState.get(defaultCity));
+                    }
+                }
+
+            }
+        }
+
+		/*if(!AddNewStore_DynamicSectionWise.city.equals("NA"))
+		{
+			etCity.setText(AddNewStore_DynamicSectionWise.city);
+		}
+		if(!AddNewStore_DynamicSectionWise.state.equals("NA"))
+		{
+			etState.setText(AddNewStore_DynamicSectionWise.state);
+		}*/
+    }
 }

@@ -134,7 +134,7 @@ public class SplashScreen extends AppCompatActivity
 
       // imei="359495060489571";
 
-       // imei="863408031291603_old";
+        //imei="863408031291603_FS";
         // imei="35299064153201";//Live User
        // imei="869124026917219"; // Test Release given by varun sir
        // imei="863408031291603";  /// Test Release given by varun sir

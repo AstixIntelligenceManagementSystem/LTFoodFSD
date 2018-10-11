@@ -925,20 +925,21 @@ private static final String DATABASE_TABLE_MAIN101 = "tblFirstOrderDetailsOnLast
 
 	//map distributor
 	private static final String TABLE_tblDistribtorMstr = "tblDistribtorMstr";
-	private static final String DATABASE_CREATE_TABLE_tblDistribtorMstr = "create table tblDistribtorMstr (DBRNodeID int null,DistributorNodeType int null,Distributor text null, flgRemap int null);";
+    private static final String DATABASE_CREATE_TABLE_tblDistribtorMstr = "create table tblDistribtorMstr (DBRNodeID int null,DistributorNodeType int null,Distributor text null, flgRemap int null,DistributorLastStockDate text null,flgSODistributorFirstVisit int null,ContactNumber text null,EmailID text null);";
 
 	private static final String TABLE_tblDistributorMapping="tblDistributorMapping";
-	private static final String DATABASE_CREATE_TABLE_tblDistributorMapping="create table tblDistributorMapping(" +
-			"DistribtrUniqueId text null, DistribtrId text null,DistributorNodeType text null,flgGSTCapture text null," +
-			"flgGSTCompliance text null,GSTNumber text null, Address text null,PinCode text null, City text null, State text null," +
-			"fnLati text null,fnLongi text null,fnAccuracy text null," +
-			"flgLocNotFound text null,fnAccurateProvider text null,AllProvidersLocation text null,fnAddress text null," +
-			"GpsLat text null, GpsLong text null, GpsAccuracy text null, GpsAddress text null, NetwLat text null, " +
-			"NetwLong text null, NetwAccuracy text null, NetwAddress text null, FusedLat text null, FusedLong text null, " +
-			"FusedAccuracy text null, FusedAddress text null,FusedLocationLatitudeWithFirstAttempt text null," +
-			"FusedLocationLongitudeWithFirstAttempt text null,FusedLocationAccuracyWithFirstAttempt text null,Sstat int null,flgLocationServicesOnOff int null,flgGPSOnOff int null,flgNetworkOnOff int null,flgFusedOnOff int null,flgInternetOnOffWhileLocationTracking int null,flgRestart int null);";
+    private static final String DATABASE_CREATE_TABLE_tblDistributorMapping="create table tblDistributorMapping(" +
+            "DistribtrUniqueId text null, DistribtrId text null,DistributorNodeType text null,flgGSTCapture text null," +
+            "flgGSTCompliance text null,GSTNumber text null, Address text null,PinCode text null, City text null, State text null," +
+            "fnLati text null,fnLongi text null,fnAccuracy text null," +
+            "flgLocNotFound text null,fnAccurateProvider text null,AllProvidersLocation text null,fnAddress text null," +
+            "GpsLat text null, GpsLong text null, GpsAccuracy text null, GpsAddress text null, NetwLat text null, " +
+            "NetwLong text null, NetwAccuracy text null, NetwAddress text null, FusedLat text null, FusedLong text null, " +
+            "FusedAccuracy text null, FusedAddress text null,FusedLocationLatitudeWithFirstAttempt text null," +
+            "FusedLocationLongitudeWithFirstAttempt text null,FusedLocationAccuracyWithFirstAttempt text null,Sstat int null,flgLocationServicesOnOff int null,flgGPSOnOff int null,flgNetworkOnOff int null,flgFusedOnOff int null,flgInternetOnOffWhileLocationTracking int null," +
+            "flgRestart int null,MapAddress text null,MapCity text null,MapPinCode text null,MapState text null,CityId text null,StateId text null,PhoneNo text null,EmailID text null,FirstName text null,LastName text null,DOB text null,DOM text null);";
 
-	//market visit proceed btn loc fetch
+    //market visit proceed btn loc fetch
 	private static final String TABLE_tblDsrLocationDetails="tblDsrLocationDetails";
 	private static final String DATABASE_CREATE_TABLE_tblDsrLocationDetails="create table tblDsrLocationDetails(" +
 			"DSRId text null,DSRNodeType text null,DateTime text null," +
@@ -30775,17 +30776,22 @@ open();
 	}
 
 	//map distributor
-	public long  saveDistributorMstrData(int DBRNodeID, int DistributorNodeType, String Distributor, int flgRemap)
-	{
-		ContentValues initialValues = new ContentValues();
+    public long  saveDistributorMstrData(int DBRNodeID, int DistributorNodeType, String Distributor, int flgRemap,
+                                         String DistributorLastStockDate,int flgSODistributorFirstVisit,
+                                         String ContactNumber,String EmailID)
+    {
+        ContentValues initialValues = new ContentValues();
 
-		initialValues.put("DBRNodeID", DBRNodeID);
-		initialValues.put("DistributorNodeType", DistributorNodeType);
-		initialValues.put("Distributor", Distributor.trim());
-		initialValues.put("flgRemap", flgRemap);   //0=Not To be mapped Again,1=Can Map Distributor
-
-		return db.insert(TABLE_tblDistribtorMstr, null, initialValues);
-	}
+        initialValues.put("DBRNodeID", DBRNodeID);
+        initialValues.put("DistributorNodeType", DistributorNodeType);
+        initialValues.put("Distributor", Distributor.trim());
+        initialValues.put("flgRemap", flgRemap);   //0=Not To be mapped Again,1=Can Map Distributor
+        initialValues.put("DistributorLastStockDate", DistributorLastStockDate);
+        initialValues.put("flgSODistributorFirstVisit", flgSODistributorFirstVisit);
+        initialValues.put("ContactNumber", ContactNumber);
+        initialValues.put("EmailID", EmailID.trim());
+        return db.insert(TABLE_tblDistribtorMstr, null, initialValues);
+    }
 
 	public void Delete_tblDistributorMstr()
 	{
@@ -30825,69 +30831,86 @@ open();
 		}
 	}
 
-	public long savetblDistributorMappingData(String DistribtrUniqueId,String  DistribtrId ,String DistributorNodeType ,
-											  String flgGSTCapture,String flgGSTCompliance ,String GSTNumber, String Address,
-											  String PinCode,String City,String State,String fnLati,
-											  String fnLongi ,String fnAccuracy ,String flgLocNotFound,String fnAccurateProvider,
-											  String AllProvidersLocation ,String fnAddress ,String GpsLat ,String  GpsLong ,
-											  String GpsAccuracy ,String GpsAddress ,String NetwLat ,String NetwLong ,
-											  String NetwAccuracy ,String  NetwAddress ,String  FusedLat ,String  FusedLong ,
-											  String FusedAccuracy ,String  FusedAddress ,String FusedLocationLatitudeWithFirstAttempt,
-											  String FusedLocationLongitudeWithFirstAttempt ,String FusedLocationAccuracyWithFirstAttempt,
-											  int Sstat,int flgLocationServicesOnOff,int flgGPSOnOff,int flgNetworkOnOff,int flgFusedOnOff,int flgInternetOnOffWhileLocationTracking,int flgRestart)
-	{
-		ContentValues initialValues = new ContentValues();
+    public long savetblDistributorMappingData(String DistribtrUniqueId,String  DistribtrId ,String DistributorNodeType ,
+                                              String flgGSTCapture,String flgGSTCompliance ,String GSTNumber, String Address,
+                                              String PinCode,String City,String State,String fnLati,
+                                              String fnLongi ,String fnAccuracy ,String flgLocNotFound,String fnAccurateProvider,
+                                              String AllProvidersLocation ,String fnAddress ,String GpsLat ,String  GpsLong ,
+                                              String GpsAccuracy ,String GpsAddress ,String NetwLat ,String NetwLong ,
+                                              String NetwAccuracy ,String  NetwAddress ,String  FusedLat ,String  FusedLong ,
+                                              String FusedAccuracy ,String  FusedAddress ,String FusedLocationLatitudeWithFirstAttempt,
+                                              String FusedLocationLongitudeWithFirstAttempt ,String FusedLocationAccuracyWithFirstAttempt,
+                                              int Sstat,int flgLocationServicesOnOff,int flgGPSOnOff,int flgNetworkOnOff,
+                                              int flgFusedOnOff,int flgInternetOnOffWhileLocationTracking,int flgRestart
+            ,String CityId,String StateId,String MapAddress,String MapCity,String MapPinCode,String MapState,
+                                              String PhoneNo,String EmailID,String FirstName,String LastName, String DOB,String DOM)
+    {
+        ContentValues initialValues = new ContentValues();
 
-		initialValues.put("DistribtrUniqueId", DistribtrUniqueId.trim());
-		initialValues.put("DistribtrId", DistribtrId.trim());
-		initialValues.put("DistributorNodeType", DistributorNodeType.trim());
-		initialValues.put("flgGSTCapture", flgGSTCapture.trim());
-		initialValues.put("flgGSTCompliance", flgGSTCompliance.trim());
-		initialValues.put("GSTNumber", GSTNumber.trim());
+        initialValues.put("DistribtrUniqueId", DistribtrUniqueId.trim());
+        initialValues.put("DistribtrId", DistribtrId.trim());
+        initialValues.put("DistributorNodeType", DistributorNodeType.trim());
+        initialValues.put("flgGSTCapture", flgGSTCapture.trim());
+        initialValues.put("flgGSTCompliance", flgGSTCompliance.trim());
+        initialValues.put("GSTNumber", GSTNumber.trim());
 
-		initialValues.put("Address", Address.trim());
-		initialValues.put("PinCode", PinCode.trim());
-		initialValues.put("City", City.trim());
-		initialValues.put("State", State.trim());
+        initialValues.put("Address", Address.trim());
+        initialValues.put("PinCode", PinCode.trim());
+        initialValues.put("City", City.trim());
+        initialValues.put("State", State.trim());
 
-		initialValues.put("fnLati", fnLati.trim());
-		initialValues.put("fnLongi", fnLongi.trim());
-		initialValues.put("fnAccuracy", fnAccuracy.trim());
-		initialValues.put("flgLocNotFound", flgLocNotFound.trim());
-		initialValues.put("fnAccurateProvider", fnAccurateProvider.trim());
-		initialValues.put("AllProvidersLocation", AllProvidersLocation.trim());
-		initialValues.put("fnAddress", fnAddress.trim());
+        initialValues.put("fnLati", fnLati.trim());
+        initialValues.put("fnLongi", fnLongi.trim());
+        initialValues.put("fnAccuracy", fnAccuracy.trim());
+        initialValues.put("flgLocNotFound", flgLocNotFound.trim());
+        initialValues.put("fnAccurateProvider", fnAccurateProvider.trim());
+        initialValues.put("AllProvidersLocation", AllProvidersLocation.trim());
+        initialValues.put("fnAddress", fnAddress.trim());
 
-		initialValues.put("GpsLat", GpsLat.trim());
-		initialValues.put("GpsLong", GpsLong.trim());
-		initialValues.put("GpsAccuracy", GpsAccuracy.trim());
-		initialValues.put("GpsAddress", GpsAddress.trim());
+        initialValues.put("GpsLat", GpsLat.trim());
+        initialValues.put("GpsLong", GpsLong.trim());
+        initialValues.put("GpsAccuracy", GpsAccuracy.trim());
+        initialValues.put("GpsAddress", GpsAddress.trim());
 
-		initialValues.put("NetwLat", NetwLat.trim());
-		initialValues.put("NetwLong", NetwLong.trim());
-		initialValues.put("NetwAccuracy", NetwAccuracy.trim());
-		initialValues.put("NetwAddress", NetwAddress.trim());
+        initialValues.put("NetwLat", NetwLat.trim());
+        initialValues.put("NetwLong", NetwLong.trim());
+        initialValues.put("NetwAccuracy", NetwAccuracy.trim());
+        initialValues.put("NetwAddress", NetwAddress.trim());
 
-		initialValues.put("FusedLat", FusedLat.trim());
-		initialValues.put("FusedLong", FusedLong.trim());
-		initialValues.put("FusedAccuracy", FusedAccuracy.trim());
-		initialValues.put("FusedAddress", FusedAddress.trim());
+        initialValues.put("FusedLat", FusedLat.trim());
+        initialValues.put("FusedLong", FusedLong.trim());
+        initialValues.put("FusedAccuracy", FusedAccuracy.trim());
+        initialValues.put("FusedAddress", FusedAddress.trim());
 
-		initialValues.put("FusedLocationLatitudeWithFirstAttempt", FusedLocationLatitudeWithFirstAttempt.trim());
-		initialValues.put("FusedLocationLongitudeWithFirstAttempt", FusedLocationLongitudeWithFirstAttempt.trim());
-		initialValues.put("FusedLocationAccuracyWithFirstAttempt", FusedLocationAccuracyWithFirstAttempt.trim());
-		initialValues.put("Sstat", Sstat);
+        initialValues.put("FusedLocationLatitudeWithFirstAttempt", FusedLocationLatitudeWithFirstAttempt.trim());
+        initialValues.put("FusedLocationLongitudeWithFirstAttempt", FusedLocationLongitudeWithFirstAttempt.trim());
+        initialValues.put("FusedLocationAccuracyWithFirstAttempt", FusedLocationAccuracyWithFirstAttempt.trim());
+        initialValues.put("Sstat", Sstat);
 
-		initialValues.put("flgLocationServicesOnOff", flgLocationServicesOnOff);
-		initialValues.put("flgGPSOnOff", flgGPSOnOff);
-		initialValues.put("flgNetworkOnOff", flgNetworkOnOff);
-		initialValues.put("flgFusedOnOff", flgFusedOnOff);
-		initialValues.put("flgInternetOnOffWhileLocationTracking", flgInternetOnOffWhileLocationTracking);
-		initialValues.put("flgRestart", flgRestart);
+        initialValues.put("flgLocationServicesOnOff", flgLocationServicesOnOff);
+        initialValues.put("flgGPSOnOff", flgGPSOnOff);
+        initialValues.put("flgNetworkOnOff", flgNetworkOnOff);
+        initialValues.put("flgFusedOnOff", flgFusedOnOff);
+        initialValues.put("flgInternetOnOffWhileLocationTracking", flgInternetOnOffWhileLocationTracking);
+        initialValues.put("flgRestart", flgRestart);
 
+        initialValues.put("MapAddress", MapAddress);
+        initialValues.put("MapCity", MapCity);
+        initialValues.put("MapPinCode", MapPinCode);
+        initialValues.put("MapState", MapState);
+        initialValues.put("CityId", CityId);
+        initialValues.put("StateId", StateId);
 
-		return db.insert(TABLE_tblDistributorMapping, null, initialValues);
-	}
+        initialValues.put("PhoneNo", PhoneNo);
+        initialValues.put("EmailID", EmailID);
+
+        initialValues.put("FirstName", FirstName);
+        initialValues.put("LastName", LastName);
+        initialValues.put("DOB", DOB);
+        initialValues.put("DOM", DOM);
+
+        return db.insert(TABLE_tblDistributorMapping, null, initialValues);
+    }
 
 	public void UpdateDistributerFlag(String DistribtrUniqueId, int flag2set)
 	{
@@ -34891,6 +34914,48 @@ close();
             close();
         }
 
+    }
+
+    public String[] getDistributorDataWithPhoneAndEmial()
+    {
+        String strStoreTypeNamesDetais[] =null;
+        String phoneNum="0",email="NA";
+        try {
+            Cursor cursor2 = db.rawQuery("SELECT DBRNodeID,DistributorNodeType,Distributor,flgRemap,ContactNumber,EmailID FROM tblDistribtorMstr", null);
+
+            if(cursor2.getCount()>0)
+            {
+                strStoreTypeNamesDetais=new String[cursor2.getCount()+1];
+                if (cursor2.moveToFirst())
+                {
+                    for (int i = 0; i < cursor2.getCount(); i++)
+                    {
+                        if(i==0)
+                        {
+                            strStoreTypeNamesDetais[i]="0^0^Select Distributor^0^0^0";
+                        }
+                        if(cursor2.getString(4).equals(""))
+                        {
+                            phoneNum="0";
+                        }
+                        if(cursor2.getString(5).equals(""))
+                        {
+                            email="NA";
+                        }
+                        strStoreTypeNamesDetais[i+1] = cursor2.getString(0).toString()+"^"+cursor2.getString(1)+"^"+cursor2.getString(2)+"^"+cursor2.getString(3)+"^"+phoneNum+"^"+email;
+                        cursor2.moveToNext();
+                    }
+                }
+            }
+            else
+            {
+                strStoreTypeNamesDetais=new String[1];
+                strStoreTypeNamesDetais[0]="0^0^Select Distributor^0^0^0";
+            }
+            return strStoreTypeNamesDetais;
+        } finally {
+
+        }
     }
 
 

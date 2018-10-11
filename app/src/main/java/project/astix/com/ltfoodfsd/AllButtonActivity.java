@@ -383,14 +383,14 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
         ll_distrbtrStock = (LinearLayout) findViewById(R.id.ll_distrbtrStock);
        // ll_execution = (LinearLayout) findViewById(R.id.ll_execution);
 
-        //ll_distrbtnMap = (LinearLayout) findViewById(R.id.ll_distrbtnMap);
+        ll_distrbtnMap = (LinearLayout) findViewById(R.id.ll_distrbtnMap);
       //  ll_dsrTracker = (LinearLayout) findViewById(R.id.ll_dsrTracker);
 
         ll_noVisit = (LinearLayout) findViewById(R.id.ll_noVisit);
         ll_DayEnd = (LinearLayout) findViewById(R.id.ll_DayEnd);
 
 
-
+        distributorMapWorking();
         marketVisitWorking();
         reportsWorking();
         storeValidationWorking();
@@ -1614,7 +1614,7 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
 
                 Intent intent=new Intent(AllButtonActivity.this,DistributorMapActivity.class);
                 startActivity(intent);
-                finish();
+
 
             }
         });

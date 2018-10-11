@@ -3,7 +3,7 @@
 
    <string name="app_name">FS Field Operations</string>
  <!-- <string name="app_name">FS Field Operations Stagging</string>-->
-   <!-- <string name="app_name">FS Field Operations Test</string>-->
+ <!--  <string name="app_name">FS Field Operations Test</string>-->
    <!--<string name="app_name">FS Field Operations Dev</string>-->
 
  <!--<string name="app_name">FS Field Operations Test Release</string>-->
@@ -336,9 +336,11 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_quotation">QuotationActivity</string>
+ <string name="txtSELECTDOB">SELECT DOB</string>
     <string-array name="planets">
         <item>Quotation</item>
         <item>View Quotation</item>
+
 
     </string-array>
 

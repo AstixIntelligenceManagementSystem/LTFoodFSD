@@ -21839,6 +21839,11 @@ public class ServiceWorker
 				String DBRNodeType="0";
 				String Distributor="0";
 				String flgReMap="0";
+				String DistributorLastStockDate="NA";
+				int flgSODistributorFirstVisit=0;
+				String ContactNumber="0";
+				String EmailID="NA";
+
 
 				Element element = (Element) tblDistributorListForSONode.item(i);
 				if(!element.getElementsByTagName("DBRNodeId").equals(null))
@@ -21878,8 +21883,45 @@ public class ServiceWorker
 					}
 				}
 
-				dbengine.saveDistributorMstrData(Integer.parseInt(DBRNodeId),Integer.parseInt(DBRNodeType),Distributor,Integer.parseInt(flgReMap));
-				//System.out.println("DISTRIBTR MASTR....."+Integer.parseInt(DBRNodeId)+"---"+Integer.parseInt(DBRNodeType)+"---"+Distributor+"---"+Integer.parseInt(flgReMap));
+				if(!element.getElementsByTagName("DistributorLastStockDate").equals(null))
+				{
+					NodeList DistributorLastStockDateNode = element.getElementsByTagName("DistributorLastStockDate");
+					Element     line = (Element) DistributorLastStockDateNode.item(0);
+					if (DistributorLastStockDateNode.getLength()>0)
+					{
+						DistributorLastStockDate=xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+				if(!element.getElementsByTagName("flgSODistributorStocktaken").equals(null))
+				{
+					NodeList flgSODistributorFirstVisitNode = element.getElementsByTagName("flgSODistributorStocktaken");
+					Element     line = (Element) flgSODistributorFirstVisitNode.item(0);
+					if (flgSODistributorFirstVisitNode.getLength()>0)
+					{
+						flgSODistributorFirstVisit=Integer.parseInt(xmlParser.getCharacterDataFromElement(line));
+					}
+				}
+				if(!element.getElementsByTagName("ContactNumber").equals(null))
+				{
+					NodeList ContactNumberNode = element.getElementsByTagName("ContactNumber");
+					Element     line = (Element) ContactNumberNode.item(0);
+					if (ContactNumberNode.getLength()>0)
+					{
+						ContactNumber=xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+				if(!element.getElementsByTagName("EmailID").equals(null))
+				{
+					NodeList EmailIDNode = element.getElementsByTagName("EmailID");
+					Element     line = (Element) EmailIDNode.item(0);
+					if (EmailIDNode.getLength()>0)
+					{
+						EmailID=xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+
+				dbengine.saveDistributorMstrData(Integer.parseInt(DBRNodeId),Integer.parseInt(DBRNodeType),Distributor,Integer.parseInt(flgReMap),DistributorLastStockDate,flgSODistributorFirstVisit,ContactNumber,EmailID);
+				System.out.println("DISTRIBTR MASTR....."+Integer.parseInt(DBRNodeId)+"---"+Integer.parseInt(DBRNodeType)+"---"+Distributor+"---"+Integer.parseInt(flgReMap));
 			}
 			int AutoId=0;
 			NodeList tblHealthRelationshipDayAndMTDSummaryNode = doc.getElementsByTagName("tblHealthRelationshipDayAndMTDSummary");

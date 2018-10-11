@@ -3365,7 +3365,7 @@ public void fnCreateStoreListOnLoad() throws Exception
 			 {
 				 Intent intent=new Intent(StoreSelection.this,DistributorMapActivity.class);
 				 startActivity(intent);
-				 finish();
+
 			 }
 		 });
 

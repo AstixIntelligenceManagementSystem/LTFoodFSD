@@ -41,6 +41,40 @@ public class DBAdapterKenya
 
     // SO Table Start
 
+    private static final String TABLE_tblDSMRegDetailsFromServer = "tblDSMRegDetailsFromServer";
+    private static final String DATABASE_CREATE_TABLE_tblDSMRegDetailsFromServer = "create table tblDSMRegDetailsFromServer (PersonNodeId text null,  PersonNodeType text null,Name text null,ContactNo text null,DOB text null,SelfieName text null,SignImgName text null,BankAccountnumber text null,BankID text null,IFSCCode text null,flgUPIID text null,UPIID text null,SelfieNameURL text null,EmailID text null);";
+
+    private static final String TABLE_tblUserRegistarationStatus = "tblUserRegistarationStatus";
+    private static final String DATABASE_CREATE_TABLE_tblUserRegistarationStatus = "create table tblUserRegistarationStatus (Flag text null,MsgToDisplay text null);";
+
+
+
+    private static final String DATABASE_TABLE_tblRegistrationDetail = "tblRegistrationDetail";
+    private static final String DATABASE_CREATE_RegistrationDetail= "create table tblRegistrationDetail (RecordId text null,ClickedDateTime text null,PhotoName text null,PDAPhotoPath text null,SignName text null,SignPath text null,Sstat integer null,Name text null,ContactNo text null,DOB text null,AccNo text null,BankID text null,IFSC text null,UPIID_Flag text null,UPIID_text text null,IMEI text null,NodeID text null,NodeType text null,EmailID text null);";
+
+    private static final String TABLE_tblBloodGroup_Define = "tblBloodGroup";
+    private static final String DATABASE_CREATE_TABLE_tblBloodGroup = "create table tblBloodGroup (BloddGroups text null);";
+
+    private static final String TABLE_tblEducationQuali = "tblEducationQuali";
+    private static final String DATABASE_CREATE_TABLE_tblEducationQuali = "create table tblEducationQuali (Qualification text null);";
+
+
+    private static final String TABLE_tblAttandanceDetails= "tblAttandanceDetails";
+    private static final String DATABASE_CREATE_TABLE_tblAttandanceDetails="create table tblAttandanceDetails(AttandanceTime text null," +
+            "PersonNodeID text null, PersonNodeType text null," +
+            "OptionID text null,OptionDesc text null,ReasonID text null,ReasonDesc text null,Comment text null, Address text null,PinCode text null, City text null, State text null," +
+            "fnLati text null,fnLongi text null,fnAccuracy text null," +
+            "flgLocNotFound text null,fnAccurateProvider text null,AllProvidersLocation text null,fnAddress text null," +
+            "GpsLat text null, GpsLong text null, GpsAccuracy text null, GpsAddress text null, NetwLat text null, " +
+            "NetwLong text null, NetwAccuracy text null, NetwAddress text null, FusedLat text null, FusedLong text null, " +
+            "FusedAccuracy text null, FusedAddress text null,FusedLocationLatitudeWithFirstAttempt text null," +
+            "FusedLocationLongitudeWithFirstAttempt text null,FusedLocationAccuracyWithFirstAttempt text null," +
+            "Sstat int null,flgLocationServicesOnOff int null,flgGPSOnOff int null,flgNetworkOnOff int null," +
+            "flgFusedOnOff int null,flgInternetOnOffWhileLocationTracking int null,flgRestart int null," +
+            "MapAddress text null,MapCity text null,MapPinCode text null,MapState text null,CityId text null,StateId text null,DistributorId text null,DistributorNodeType text null,DistributorName text null,ServerTimeValidation text null,SubmitTime text null,ReasonForLate text null,OtherReasonForLate text null);";
+
+
+
     private static final String TABLE_tblStateCityMaster="tblStateCityMaster";
     private static final String DATABASE_CREATE_TABLE_tblStateCityMaster="create table tblStateCityMaster(" +
             "StateID int null, State text null,CityID int null,City text null,CityDefault integer null);";
@@ -243,7 +277,7 @@ private static final String DATABASE_TABLE_tblFeedbackData="tblFeedbackData";
 
     // Tables Data Coming at Splash Screen Starts
 	private static final String TABLE_tblUserAuthenticationMstr_Define = "tblUserAuthenticationMstr";
-	private static final String TABLE_tblUserAuthenticationMstr_Definition = "create table tblUserAuthenticationMstr (flgUserAuthenticated text null,flgAllRoutesData integer null,PersonNodeID integer null,PersonNodeType integer null,CoverageAreaNodeID integer null,CoverageAreaNodeType integer null,flgAppStatus text null,DisplayMessage text null,flgValidApplication text null,MessageForInvalid text null);";
+    private static final String TABLE_tblUserAuthenticationMstr_Definition = "create table tblUserAuthenticationMstr (flgUserAuthenticated text null,flgAllRoutesData integer null,flgAppStatus text null,DisplayMessage text null,flgValidApplication text null,MessageForInvalid text null,PersonName text null,FlgRegistered text null,flgISR int null,PersonNodeID text null,PersonNodeType text null,SalesAreaName text null,ContactNumber text null,flgPersonTodaysAtt text null);";
 
     private static final String TABLE_tblAvailableVersionMstr_Define = "tblAvailableVersionMstr";
     private static final String TABLE_tblAvailableVersionMstr_Definition = "create table tblAvailableVersionMstr (VersionID text null,VersionSerialNo text null,VersionDownloadStatus text null,ServerDate text null);";//, AutoIdOutlet int null
@@ -255,7 +289,7 @@ private static final String DATABASE_TABLE_tblFeedbackData="tblFeedbackData";
     private static final String TABLE_tblNotificationMstr_Definition = "create table tblNotificationMstr (SerialNo int null,IMEI text null, Noti_text text null,Noti_DateTime text null,Noti_ReadStatus int null,Noti_NewOld int null,Noti_ReadDateTime text null,Sstat int null,MsgServerID int null);";
 
 	private static final String TABLE_tblNoVisitReasonMaster_Define = "tblNoVisitReasonMaster";
-	private static final String TABLE_tblNoVisitReasonMaster_Definition = "create table tblNoVisitReasonMaster(AutoIdStore integer null,ReasonId text null,ReasonDescr text null,FlgToShowTextBox integer null);";
+    private static final String TABLE_tblNoVisitReasonMaster_Definition = "create table tblNoVisitReasonMaster(AutoIdStore integer null,ReasonId text null,ReasonDescr text null,FlgToShowTextBox integer null,flgSOApplicable int null,flgDSRApplicable int null,flgNoVisitOption int null,SeqNo int null,flgDelayedReason int null);";
 
 	private static final String TABLE_tblNoVisitStoreDetails_Define = "tblNoVisitStoreDetails";
     private static final String TABLE_tblNoVisitStoreDetails_Definition = "create table tblNoVisitStoreDetails(IMEI text null,CurDate text null,ReasonId text null,ReasonDescr text null,flgHasVisit integer null,Sstat integer not null);";
@@ -964,7 +998,7 @@ private static final String DATABASE_TABLE_MAIN101 = "tblFirstOrderDetailsOnLast
 	String pattern = "###.##";
 	DecimalFormat decimalFormat = (DecimalFormat)NumberFormat.getNumberInstance(locale);
 
-	public DBAdapterKenya(Context ctx)
+    public DBAdapterKenya(Context ctx)
 	{
 		this.context = ctx;
 		DBHelper = new DatabaseHelper(context);
@@ -985,6 +1019,13 @@ private static final String DATABASE_TABLE_MAIN101 = "tblFirstOrderDetailsOnLast
 			
 			try
 			{
+                db.execSQL(DATABASE_CREATE_TABLE_tblDSMRegDetailsFromServer);
+                db.execSQL(DATABASE_CREATE_TABLE_tblUserRegistarationStatus);
+                db.execSQL(DATABASE_CREATE_RegistrationDetail);
+                db.execSQL(DATABASE_CREATE_TABLE_tblBloodGroup);
+                db.execSQL(DATABASE_CREATE_TABLE_tblEducationQuali);
+                db.execSQL(DATABASE_CREATE_TABLE_tblAttandanceDetails);
+
                 db.execSQL(DATABASE_CREATE_TABLE_tblStateCityMaster);
                 //account census
                 db.execSQL(DATABASE_CREATE_TABLE_tblDAGetAddedOutletSummaryReport);
@@ -1258,6 +1299,12 @@ private static final String DATABASE_TABLE_MAIN101 = "tblFirstOrderDetailsOnLast
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			try 
 			{
+                db.execSQL("DROP TABLE IF EXISTS tblDSMRegDetailsFromServer");
+                db.execSQL("DROP TABLE IF EXISTS tblUserRegistarationStatus");
+                db.execSQL("DROP TABLE IF EXISTS tblRegistrationDetail");
+                db.execSQL("DROP TABLE IF EXISTS tblBloodGroup");
+                db.execSQL("DROP TABLE IF EXISTS tblEducationQuali");
+                db.execSQL("DROP TABLE IF EXISTS tblAttandanceDetails");
 
                 db.execSQL("DROP TABLE IF EXISTS tblStateCityMaster");
                 //account census
@@ -14203,7 +14250,7 @@ public void deleteStoreTblsRecordsInCaseCancelOrderInOrderBooking(String StoreID
 			String ActualLatitude, String ActualLongitude, String Accuracy,
 			String LocProvider, int flgLocationServicesOnOff, int flgGPSOnOff, int flgNetworkOnOff, int flgFusedOnOff, int flgInternetOnOffWhileLocationTracking, int flgRestart, int flgStoreOrder)
 	{
-		open();
+
 		final ContentValues values = new ContentValues();
 		values.put("ActualLatitude", ActualLatitude);
 		values.put("ActualLongitude", ActualLongitude);
@@ -14220,7 +14267,7 @@ public void deleteStoreTblsRecordsInCaseCancelOrderInOrderBooking(String StoreID
 
 
 		int affected = db.update("tblStoreList", values, "StoreID=?",new String[] { StoreID });
-		close();
+
 		Log.w(TAG, "affected records: " + affected);
 
 		Log.w(TAG, "UpdateStoreActualLatLongi added..");
@@ -20366,30 +20413,36 @@ open();
 			 		  }
 
 			 	}
-			 	public long savetblUserAuthenticationMstr(String flgUserAuthenticated,int flgAllRoutesData,
-														  int PersonNodeID,int PersonNodeType,
-														  int CoverageAreaNodeID,int CoverageAreaNodeType,
-                                                          String flgAppStatus,String DisplayMessage
-                            ,String flgValidApplication,String MessageForInvalid)
-				{
-									
-									ContentValues initialValues = new ContentValues();
-									
-									initialValues.put("flgUserAuthenticated", flgUserAuthenticated.trim());
-									initialValues.put("flgAllRoutesData", flgAllRoutesData);
-									initialValues.put("PersonNodeID", PersonNodeID);
-									initialValues.put("PersonNodeType", PersonNodeType);
-					initialValues.put("CoverageAreaNodeID", CoverageAreaNodeID);
-					initialValues.put("CoverageAreaNodeType", CoverageAreaNodeType);
-                    initialValues.put("flgAppStatus", flgAppStatus.trim());
-                    initialValues.put("DisplayMessage", DisplayMessage.trim());
-                    initialValues.put("flgValidApplication", flgValidApplication.trim());
-                    initialValues.put("MessageForInvalid", MessageForInvalid.trim());
-									
-									// System.out.println("Data Insert in Table MAIN1User");
-									
-									return db.insert(TABLE_tblUserAuthenticationMstr_Define, null, initialValues);
-				}
+
+
+    public long savetblUserAuthenticationMstr(String flgUserAuthenticated,int flgAllRoutesData,
+                                              String flgAppStatus,String DisplayMessage,
+                                              String flgValidApplication,String MessageForInvalid,String PersonName,
+                                              String FlgRegistered,int flgISR,String PersonNodeID,String PersonNodeType,String SalesAreaName,String ContactNumber,String flgPersonTodaysAtt)
+    {
+
+        ContentValues initialValues = new ContentValues();
+
+        initialValues.put("flgUserAuthenticated", flgUserAuthenticated.trim());
+        initialValues.put("flgAllRoutesData", flgAllRoutesData);
+        initialValues.put("flgAppStatus", flgAppStatus.trim());
+        initialValues.put("DisplayMessage", DisplayMessage.trim());
+        initialValues.put("flgValidApplication", flgValidApplication.trim());
+        initialValues.put("MessageForInvalid", MessageForInvalid.trim());
+        initialValues.put("PersonName", PersonName.trim());
+        initialValues.put("FlgRegistered", FlgRegistered.trim());
+        initialValues.put("flgISR", flgISR);
+        initialValues.put("PersonNodeID", PersonNodeID.trim());
+        initialValues.put("PersonNodeType", PersonNodeType.trim());
+        initialValues.put("SalesAreaName", SalesAreaName.trim());
+        initialValues.put("ContactNumber", ContactNumber.trim());
+        initialValues.put("flgPersonTodaysAtt", flgPersonTodaysAtt.trim());
+//flgPersonTodaysAtt text null
+
+        // System.out.println("Data Insert in Table MAIN1User");
+
+        return db.insert(TABLE_tblUserAuthenticationMstr_Define, null, initialValues);
+    }
 			 	public int FetchflgUserAuthenticated()
 				{
 					int SnamecolumnIndex1 = 0;
@@ -21853,19 +21906,27 @@ open();
 					 
 					/* private static final String DATABASE_CREATE_TABLE_252 = "create table tblNoVisitReasonMaster " +
 					 		"(ReasonId text null,ReasonDescr text null,FlgToShowTextBox integer null);";*/
-					 
-					 public long savetblNoVisitReasonMaster(int AutoIdStore,String ReasonId,String ReasonDescr,int FlgToShowTextBox)
-						{
-											
-											ContentValues initialValues = new ContentValues();
-											initialValues.put("AutoIdStore", AutoIdStore); 
-											initialValues.put("ReasonId", ReasonId); 
-											initialValues.put("ReasonDescr", ReasonDescr.trim()); 
-											initialValues.put("FlgToShowTextBox", FlgToShowTextBox); 
-										
-											//// System.out.println("Arjun data insert properly tblTradeChannelMstr ");
-											return db.insert(TABLE_tblNoVisitReasonMaster_Define, null, initialValues);
-						}
+
+    public long savetblNoVisitReasonMaster(int AutoIdStore,String ReasonId,String ReasonDescr,
+                                           int FlgToShowTextBox,int flgSOApplicable,int flgDSRApplicable,
+                                           int flgNoVisitOption,int SeqNo,int flgDelayedReason)
+    {
+
+        ContentValues initialValues = new ContentValues();
+        initialValues.put("AutoIdStore", AutoIdStore);
+        initialValues.put("ReasonId", ReasonId);
+        initialValues.put("ReasonDescr", ReasonDescr.trim());
+        initialValues.put("FlgToShowTextBox", FlgToShowTextBox);
+
+        initialValues.put("flgSOApplicable", flgSOApplicable);
+        initialValues.put("flgDSRApplicable", flgDSRApplicable);
+        initialValues.put("flgNoVisitOption", flgNoVisitOption);
+        initialValues.put("SeqNo", SeqNo);
+        initialValues.put("flgDelayedReason", flgDelayedReason);
+
+
+        return db.insert(TABLE_tblNoVisitReasonMaster_Define, null, initialValues);
+    }
 					 
 					/* initialValues.put("AutoIdStore", AutoIdStore); 
 						initialValues.put("ReasonId", ReasonId); 
@@ -34958,6 +35019,761 @@ close();
         }
     }
 
+    public int FetchflgPersonTodaysAtt()
+    {
+        int CatId=0;
 
+        Cursor cursor = db.rawQuery("SELECT flgPersonTodaysAtt from tblUserAuthenticationMstr", null);
+        try {
+
+            if (cursor.moveToFirst())
+            {
+
+                for (int i = 0; i <= (cursor.getCount() - 1); i++)
+                {
+
+                    String abc =(String) cursor.getString(0).toString();
+                    CatId=Integer.parseInt(abc);
+                    cursor.moveToNext();
+                }
+
+            }
+            return CatId;
+        } finally {
+            cursor.close();
+        }
+
+    }
+
+    public LinkedHashMap<String, String> fnGettblBloodGroup()
+    {
+        LinkedHashMap<String, String> hmapQuestionMstr=new LinkedHashMap<String, String>();
+        open();
+
+        try {
+            Cursor cursor = db.rawQuery("SELECT BloddGroups from tblBloodGroup   ", null);// Where PNodeID='"+TSIID+"'
+            if(cursor.getCount()>0)
+            {
+                if (cursor.moveToFirst())
+                {
+                    for (int i = 0; i <= (cursor.getCount() - 1); i++) {
+                        hmapQuestionMstr.put((String) cursor.getString(0).toString(),(String) cursor.getString(0).toString());
+                        //    System.out.println("QuestID:"+(String)cursor.getString(0).toString()+"QuestCode:"+(String) cursor.getString(1).toString()+"QuestDesc:"+(String) cursor.getString(2).toString()+"QuestType:"+(String) cursor.getString(3).toString()+"AnsControlType:"+(String) cursor.getString(4).toString()+"AnsControlInputTypeID:"+(String) cursor.getString(5).toString()+"AnsControlInputTypeMaxLength:"+(String) cursor.getString(6).toString()+"AnsMustRequiredFlg:"+(String) cursor.getString(7).toString()+"QuestBundleFlg:"+(String) cursor.getString(8).toString()+"ApplicationTypeID:"+(String) cursor.getString(9).toString()+"Sequence:"+(String) cursor.getString(10).toString());
+                        cursor.moveToNext();
+                    }
+                }
+            }
+
+        }
+        catch (Exception e) {
+            System.out.println("Error tblBloodGroup= "+e.toString());
+        }
+        finally
+        {
+
+            close();
+            return hmapQuestionMstr;
+        }
+    }
+
+    public void fnDeleteBloodGroupEducationMstrTables()
+    {
+        db.execSQL("DELETE FROM tblBloodGroup");
+        db.execSQL("DELETE FROM tblEducationQuali");
+
+    }
+    public long savetblBloodGroup(String BloddGroups)
+    {
+
+        ContentValues initialValues = new ContentValues();
+
+        initialValues.put("BloddGroups", BloddGroups.trim());
+
+        // System.out.println("Data Insert in Table MAIN1User");
+
+        return db.insert(TABLE_tblBloodGroup_Define, null, initialValues);
+    }
+
+    public LinkedHashMap<String, String> fnGettblEducationQuali()
+    {
+        LinkedHashMap<String, String> hmapQuestionMstr=new LinkedHashMap<String, String>();
+        open();
+
+        try {
+            Cursor cursor = db.rawQuery("SELECT Qualification from tblEducationQuali   ", null);// Where PNodeID='"+TSIID+"'
+            if(cursor.getCount()>0)
+            {
+                if (cursor.moveToFirst())
+                {
+                    for (int i = 0; i <= (cursor.getCount() - 1); i++) {
+                        hmapQuestionMstr.put((String) cursor.getString(0).toString(),(String) cursor.getString(0).toString());
+                        //    System.out.println("QuestID:"+(String)cursor.getString(0).toString()+"QuestCode:"+(String) cursor.getString(1).toString()+"QuestDesc:"+(String) cursor.getString(2).toString()+"QuestType:"+(String) cursor.getString(3).toString()+"AnsControlType:"+(String) cursor.getString(4).toString()+"AnsControlInputTypeID:"+(String) cursor.getString(5).toString()+"AnsControlInputTypeMaxLength:"+(String) cursor.getString(6).toString()+"AnsMustRequiredFlg:"+(String) cursor.getString(7).toString()+"QuestBundleFlg:"+(String) cursor.getString(8).toString()+"ApplicationTypeID:"+(String) cursor.getString(9).toString()+"Sequence:"+(String) cursor.getString(10).toString());
+                        cursor.moveToNext();
+                    }
+                }
+            }
+
+        }
+        catch (Exception e) {
+            System.out.println("Error tblEducationQuali= "+e.toString());
+        }
+        finally
+        {
+
+            close();
+            return hmapQuestionMstr;
+        }
+    }
+    public long savetblEducationQuali(String Qualification)
+    {
+
+        ContentValues initialValues = new ContentValues();
+        initialValues.put("Qualification", Qualification.trim());
+        // System.out.println("Data Insert in Table MAIN1User");
+        return db.insert(TABLE_tblEducationQuali, null, initialValues);
+    }
+
+    public long savetblDsrRegDetails(String PersonNodeId,String PersonNodeType,String Name,String ContactNo,String DOB,String SelfieName,String SignImgName,String BankAccountnumber,String BankID,String IFSCCode,String flgUPIID,String UPIID,String SelfieNameURL,String EmailID)
+    {
+
+        ContentValues initialValues = new ContentValues();
+        initialValues.put("PersonNodeId", PersonNodeId.trim());
+        initialValues.put("PersonNodeType", PersonNodeType.trim());
+        initialValues.put("Name", Name.trim());
+        initialValues.put("ContactNo", ContactNo.trim());
+        initialValues.put("DOB", DOB.trim());
+        initialValues.put("SelfieName", SelfieName.trim());
+        initialValues.put("SignImgName", SignImgName.trim());
+        initialValues.put("BankAccountnumber", BankAccountnumber.trim());
+        initialValues.put("BankID", BankID.trim());
+        initialValues.put("IFSCCode", IFSCCode.trim());
+        initialValues.put("flgUPIID", flgUPIID.trim());
+        initialValues.put("UPIID", UPIID.trim());
+        initialValues.put("SelfieNameURL", SelfieNameURL.trim());
+        initialValues.put("EmailID", EmailID.trim());
+
+
+        return db.insert(TABLE_tblDSMRegDetailsFromServer, null, initialValues);
+    }
+
+    public LinkedHashMap<Integer, String> fetch_Reason_List_for_option()
+    {
+        open();
+        //tblNoVisitReasonMaster(AutoIdStore integer null,ReasonId text null,ReasonDescr text null,FlgToShowTextBox integer null,flgSOApplicable int null,flgDSRApplicable int null,flgNoVisitOption int null,SeqNo int null,flgDelayedReason int null);";
+        LinkedHashMap<Integer, String> hmapCatgry = new LinkedHashMap<Integer, String>();
+        Cursor cursor = db.rawQuery("SELECT ReasonId,ReasonDescr FROM tblNoVisitReasonMaster where flgSOApplicable='"+1+"' and flgNoVisitOption='"+0+"' and flgDelayedReason='"+0+"' and ReasonId<>'15' order by SeqNo asc",null);
+        try
+        {
+            if(cursor.getCount()>0)
+            {
+                if (cursor.moveToFirst())
+                {
+                    for (int i = 0; i <= (cursor.getCount() - 1); i++)
+                    {
+                        hmapCatgry.put(Integer.parseInt(cursor.getString(0).toString()),cursor.getString(1).toString());
+                        cursor.moveToNext();
+                    }
+                }
+
+            }
+
+            else
+            {
+                // hmapCatgry.put(0, "No Reason");
+            }
+            return hmapCatgry;
+        }
+        finally
+        {
+            cursor.close();
+            close();
+        }
+    }
+
+    public LinkedHashMap<Integer, String> fetch_NoWorking_Reason_List()
+    {
+        open();
+        LinkedHashMap<Integer, String> hmapCatgry = new LinkedHashMap<Integer, String>();
+        Cursor cursor = db.rawQuery("SELECT ReasonId,ReasonDescr FROM tblNoVisitReasonMaster where flgSOApplicable='"+1+"' and flgNoVisitOption="+1+" and flgDelayedReason='"+0+"'" ,null);
+        try
+        {
+            if(cursor.getCount()>0)
+            {
+                if (cursor.moveToFirst())
+                {
+                    // hmapCatgry.put("Select Reason", "0");
+                    for (int i = 0; i <= (cursor.getCount() - 1); i++)
+                    {
+                        hmapCatgry.put(Integer.parseInt(cursor.getString(0).toString()),cursor.getString(1).toString());
+                        cursor.moveToNext();
+                    }
+                }
+
+            }
+
+            else
+            {
+                // hmapCatgry.put(0, "No Reason");
+            }
+            return hmapCatgry;
+        }
+        finally
+        {
+            cursor.close();
+            close();
+        }
+    }
+
+    public ArrayList<String> fetch_Text_To_Show()
+    {
+        open();
+        ArrayList<String> listTxtBxToShow = new ArrayList<>();
+        Cursor cursor = db.rawQuery("SELECT ReasonId FROM tblNoVisitReasonMaster where flgDSRApplicable='"+1+"' and FlgToShowTextBox='"+1+"' order by SeqNo asc",null);
+        try
+        {
+            if(cursor.getCount()>0)
+            {
+                if (cursor.moveToFirst())
+                {
+                    for (int i = 0; i <= (cursor.getCount() - 1); i++)
+                    {
+                        listTxtBxToShow.add(cursor.getString(0).toString().trim());
+                        cursor.moveToNext();
+                    }
+                }
+
+            }
+
+            else
+            {
+                // hmapCatgry.put(0, "No Reason");
+            }
+            return listTxtBxToShow;
+        }
+        finally
+        {
+            cursor.close();
+            close();
+        }
+    }
+
+    public LinkedHashMap<String, String> fetch_Reason_Late()
+    {
+        open();
+        LinkedHashMap<String, String> hmapCatgry = new LinkedHashMap<>();
+        Cursor cursor = db.rawQuery("SELECT ReasonId,ReasonDescr FROM tblNoVisitReasonMaster where flgDSRApplicable='"+1+"' and flgDelayedReason=1",null);
+        try
+        {
+            if(cursor.getCount()>0)
+            {
+                if (cursor.moveToFirst())
+                {
+                    hmapCatgry.put("Select Reason", "0");
+                    for (int i = 0; i <= (cursor.getCount() - 1); i++)
+                    {
+                        hmapCatgry.put(cursor.getString(1), cursor.getString(0));
+                        cursor.moveToNext();
+                    }
+                }
+
+            }
+
+            else
+            {
+                hmapCatgry.put("No Reason", "0");
+            }
+            return hmapCatgry;
+        }
+        finally
+        {
+            cursor.close();
+            close();
+        }
+    }
+
+    public void updatetblAttandanceDetails(String OptionID,String OptionDesc,String ReasonID,String ReasonDesc,
+                                           String Comment,String DistributorId,String DistributorNodeType,String DistributorName,String serverTime,String submitTime,String rsnForLate,String otherReasonForLate )
+    {
+        open();
+        try {
+
+
+            ContentValues values=new ContentValues();
+            values.put("OptionID",OptionID.trim());
+            values.put("OptionDesc",OptionDesc.trim());
+            values.put("ReasonID",ReasonID.trim());
+            values.put("ReasonDesc",ReasonDesc);
+            values.put("Comment",Comment);
+
+            values.put("DistributorId",DistributorId.trim());
+            values.put("DistributorNodeType",DistributorNodeType);
+            values.put("DistributorName",DistributorName);
+
+            values.put("ServerTimeValidation",serverTime);
+            values.put("SubmitTime",submitTime);
+            values.put("ReasonForLate",rsnForLate);
+            values.put("OtherReasonForLate",otherReasonForLate);
+
+            db.update(TABLE_tblAttandanceDetails,values,"",new String[]{});
+        }catch(SQLiteException exception)
+        {
+            System.out.println();
+        }finally
+        {
+            close();
+        }
+
+    }
+
+    public long savetblAttandanceDetails(String AttandanceTime,String PersonNodeID,String  PersonNodeType ,String PersonName ,
+                                         String OptionID,String OptionDesc ,String ReasonID,String ReasonDesc,
+                                         String Address,
+                                         String PinCode,String City,String State,String fnLati,
+                                         String fnLongi ,String fnAccuracy ,String flgLocNotFound,String fnAccurateProvider,
+                                         String AllProvidersLocation ,String fnAddress ,String GpsLat ,String  GpsLong ,
+                                         String GpsAccuracy ,String GpsAddress ,String NetwLat ,String NetwLong ,
+                                         String NetwAccuracy ,String  NetwAddress ,String  FusedLat ,String  FusedLong ,
+                                         String FusedAccuracy ,String  FusedAddress ,String FusedLocationLatitudeWithFirstAttempt,
+                                         String FusedLocationLongitudeWithFirstAttempt ,String FusedLocationAccuracyWithFirstAttempt,
+                                         int Sstat,int flgLocationServicesOnOff,int flgGPSOnOff,int flgNetworkOnOff,
+                                         int flgFusedOnOff,int flgInternetOnOffWhileLocationTracking,int flgRestart
+            ,String CityId,String StateId,String MapAddress,String MapCity,String MapPinCode,String MapState)
+    {
+        try
+        {
+            db.execSQL("DELETE FROM tblAttandanceDetails");
+        }
+        catch(Exception e)
+        {
+
+        }
+
+        ContentValues initialValues = new ContentValues();
+        String aa= fnGetPersonNodeIDAndPersonNodeType();
+
+
+        initialValues.put("AttandanceTime", AttandanceTime.trim());
+        initialValues.put("PersonNodeID", aa.split(Pattern.quote("^"))[0].trim());
+        initialValues.put("PersonNodeType", aa.split(Pattern.quote("^"))[1].trim());
+
+        initialValues.put("OptionID", OptionID.trim());
+        initialValues.put("OptionDesc", OptionDesc.trim());
+        initialValues.put("ReasonID", ReasonID.trim());
+        initialValues.put("ReasonDesc", ReasonDesc.trim());
+
+        initialValues.put("Address", Address.trim());
+        initialValues.put("PinCode", PinCode.trim());
+        initialValues.put("City", City.trim());
+        initialValues.put("State", State.trim());
+
+        initialValues.put("fnLati", fnLati.trim());
+        initialValues.put("fnLongi", fnLongi.trim());
+        initialValues.put("fnAccuracy", fnAccuracy.trim());
+        initialValues.put("flgLocNotFound", flgLocNotFound.trim());
+        initialValues.put("fnAccurateProvider", fnAccurateProvider.trim());
+        initialValues.put("AllProvidersLocation", AllProvidersLocation.trim());
+        initialValues.put("fnAddress", fnAddress.trim());
+
+        initialValues.put("GpsLat", GpsLat.trim());
+        initialValues.put("GpsLong", GpsLong.trim());
+        initialValues.put("GpsAccuracy", GpsAccuracy.trim());
+        initialValues.put("GpsAddress", GpsAddress.trim());
+
+        initialValues.put("NetwLat", NetwLat.trim());
+        initialValues.put("NetwLong", NetwLong.trim());
+        initialValues.put("NetwAccuracy", NetwAccuracy.trim());
+        initialValues.put("NetwAddress", NetwAddress.trim());
+
+        initialValues.put("FusedLat", FusedLat.trim());
+        initialValues.put("FusedLong", FusedLong.trim());
+        initialValues.put("FusedAccuracy", FusedAccuracy.trim());
+        initialValues.put("FusedAddress", FusedAddress.trim());
+
+        initialValues.put("FusedLocationLatitudeWithFirstAttempt", FusedLocationLatitudeWithFirstAttempt.trim());
+        initialValues.put("FusedLocationLongitudeWithFirstAttempt", FusedLocationLongitudeWithFirstAttempt.trim());
+        initialValues.put("FusedLocationAccuracyWithFirstAttempt", FusedLocationAccuracyWithFirstAttempt.trim());
+        initialValues.put("Sstat", Sstat);
+
+        initialValues.put("flgLocationServicesOnOff", flgLocationServicesOnOff);
+        initialValues.put("flgGPSOnOff", flgGPSOnOff);
+        initialValues.put("flgNetworkOnOff", flgNetworkOnOff);
+        initialValues.put("flgFusedOnOff", flgFusedOnOff);
+        initialValues.put("flgInternetOnOffWhileLocationTracking", flgInternetOnOffWhileLocationTracking);
+        initialValues.put("flgRestart", flgRestart);
+
+        initialValues.put("MapAddress", MapAddress);
+        initialValues.put("MapCity", MapCity);
+        initialValues.put("MapPinCode", MapPinCode);
+        initialValues.put("MapState", MapState);
+        initialValues.put("CityId", CityId);
+        initialValues.put("StateId", StateId);
+        initialValues.put("DistributorId", "0");
+        initialValues.put("DistributorNodeType", "0");
+        initialValues.put("DistributorName", "NA");
+
+        return db.insert(TABLE_tblAttandanceDetails, null, initialValues);
+    }
+
+
+    public void fnSettblAttandanceDetails() {
+
+        try
+        {
+
+            open();
+
+            db.execSQL("UPDATE tblAttandanceDetails SET Sstat= 4" );
+
+
+
+        } catch (Exception ex) {
+            Log.e(TAG, ex.toString());
+        }
+        finally {
+            close();
+        }
+
+    }
+    public void deletetblRegistrationDetail()
+    {
+        //tblProfileData(DBId text null,DOId text null,QuestId text null,SectionID text null,QuestDesc text null);";
+
+
+        db.execSQL("DELETE FROM tblRegistrationDetail ");// and sectionID="+sectionID
+
+    }
+    public void updateSstat()
+    {
+
+        try
+        {
+
+            final ContentValues values = new ContentValues();
+            values.put("Sstat", "5");
+
+            int affected1 = db.update("tblRegistrationDetail", values, "Sstat=?",new String[] { "3" });
+            //int affected2 = db.update("tblVRSCheckInPhotoDetail", values, "Sstat=?",new String[] { "3" });
+        }
+        catch (Exception ex)
+        {
+            // Log.e(TAG, ex.toString());
+        }
+    }
+
+    public String fnGetXMLFileWithFlag(String Sstat,String XMLType)
+    {
+        String optionList="";
+        open();
+        // Cursor cursor = db.rawQuery("SELECT SST_NameId,SST_Name_des from tbl_SST_NameMstr Order By Sequence ASC  ", null);// Where PNodeID='"+TSIID+"'
+        Cursor cursor = db.rawQuery("SELECT XmlFileName from tbl_XMLfiles Where Sstat='"+Sstat+"'",null);//" And XMLType='"+XMLType+"' ", null);// Where PNodeID='"+TSIID+"'
+        // (String) cursor.getString(0).toString()+"^"+(String) cursor.getString(1).toString()+"^"+(String) cursor.getString(2).toString()+"^"+(String) cursor.getString(3).toString()+"^"+(String) cursor.getString(4).toString()+"^"+(String) cursor.getString(5).toString()+"^"+(String) cursor.getString(6).toString()+"^"+(String) cursor.getString(7).toString()+"^"+(String) cursor.getString(8).toString()+"^"+(String) cursor.getString(9).toString()+"^"+(String) cursor.getString(10).toString()
+        // close();
+        try {
+            if(cursor.getCount()>0)
+            {
+                if (cursor.moveToFirst())
+                {
+                    for (int i = 0; i <= (cursor.getCount() - 1); i++) {
+                        if(optionList.equals(""))
+                        {
+                            optionList =(String) cursor.getString(0).toString();
+                        }
+                        else
+                        {
+                            optionList =optionList+"^"+(String) cursor.getString(0).toString();
+                        }
+                        cursor.moveToNext();
+                    }
+                }
+            }
+            return optionList;
+        }
+        finally
+        {
+            close();
+            cursor.close();
+
+        }
+    }
+    public void deleteRegistrationTable(int Sstat)
+    {
+
+        db.execSQL("DELETE FROM tblRegistrationDetail WHERE Sstat ='" + Sstat +"'");
+    }
+
+    public int CheckImageIntable(String ImageName)
+    {
+        Cursor cursorE2=null;
+        int chkI = 0;
+        try {
+            cursorE2 = db.rawQuery("SELECT COUNT(*) FROM tblRegistrationDetail  WHERE PhotoName ='" + ImageName +"' Or SignName ='" + ImageName +"'  ", null);
+            if (cursorE2.moveToFirst()) {
+
+                if (cursorE2.getInt(0) > 0) {
+                    chkI = 1;
+                } else {
+                    chkI = 0;
+                }
+            }
+
+
+        } catch(Exception ex)
+        {
+
+        }
+        finally {
+            if(cursorE2!=null)
+            {
+                cursorE2.close();
+            }
+        }
+        return chkI;
+    }
+
+    public LinkedHashMap<String, String> fnGettblDsrRegDetails()
+    {
+        LinkedHashMap<String, String> hmapQuestionMstr=new LinkedHashMap<String, String>();
+        open();
+
+        try {                                   //0             1                         2                      3               4                       5                    6              7                         8                9                  10                    11                12                   13                 14                 15                        16           17                      18
+            Cursor cursor = db.rawQuery("SELECT IFNULL(Name,0),IFNULL(ContactNo,0),IFNULL(DOB,0),IFNULL(SelfieName,0),IFNULL(SignImgName,0),IFNULL(BankAccountnumber,0),IFNULL(BankID,0),IFNULL(IFSCCode,0),IFNULL(flgUPIID,0),IFNULL(UPIID,0),IFNULL(PersonNodeId,0),IFNULL(PersonNodeType,0),IFNULL(SelfieNameURL,0),IFNULL(EmailId,0) from tblDSMRegDetailsFromServer   ", null);// Where PNodeID='"+TSIID+"'
+            if(cursor.getCount()>0)
+            {
+                if (cursor.moveToFirst())
+                {
+                    for (int i = 0; i <= (cursor.getCount() - 1); i++) {
+
+                        String emailID="0";
+                        if((String) cursor.getString(13).toString()!=null){
+                            if(!((String) cursor.getString(13).toString()).equals("")){
+                                emailID=(String) cursor.getString(13).toString();
+                            }
+                        }
+                        hmapQuestionMstr.put("DSRDETAILS",(String) cursor.getString(0).toString()+"^"+(String) cursor.getString(1).toString()+"^"+(String) cursor.getString(2).toString()+"^"+(String) cursor.getString(3).toString()+"^"+(String) cursor.getString(4).toString()+"^"+(String) cursor.getString(5).toString()+"^"+(String) cursor.getString(6).toString()+"^"+(String) cursor.getString(7).toString()+"^"+(String) cursor.getString(8).toString()+"^"+(String) cursor.getString(9).toString()+"^"+(String) cursor.getString(10).toString()+"^"+(String) cursor.getString(11).toString()+"^"+(String) cursor.getString(12).toString()+"^"+emailID);
+                        //    System.out.println("QuestID:"+(String)cursor.getString(0).toString()+"QuestCode:"+(String) cursor.getString(1).toString()+"QuestDesc:"+(String) cursor.getString(2).toString()+"QuestType:"+(String) cursor.getString(3).toString()+"AnsControlType:"+(String) cursor.getString(4).toString()+"AnsControlInputTypeID:"+(String) cursor.getString(5).toString()+"AnsControlInputTypeMaxLength:"+(String) cursor.getString(6).toString()+"AnsMustRequiredFlg:"+(String) cursor.getString(7).toString()+"QuestBundleFlg:"+(String) cursor.getString(8).toString()+"ApplicationTypeID:"+(String) cursor.getString(9).toString()+"Sequence:"+(String) cursor.getString(10).toString());
+                        cursor.moveToNext();
+                    }
+                }
+            }
+
+        }
+        catch (Exception e) {
+            System.out.println("Error fnGettblUOMMstr= "+e.toString());
+        }
+        finally
+        {
+
+            close();
+            return hmapQuestionMstr;
+        }
+    }
+    public String fnGetPersonNameAndFlgRegistered()
+    {
+        String PersonNameAndFlgRegistered="0";
+        open();
+
+        try {
+            Cursor cursor = db.rawQuery("SELECT  PersonName,  FlgRegistered,PersonNodeID,PersonNodeType,SalesAreaName,ContactNumber from tblUserAuthenticationMstr   ", null);// Where PNodeID='"+TSIID+"'
+            if(cursor.getCount()>0)
+            {
+                if (cursor.moveToFirst())
+                {
+                    for (int i = 0; i <= (cursor.getCount() - 1); i++) {
+                        PersonNameAndFlgRegistered=(String) cursor.getString(0).toString()+"^"+(String) cursor.getString(1).toString()+"^"+(String) cursor.getString(2).toString()+"^"+(String) cursor.getString(3).toString()+"^"+(String) cursor.getString(4).toString()+"^"+(String) cursor.getString(5).toString();
+
+                        //    System.out.println("QuestID:"+(String)cursor.getString(0).toString()+"QuestCode:"+(String) cursor.getString(1).toString()+"QuestDesc:"+(String) cursor.getString(2).toString()+"QuestType:"+(String) cursor.getString(3).toString()+"AnsControlType:"+(String) cursor.getString(4).toString()+"AnsControlInputTypeID:"+(String) cursor.getString(5).toString()+"AnsControlInputTypeMaxLength:"+(String) cursor.getString(6).toString()+"AnsMustRequiredFlg:"+(String) cursor.getString(7).toString()+"QuestBundleFlg:"+(String) cursor.getString(8).toString()+"ApplicationTypeID:"+(String) cursor.getString(9).toString()+"Sequence:"+(String) cursor.getString(10).toString());
+                        cursor.moveToNext();
+                    }
+
+                }
+            }
+
+        }
+        catch (Exception e) {
+            System.out.println("Error fnGettblUOMMstr= "+e.toString());
+        }
+        finally
+        {
+
+            close();
+            return PersonNameAndFlgRegistered;
+        }
+    }
+    public void inserttblProfilePhotoSignDetail(String RecordId,String ClickedDateTime,String PhotoName,String PDAPhotoPath,String SignName,String SignPath,String Name,String ContactNo,String DOB,String AccNo,String BankID,String IFSC,String UPIID_Flag,String UPIID_text,String IMEI,String NodeID,String NodeType,String EmailID)
+    {
+        //tblProfileData(DBId text null,DOId text null,QuestId text null,SectionID text null,QuestDesc text null);";
+// private static final String DATABASE_CREATE_tblProfileData= "create table tblProfileData(DBId text null,DOId text null,QuestId text null,QuestDesc text null,ControlType text null);";
+
+
+        ContentValues initialValues = new ContentValues();
+
+
+
+        initialValues.put("RecordId", RecordId.trim());
+        initialValues.put("ClickedDateTime", ClickedDateTime.trim());
+        initialValues.put("PhotoName", PhotoName.trim());
+        initialValues.put("PDAPhotoPath", PDAPhotoPath.trim());
+        initialValues.put("SignName", SignName.trim());
+        initialValues.put("SignPath", SignPath.trim());
+
+        initialValues.put("Name", Name.trim());
+        initialValues.put("ContactNo", ContactNo.trim());
+        initialValues.put("DOB", DOB.trim());
+        initialValues.put("AccNo", AccNo.trim());
+        initialValues.put("BankID", BankID.trim());
+        initialValues.put("IFSC", IFSC.trim());
+        initialValues.put("UPIID_Flag", UPIID_Flag.trim());
+        initialValues.put("UPIID_text", UPIID_text.trim());
+        initialValues.put("IMEI", IMEI.trim());
+        initialValues.put("NodeID", NodeID.trim());
+        initialValues.put("NodeType", NodeType.trim());
+        initialValues.put("Sstat", 3);
+        initialValues.put("EmailID", EmailID.trim());
+
+
+
+        db.insert(DATABASE_TABLE_tblRegistrationDetail, null, initialValues);
+
+
+
+    }
+
+    public int CheckDataInRegistration()
+    {
+        Cursor cursorE2=null;
+        int chkI = 0;
+        try {
+            cursorE2 = db.rawQuery("SELECT COUNT(*) FROM tblRegistrationDetail  WHERE Sstat ='" + 3 +"' ", null);
+            if (cursorE2.moveToFirst()) {
+
+                if (cursorE2.getInt(0) > 0) {
+                    chkI = 1;
+                } else {
+                    chkI = 0;
+                }
+            }
+
+
+        } catch(Exception ex)
+        {
+
+        }
+        finally {
+            if(cursorE2!=null)
+            {
+                cursorE2.close();
+            }
+        }
+        return chkI;
+    }
+    public void Delete_tblDsrRegDetails()
+
+    {
+        db.execSQL("DELETE FROM tblDSMRegDetailsFromServer");
+    }
+    public void Delete_tblUserRegistarationStatus()
+
+    {
+        db.execSQL("DELETE FROM tblUserRegistarationStatus");
+    }
+    public long savetblUserRegistarationStatus(String Flag,String MsgToDisplay)
+    {
+
+        ContentValues initialValues = new ContentValues();
+
+        initialValues.put("Flag", Flag.trim());
+        initialValues.put("MsgToDisplay", MsgToDisplay.trim());
+
+        // System.out.println("Data Insert in Table MAIN1User");
+
+        return db.insert(TABLE_tblUserRegistarationStatus, null, initialValues);
+    }
+    public String fnGettblUserRegistarationStatus()
+    {
+        String PersonNameAndFlgRegistered="0";
+        open();
+
+        try {
+            Cursor cursor = db.rawQuery("SELECT  Flag,  MsgToDisplay from tblUserRegistarationStatus   ", null);// Where PNodeID='"+TSIID+"'
+            if(cursor.getCount()>0)
+            {
+                if (cursor.moveToFirst())
+                {
+                    for (int i = 0; i <= (cursor.getCount() - 1); i++) {
+                        String msg=(String) cursor.getString(1).toString();
+                        if(msg.trim().equals("")){
+                            msg="0";
+                        }
+                        PersonNameAndFlgRegistered=(String) cursor.getString(0).toString()+"^"+msg;
+
+                        //    System.out.println("QuestID:"+(String)cursor.getString(0).toString()+"QuestCode:"+(String) cursor.getString(1).toString()+"QuestDesc:"+(String) cursor.getString(2).toString()+"QuestType:"+(String) cursor.getString(3).toString()+"AnsControlType:"+(String) cursor.getString(4).toString()+"AnsControlInputTypeID:"+(String) cursor.getString(5).toString()+"AnsControlInputTypeMaxLength:"+(String) cursor.getString(6).toString()+"AnsMustRequiredFlg:"+(String) cursor.getString(7).toString()+"QuestBundleFlg:"+(String) cursor.getString(8).toString()+"ApplicationTypeID:"+(String) cursor.getString(9).toString()+"Sequence:"+(String) cursor.getString(10).toString());
+                        cursor.moveToNext();
+                    }
+
+                }
+            }
+
+        }
+        catch (Exception e) {
+            System.out.println("Error fnGettblUOMMstr= "+e.toString());
+        }
+        finally
+        {
+
+            close();
+            return PersonNameAndFlgRegistered;
+        }
+    }
+
+    public String fnGetBankName(String BankId)
+    {
+        String BANKNAME="0";
+        open();
+        // Cursor cursor = db.rawQuery("SELECT SST_NameId,SST_Name_des from tbl_SST_NameMstr Order By Sequence ASC  ", null);// Where PNodeID='"+TSIID+"'
+        Cursor cursor = db.rawQuery("SELECT BankName from tblBankMaster  where BankId='"+ BankId +"'  ", null);// Where PNodeID='"+TSIID+"'
+        // (String) cursor.getString(0).toString()+"^"+(String) cursor.getString(1).toString()+"^"+(String) cursor.getString(2).toString()+"^"+(String) cursor.getString(3).toString()+"^"+(String) cursor.getString(4).toString()+"^"+(String) cursor.getString(5).toString()+"^"+(String) cursor.getString(6).toString()+"^"+(String) cursor.getString(7).toString()+"^"+(String) cursor.getString(8).toString()+"^"+(String) cursor.getString(9).toString()+"^"+(String) cursor.getString(10).toString()
+        // close();
+        try {
+            if(cursor.getCount()>0)
+            {
+                if (cursor.moveToFirst())
+                {
+                    BANKNAME=(String) cursor.getString(0).toString();
+
+                }
+            }
+            return BANKNAME;
+        }
+        finally
+        {if(cursor!=null){
+            cursor.close();
+        }
+
+            close();
+        }
+    }
+    public String fnGetPersonNodeIDAndPersonNodeType()
+    {
+        String SONodeIdAndNodeType="0^0";
+
+
+        Cursor cursor=db.rawQuery("Select PersonNodeID,PersonNodeType from tblUserAuthenticationMstr", null);
+
+        if(cursor.getCount()>0)
+        {
+            if(cursor.moveToFirst())
+            {
+                SONodeIdAndNodeType=cursor.getString(0)+"^"+cursor.getString(1);
+            }
+        }
+
+        return SONodeIdAndNodeType;
+    }
+    public void fndeleteOldAddressDetailsofVisitedStore(String StoreID)
+    {
+        open();
+        db.execSQL("DELETE FROM tblLatLongDetails where  StoreID='"+StoreID+"'");
+        close();
+    }
 }
 

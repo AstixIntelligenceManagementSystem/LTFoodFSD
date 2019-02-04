@@ -1,7 +1,6 @@
 package project.astix.com.ltfoodfsd;
 
 import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -20,7 +19,6 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.view.View;
 
 import com.astix.Common.CommonInfo;
 import com.google.android.gms.common.ConnectionResult;
@@ -31,7 +29,6 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.MapFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -67,8 +64,8 @@ public class LocationRetreivingGlobal implements LocationListener,GoogleApiClien
     public LocationManager locationManager;
     public Location location;
 
-    private final long startTime = 15000;
-    private final long interval = 200;
+    private final long startTime = 31000;
+    private final long interval = 10000;
     public CoundownClass countDownTimer;
     public boolean isGPSEnabled = false;
     public String FusedLocationLatitude="0";
@@ -102,16 +99,20 @@ public class LocationRetreivingGlobal implements LocationListener,GoogleApiClien
     public  int flgFusedOnOff=0;
     public  int flgInternetOnOffWhileLocationTracking=0;
     public  int flgRestart=0;
+
     public String address,pincode,city,state,latitudeToSave,longitudeToSave,accuracyToSave;
     Location mCurrentLocation;
     String mLastUpdateTime;
     Activity activity ;
-    public void locationRetrievingAndDistanceCalculating(Context context)
+    int checkAccuracy=0;
+    boolean fetchAdressFlag=true;// if true means fetch address ,if false dont fetch address
+    public void locationRetrievingAndDistanceCalculating(Context context,boolean fetchAdressFlag,int checkAccuracy)
     {
         activity = (Activity) context;
         locationManager=(LocationManager) context.getSystemService(LOCATION_SERVICE);
         this.context=context;
-
+        this.fetchAdressFlag=fetchAdressFlag;
+        this.checkAccuracy=checkAccuracy;
         appLocationService = new AppLocationService();
 
         pm = (PowerManager) context.getSystemService(POWER_SERVICE);
@@ -119,7 +120,13 @@ public class LocationRetreivingGlobal implements LocationListener,GoogleApiClien
                 | PowerManager.ACQUIRE_CAUSES_WAKEUP
                 | PowerManager.ON_AFTER_RELEASE, "INFO");
         wl.acquire();
-
+        if(pDialog2STANDBY!=null)
+        {
+            if(pDialog2STANDBY.isShowing())
+            {
+                pDialog2STANDBY.dismiss();
+            }
+        }
 
         pDialog2STANDBY = ProgressDialog.show(context, context.getText(R.string.genTermPleaseWaitNew), context.getText(R.string.rtrvng_loc), true);
         pDialog2STANDBY.setIndeterminate(true);
@@ -221,6 +228,21 @@ public class LocationRetreivingGlobal implements LocationListener,GoogleApiClien
 
         @Override
         public void onTick(long millisUntilFinished) {
+            System.out.println("Shivam"+FusedLocationAccuracy);
+            if(FusedLocationAccuracy!=null){
+                if(FusedLocationAccuracy==null || FusedLocationAccuracy.equals("NA"))
+                {
+                    FusedLocationAccuracy="0.0";
+                }
+
+                if(Double.parseDouble(FusedLocationAccuracy)<checkAccuracy && (!FusedLocationAccuracy.equals("0"))){
+                    System.out.println("Shivam"+"ontickFInish "+millisUntilFinished+":"+ FusedLocationAccuracy);
+
+                    countDownTimer.onFinish();
+                    countDownTimer.cancel();
+
+                }
+            }
 
         }
 
@@ -245,7 +267,7 @@ public class LocationRetreivingGlobal implements LocationListener,GoogleApiClien
                     GpsLat=""+lattitude;
                     GpsLong=""+longitude;
                     GpsAccuracy=""+accuracy;
-                    if(isOnline())
+                    if(isOnline() && (fetchAdressFlag))
                     {
                         GpsAddress=getAddressOfProviders(GpsLat, GpsLong);
                     }
@@ -275,7 +297,7 @@ public class LocationRetreivingGlobal implements LocationListener,GoogleApiClien
                 NetwLat=""+lattitude1;
                 NetwLong=""+longitude1;
                 NetwAccuracy=""+accuracy1;
-                if(isOnline())
+                if(isOnline() && (fetchAdressFlag))
                 {
                     NetwAddress=getAddressOfProviders(NetwLat, NetwLong);
                 }
@@ -321,7 +343,7 @@ public class LocationRetreivingGlobal implements LocationListener,GoogleApiClien
                 FusedLocationLongitudeWithFirstAttempt=FusedLocationLongitude;
                 FusedLocationAccuracyWithFirstAttempt=FusedLocationAccuracy;
 
-                if(isOnline())
+                if(isOnline() && (fetchAdressFlag))
                 {
                     FusedAddress=getAddressOfProviders(FusedLat, FusedLong);
                 }
@@ -452,7 +474,7 @@ public class LocationRetreivingGlobal implements LocationListener,GoogleApiClien
             }
             else
             {
-                if(isOnline())
+                if(isOnline() && (fetchAdressFlag))
                 {
                     getAddressForDynamic(fnLati,fnLongi);
                 }
@@ -599,42 +621,45 @@ else{
 
 
     }*/
+  public String getAddressOfProviders(String latti, String longi){
 
-    public String getAddressOfProviders(String latti, String longi){
+      StringBuilder FULLADDRESS2 =new StringBuilder();
+      Geocoder geocoder;
+      List<Address> addresses;
+      geocoder = new Geocoder(context,  Locale.ENGLISH);
 
-        StringBuilder FULLADDRESS2 =new StringBuilder();
-        Geocoder geocoder;
-        List<Address> addresses;
-        geocoder = new Geocoder(context, Locale.ENGLISH);
+if(latti==null || latti.equals("NA"))
+{
+    latti="0.0";
+}
+      if(longi==null || longi.equals("NA"))
+      {
+          longi="0.0";
+      }
+      try {
+          addresses = geocoder.getFromLocation(Double.parseDouble(latti), Double.parseDouble(longi), 1);
+
+          if (addresses == null || addresses.size()  == 0 || addresses.get(0).getAddressLine(0)==null)
+          {
+              FULLADDRESS2=  FULLADDRESS2.append("NA");
+          }
+          else
+          {
+              FULLADDRESS2 =FULLADDRESS2.append(addresses.get(0).getAddressLine(0));
+          }
+
+      } catch (NumberFormatException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+      } catch (IOException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+      } // Here 1 represent max location result to returned, by documents it recommended 1 to 5
 
 
+      return FULLADDRESS2.toString();
 
-        try {
-            addresses = geocoder.getFromLocation(Double.parseDouble(latti), Double.parseDouble(longi), 1);
-
-            if (addresses == null || addresses.size()  == 0 || addresses.get(0).getAddressLine(0)==null)
-            {
-                FULLADDRESS2=  FULLADDRESS2.append("NA");
-            }
-            else
-            {
-                FULLADDRESS2 =FULLADDRESS2.append(addresses.get(0).getAddressLine(0));
-            }
-
-        } catch (NumberFormatException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-
-
-        return FULLADDRESS2.toString();
-
-    }
-
-
+  }
     public void checkHighAccuracyLocationMode(Context context) {
         int locationMode = 0;
         String locationProviders;
@@ -734,11 +759,19 @@ else{
             CityFromLauncher = allLoctionDetails.split(Pattern.quote("^"))[4];
             PincodeFromLauncher = allLoctionDetails.split(Pattern.quote("^"))[5];
             StateFromLauncher = allLoctionDetails.split(Pattern.quote("^"))[6];*/
+           if(latti==null || latti.equals("NA"))
+           {
+               latti="0.0";
+           }
+            if(longi==null || longi.equals("NA"))
+            {
+                longi="0.0";
+            }
             List<Address> addresses = geocoder.getFromLocation(Double.parseDouble(latti), Double.parseDouble(longi), 1);
             if (addresses != null && addresses.size() > 0){
                 if(addresses.get(0).getAddressLine(1)!=null){
                     addr=addresses.get(0).getAddressLine(1);
-                    address=addr;
+
                 }
 
                 if(addresses.get(0).getLocality()!=null){
@@ -768,6 +801,7 @@ else{
                     }
 
                     addr=  getAddressNewWay(addresses.get(0).getAddressLine(0),city,state,zipcode,countryname);
+                    address=addr;
                 }
 
               /*  NewStoreFormSO recFragment = (NewStoreFormSO)getFragmentManager().findFragmentByTag("NewStoreFragment");

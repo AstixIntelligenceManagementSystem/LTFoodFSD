@@ -3,7 +3,7 @@
 
    <string name="app_name">FS Field Operations</string>
  <!-- <string name="app_name">FS Field Operations Stagging</string>-->
- <!--  <string name="app_name">FS Field Operations Test</string>-->
+   <!--<string name="app_name">FS Field Operations Test</string>-->
    <!--<string name="app_name">FS Field Operations Dev</string>-->
 
  <!--<string name="app_name">FS Field Operations Test Release</string>-->
@@ -17,7 +17,7 @@
     <string name="producttype_prompt">Please Select Order Type</string>
     <string name="AlertDialogHeaderErrorMsg">Error</string>
 
-    <string name="selectDistributorProceeds">Please select Distributor to Proceed.</string>
+
 
     <string name="AlertDialogHeaderMsg">Alert</string>
     <string name="NoDataConnectionFullMsg">Your device has no Data Connection. \n Please ensure Internet is accessible to Continue.</string>
@@ -337,11 +337,60 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_quotation">QuotationActivity</string>
  <string name="txtSELECTDOB">SELECT DOB</string>
+ <string name="txtSelectDOB">SELECT DOB</string>
+
     <string-array name="planets">
         <item>Quotation</item>
         <item>View Quotation</item>
 
 
     </string-array>
+ <string name="dsr_profile">DSR Profile</string>
+ <string name="DSR_Profile">DSR Profile</string>
+ <string name="Coverage_Area">Coverage Area</string>
+ <string name="Contact_No">Contact No</string>
+ <string name="DOB">DOB</string>
+ <string name="DayStartButtonText">Day Start</string>
+ <string name="ExitButtonText">Exit</string>
+ <string name="submittingDayStart">Submitting Day Start Details...</string>
+ <string name="working">Working</string>
+ <string name="not_working">Not Working</string>
+ <string name="DistbtrName">Distributor Name : </string>
+ <string name="today_working">Today Working</string>
+ <string name="today_Notworking">Not Working</string>
+ <string name="other_loc">Please Specify : </string>
+ <string name="selectReasonForLate">To proceed, please select a reason why you were late.</string>
+ <string name="selectOtherReasonForLate">To proceed, please specify other reason why you were late.</string>
+ <string name="selectDistributorProceeds">Please select Distributor to Proceed.</string>
+ <string name="selectAtleastOneOption">Please Select atleast one option to proceed.</string>
+ <string name="AlertSameLoc">Your current location is same as previous, so please turn off your location services then turn on, it back again.</string>
+ <string name="txtErrRetrieving">Error while Retrieving Data!\n Please Retry</string>
+ <string name="genTermFetchingTime">Fetching Current Time..</string>
+ <string name="specifyDBRName">Please Specify Distributor Name, to proceed.</string>
+ <string name="specifyLocatione">Please Specify Other Location, to proceed.</string>
+ <string name="selectAtleastOneOptionwithedittext">Please Specify the reason first to proceed.</string>
+ <string name="txtWelcome">Welcome</string>
+ <string name="radioYes">Yes</string>
+ <string name="radioNo">No</string>
+ <string name="txtUpdate">Update Now</string>
+ <string name="txtNotYou">Not You</string>
+ <string name="txtDayStart">Day Start</string>
+ <string name="hintMobileNo">Mobile No.</string>
+ <string name="txtDOB">DOB</string>
+ <string name="txtValidate">Validate</string>
+ <string name="txtSuccessfullySaved">Successfully Saved</string>
+ <string name="txtDSRMsg">Please remember to update your personal details today before doing day end activity</string>
+ <string name="ValidatingMsg">Validating User</string>
+ <string name="txtErrorMobileNo">Mobile no. is not valid</string>
+
+ <string name="txtErrorNoDataConnection">No Data Connection!</string>
+ <string name="txtErrorInternetConnection">Your device has no Data Connection! Please ensure Internet is accessible to Continue.</string>
+ <string name="txtRetry">Retry</string>
+
+
+
+
+
+
 
 </resources>

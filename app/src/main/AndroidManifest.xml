@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="project.astix.com.ltfoodfsd">
 
-    <uses-sdk android:minSdkVersion="14" />
 
     <!-- GCM Permissions - End here -->
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -45,6 +44,7 @@
 
 
     <application
+        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:icon="@drawable/ltfood_logo"
         android:label="@string/app_name"
@@ -221,6 +221,9 @@
         <activity android:name="project.astix.com.ltfoodfsd.StorelistActivity" />
         <activity android:name="project.astix.com.ltfoodfsd.AddNewStore_DynamicSectionWiseSO"
                   android:screenOrientation="portrait"/>
+        <activity android:name="project.astix.com.ltfoodfsd.SyncRegistrationDetails"
+            android:screenOrientation="portrait"/>
+
 
         <activity android:name="project.astix.com.ltfoodfsd.DistributorMapActivity" />
 
@@ -263,6 +266,11 @@
         <activity android:name="project.astix.com.ltfoodfsd.WebViewManageDSRActivity"
             android:theme="@style/detailActivityTheme"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".RegistrationActivity"
+            android:screenOrientation="portrait"
+            />
+        <activity android:name="project.astix.com.ltfoodfsd.DayStartActivity"  />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -274,6 +282,9 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="f1190ff0cbdbe64db00b2abc4a814062eb1a7aa0" />
     </application>
 
 </manifest>

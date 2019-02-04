@@ -146,7 +146,7 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
     public String rID="0";    // Abhinav Sir tell Sunil for set its value zero at 10 October 2017
     LinearLayout  ll_marketVisit, ll_storeVal, ll_reports,ll_outstandingTask,ll_visitPlan,ll_appointment, ll_distrbtrStock, ll_execution;
 
-    LinearLayout ll_dsrTracker,ll_distrbtnMap,ll_noVisit,ll_DayEnd;
+    LinearLayout ll_dsrTracker,ll_distrbtnMap,ll_noVisit,ll_DayEnd,ll_SoProfile;
 
     String[] drsNames;
     DBAdapterKenya dbengine = new DBAdapterKenya(this);
@@ -291,7 +291,7 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_button);
-
+        DayStartActivity.flgDaySartWorking=0;
         sharedPref = getSharedPreferences(CommonInfo.Preference, MODE_PRIVATE);
         if(sharedPref.contains("CoverageAreaNodeID"))
         {
@@ -441,6 +441,19 @@ public class AllButtonActivity extends BaseActivity implements LocationListener,
 
             }
         });
+
+        ll_SoProfile = (LinearLayout) findViewById(R.id.ll_SoProfile);
+        ll_SoProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i=new Intent(AllButtonActivity.this,RegistrationActivity.class);
+                i.putExtra("IntentFrom", "AllButtonActivity");
+                i.putExtra("Button", "DSMRegistration");
+                startActivity(i);
+                finish();
+            }
+        });
+
 
 
     }

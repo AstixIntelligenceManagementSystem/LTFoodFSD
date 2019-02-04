@@ -69,6 +69,7 @@ public class LastVisitDetail_AllButton extends BaseActivity implements Interface
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_last_visit_all_button);
         locationManager=(LocationManager) this.getSystemService(LOCATION_SERVICE);
+        DayStartActivity.flgDaySartWorking=0;
         getDataFromIntent();
         getDataFromDatabase();
         initializeView();
@@ -439,7 +440,7 @@ public class LastVisitDetail_AllButton extends BaseActivity implements Interface
                             else
                             {
                                 LocationRetreivingGlobal llaaa=new LocationRetreivingGlobal();
-                                llaaa.locationRetrievingAndDistanceCalculating(LastVisitDetail_AllButton.this);
+                                llaaa.locationRetrievingAndDistanceCalculating(LastVisitDetail_AllButton.this,false,50);
                             }
 
 
@@ -794,15 +795,19 @@ public class LastVisitDetail_AllButton extends BaseActivity implements Interface
     public void testFunctionOne(String fnLati, String fnLongi, String finalAccuracy, String fnAccurateProvider, String GpsLat, String GpsLong, String GpsAccuracy, String NetwLat, String NetwLong, String NetwAccuracy, String FusedLat, String FusedLong, String FusedAccuracy, String AllProvidersLocation, String GpsAddress, String NetwAddress, String FusedAddress, String FusedLocationLatitudeWithFirstAttempt, String FusedLocationLongitudeWithFirstAttempt, String FusedLocationAccuracyWithFirstAttempt, int flgLocationServicesOnOff, int flgGPSOnOff, int flgNetworkOnOff, int flgFusedOnOff, int flgInternetOnOffWhileLocationTracking, String address, String pincode, String city, String state) {
 
         System.out.println("SHIVA"+fnLati+","+fnLongi+","+finalAccuracy+","+fnAccurateProvider+","+GpsLat+","+GpsLong+","+GpsAccuracy+","+NetwLat+","+NetwLong+","+NetwAccuracy+","+FusedLat+","+FusedLong+","+FusedAccuracy+","+AllProvidersLocation+","+GpsAddress+","+NetwAddress+","+FusedAddress+","+FusedLocationLatitudeWithFirstAttempt+","+FusedLocationLongitudeWithFirstAttempt+","+FusedLocationAccuracyWithFirstAttempt+","+fnLongi+","+flgLocationServicesOnOff+","+flgGPSOnOff+","+flgNetworkOnOff+","+flgFusedOnOff+","+flgInternetOnOffWhileLocationTracking+","+address+","+pincode+","+city+","+state);
-
+        dbengine.fndeleteOldAddressDetailsofVisitedStore(storeID);
+        dbengine.saveLatLngToTxtFile(storeID,fnLati, fnLongi,finalAccuracy,fnAccurateProvider,GpsLat,GpsLong,GpsAccuracy,NetwLat,NetwLong,NetwAccuracy,FusedLat,FusedLong,FusedAccuracy,3,"0",
+                FusedAddress,AllProvidersLocation,GpsAddress,NetwAddress,FusedAddress,FusedLocationLatitudeWithFirstAttempt
+                ,FusedLocationLongitudeWithFirstAttempt,FusedLocationAccuracyWithFirstAttempt);
+        dbengine.open();
+        dbengine.UpdateStoreActualLatLongi(storeID,String.valueOf(fnLati), String.valueOf(fnLongi), "" + finalAccuracy,fnAccurateProvider,flgLocationServicesOnOff,flgGPSOnOff,flgNetworkOnOff,flgFusedOnOff,flgInternetOnOffWhileLocationTracking,flgRestart,flgStoreOrder);
+        dbengine.close();
         if(!checkLastFinalLoctionIsRepeated(String.valueOf(fnLati), String.valueOf(fnLongi), String.valueOf(finalAccuracy)))
         {
 
             fnCreateLastKnownFinalLocation(String.valueOf(fnLati), String.valueOf(fnLongi), String.valueOf(finalAccuracy));
 
-            dbengine.open();
-            dbengine.UpdateStoreActualLatLongi(storeID,String.valueOf(fnLati), String.valueOf(fnLongi), "" + finalAccuracy,fnAccurateProvider,flgLocationServicesOnOff,flgGPSOnOff,flgNetworkOnOff,flgFusedOnOff,flgInternetOnOffWhileLocationTracking,flgRestart,flgStoreOrder);
-            dbengine.close();
+
             FullSyncDataNow task = new FullSyncDataNow(LastVisitDetail_AllButton.this);
             task.execute();
         }
@@ -837,9 +842,7 @@ public class LastVisitDetail_AllButton extends BaseActivity implements Interface
             }
             else
             {
-                dbengine.open();
-                dbengine.UpdateStoreActualLatLongi(storeID,String.valueOf(fnLati), String.valueOf(fnLongi), "" + finalAccuracy,fnAccurateProvider,flgLocationServicesOnOff,flgGPSOnOff,flgNetworkOnOff,flgFusedOnOff,flgInternetOnOffWhileLocationTracking,flgRestart,flgStoreOrder);
-                dbengine.close();
+
                 FullSyncDataNow task = new FullSyncDataNow(LastVisitDetail_AllButton.this);
                 task.execute();
             }

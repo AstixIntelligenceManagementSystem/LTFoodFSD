@@ -97,9 +97,11 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class OrderReview extends BaseActivity implements OnItemSelectedListener, OnClickListener, OnFocusChangeListener, LocationListener,GoogleApiClient.ConnectionCallbacks,
-GoogleApiClient.OnConnectionFailedListener{
+GoogleApiClient.OnConnectionFailedListener,InterfaceClass{
 
 	//nitika
+	int flgRestart=0;
+	int flgStoreOrder=0;
 	CustomKeyboard mCustomKeyboardNum,mCustomKeyboardNumWithoutDecimal;
 String SelectedSpinerRegularValueID="0";
 	// variable
@@ -250,7 +252,7 @@ String SelectedSpinerRegularValueID="0";
 	    public AppLocationService appLocationService;
 
 	    
-	    public CoundownClass2 countDownTimer2;
+
 	    private final long startTime = 45000;
 	    private final long interval = 200;
 	    
@@ -1806,29 +1808,8 @@ public void loadPurchaseProductDefault()
 					   {
 
 
-						   appLocationService=new AppLocationService();
-
-						   pDialog2STANDBY=ProgressDialog.show(OrderReview.this,getText(R.string.genTermPleaseWaitNew) ,getText(R.string.genTermRetrivingLocation), true);
-						   pDialog2STANDBY.setIndeterminate(true);
-
-						   pDialog2STANDBY.setCancelable(false);
-						   pDialog2STANDBY.show();
-
-						   if(isGooglePlayServicesAvailable()) {
-							   createLocationRequest();
-
-							   mGoogleApiClient = new GoogleApiClient.Builder(OrderReview.this)
-									   .addApi(LocationServices.API)
-									   .addConnectionCallbacks(OrderReview.this)
-									   .addOnConnectionFailedListener(OrderReview.this)
-									   .build();
-							   mGoogleApiClient.connect();
-						   }
-						   startService(new Intent(OrderReview.this, AppLocationService.class));
-						   Location nwLocation=appLocationService.getLocation(locationManager,LocationManager.GPS_PROVIDER,location);
-						   Location gpsLocation=appLocationService.getLocation(locationManager,LocationManager.NETWORK_PROVIDER,location);
-						   countDownTimer2 = new CoundownClass2(startTime, interval);
-						   countDownTimer2.start();
+						   LocationRetreivingGlobal llaaa=new LocationRetreivingGlobal();
+						   llaaa.locationRetrievingAndDistanceCalculating(OrderReview.this,false,50);
 
 
 					   }
@@ -7586,6 +7567,7 @@ public void loadPurchaseProductDefault()
 		 else
 		 {
 
+/*
 
 
 
@@ -7617,8 +7599,10 @@ public void loadPurchaseProductDefault()
 			   countDownTimer2 = new CoundownClass2(startTimeFix, intervalFix);
 			   countDownTimer2.start();
 
+*/
 
-
+			 LocationRetreivingGlobal llaaa=new LocationRetreivingGlobal();
+			 llaaa.locationRetrievingAndDistanceCalculating(OrderReview.this,false,50);
 
 		 }
 
@@ -7628,7 +7612,8 @@ public void loadPurchaseProductDefault()
 			alertDialogSubmitConfirm.setCancelable(false);
 			
 			alertDialogSubmitConfirm.setNeutralButton("Yes", new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which)
+						p
+						ublic void onClick(DialogInterface dialog, int which)
 						{
 
 							
@@ -9259,244 +9244,7 @@ public void loadPurchaseProductDefault()
 			LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, appLocationService);
 			
 		}
-		public class CoundownClass2 extends CountDownTimer{
-
-			public CoundownClass2(long startTime, long interval) {
-				super(startTime, interval);
-				// TODO Auto-generated constructor stub
-			}
-
-			@Override
-			public void onTick(long millisUntilFinished) {
-			
-			}
-
-			@Override
-			public void onFinish() {
-
-
-				isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-				String GpsLat="0";
-				String GpsLong="0";
-				String GpsAccuracy="0";
-				String GpsAddress="0";
-				if(isGPSEnabled)
-				{
-
-					Location nwLocation=appLocationService.getLocation(locationManager,LocationManager.GPS_PROVIDER,location);
-					if(nwLocation!=null){
-						double lattitude=nwLocation.getLatitude();
-						double longitude=nwLocation.getLongitude();
-						double accuracy= nwLocation.getAccuracy();
-						GpsLat=""+lattitude;
-						GpsLong=""+longitude;
-						GpsAccuracy=""+accuracy;
-
-						GPSLocationLatitude=""+lattitude;
-						GPSLocationLongitude=""+longitude;
-						GPSLocationProvider="GPS";
-						GPSLocationAccuracy=""+accuracy;
-						System.out.println("LOCATION(GPS)  LATTITUDE: " +lattitude + "LONGITUDE:" + longitude+ "accuracy:" + accuracy);
-						//text2.setText(" LOCATION(GPS) \n LATTITUDE: " +lattitude + "\nLONGITUDE:" + longitude+ "\naccuracy:" + accuracy);
-						//Toast.makeText(getApplicationContext(), " LOCATION(NW) \n LATTITUDE: " +lattitude + "\nLONGITUDE:" + longitude+ "\naccuracy:" + accuracy, Toast.LENGTH_LONG).show();
-					}
-				}
-
-				Location gpsLocation=appLocationService.getLocation(locationManager,LocationManager.NETWORK_PROVIDER,location);
-				String NetwLat="0";
-				String NetwLong="0";
-				String NetwAccuracy="0";
-				String NetwAddress="0";
-				if(gpsLocation!=null){
-					double lattitude1=gpsLocation.getLatitude();
-					double longitude1=gpsLocation.getLongitude();
-					double accuracy1= gpsLocation.getAccuracy();
-					NetwLat=""+lattitude1;
-					NetwLong=""+longitude1;
-					NetwAccuracy=""+accuracy1;
-
-					NetworkLocationLatitude=""+lattitude1;
-					NetworkLocationLongitude=""+longitude1;
-					NetworkLocationProvider="Network";
-					NetworkLocationAccuracy=""+accuracy1;
-					System.out.println("LOCATION(N/W)  LATTITUDE: " +lattitude1 + "LONGITUDE:" + longitude1+ "accuracy:" + accuracy1);
-					// Toast.makeText(this, " LOCATION(NW) \n LATTITUDE: " +lattitude + "\nLONGITUDE:" + longitude, Toast.LENGTH_LONG).show();
-					//text1.setText(" LOCATION(N/W) \n LATTITUDE: " +lattitude1 + "\nLONGITUDE:" + longitude1+ "\naccuracy:" + accuracy1);
-
-				}
-					 /* TextView accurcy=(TextView) findViewById(R.id.Acuracy);
-					  accurcy.setText("GPS:"+GPSLocationAccuracy+"\n"+"NETWORK"+NetworkLocationAccuracy+"\n"+"FUSED"+fusedData);*/
-
-				System.out.println("LOCATION Fused"+fusedData);
-				String FusedLat="0";
-				String FusedLong="0";
-				String FusedAccuracy="0";
-				String FusedAddress="0";
-
-				if(!FusedLocationProvider.equals(""))
-				{
-					fnAccurateProvider="Fused";
-					fnLati=FusedLocationLatitude;
-					fnLongi=FusedLocationLongitude;
-					fnAccuracy= Double.parseDouble(FusedLocationAccuracy);
-
-					FusedLat=FusedLocationLatitude;
-					FusedLong=FusedLocationLongitude;
-					FusedAccuracy=FusedLocationAccuracy;
-				}
-
-
-
-
-				appLocationService.KillServiceLoc(appLocationService,locationManager);
-				try {
-					if(mGoogleApiClient!=null && mGoogleApiClient.isConnected())
-					{
-						stopLocationUpdates();
-						mGoogleApiClient.disconnect();
-					}
-				}
-				catch (Exception e){
-
-				}
-
-
-
-
-				fnAccurateProvider="";
-				fnLati="0";
-				fnLongi="0";
-				fnAccuracy=0.0;
-
-				if(!FusedLocationProvider.equals(""))
-				{
-					fnAccurateProvider="Fused";
-					fnLati=FusedLocationLatitude;
-					fnLongi=FusedLocationLongitude;
-					fnAccuracy= Double.parseDouble(FusedLocationAccuracy);
-				}
-
-				if(!fnAccurateProvider.equals(""))
-				{
-					if(!GPSLocationProvider.equals(""))
-					{
-						if(Double.parseDouble(GPSLocationAccuracy)<=fnAccuracy)
-						{
-							fnAccurateProvider="Gps";
-							fnLati=GPSLocationLatitude;
-							fnLongi=GPSLocationLongitude;
-							fnAccuracy= Double.parseDouble(GPSLocationAccuracy);
-						}
-					}
-				}
-				else
-				{
-					if(!GPSLocationProvider.equals(""))
-					{
-						fnAccurateProvider="Gps";
-						fnLati=GPSLocationLatitude;
-						fnLongi=GPSLocationLongitude;
-						fnAccuracy= Double.parseDouble(GPSLocationAccuracy);
-					}
-				}
-
-				if(!fnAccurateProvider.equals(""))
-				{
-					if(!NetworkLocationProvider.equals(""))
-					{
-						if(Double.parseDouble(NetworkLocationAccuracy)<=fnAccuracy)
-						{
-							fnAccurateProvider="Network";
-							fnLati=NetworkLocationLatitude;
-							fnLongi=NetworkLocationLongitude;
-							fnAccuracy= Double.parseDouble(NetworkLocationAccuracy);
-						}
-					}
-				}
-				else
-				{
-					if(!NetworkLocationProvider.equals(""))
-					{
-						fnAccurateProvider="Network";
-						fnLati=NetworkLocationLatitude;
-						fnLongi=NetworkLocationLongitude;
-						fnAccuracy= Double.parseDouble(NetworkLocationAccuracy);
-					}
-				}
-				// fnAccurateProvider="";
-				if(fnAccurateProvider.equals(""))
-				{
-					if(pDialog2STANDBY.isShowing())
-					{
-						pDialog2STANDBY.dismiss();
-					}
-					//alert ... try again nothing found // return back
-
-					// Toast.makeText(getApplicationContext(), "Please try again, No Fused,GPS or Network found.", Toast.LENGTH_LONG).show();
-
-					showAlertForEveryOne("Please try again, No Fused,GPS or Network found.");
-				}
-				else
-				{
-
-
-					if(pDialog2STANDBY.isShowing())
-					{
-						pDialog2STANDBY.dismiss();
-					}
-					if(!GpsLat.equals("0") )
-					{
-						fnCreateLastKnownGPSLoction(GpsLat,GpsLong,GpsAccuracy);
-					}
-
-					if(!checkLastFinalLoctionIsRepeated(String.valueOf(fnLati), String.valueOf(fnLongi), String.valueOf(fnAccuracy)))
-					{
-
-						fnCreateLastKnownFinalLocation(String.valueOf(fnLati), String.valueOf(fnLongi), String.valueOf(fnAccuracy));
-						UpdateLocationAndProductAllData();
-					}
-					else
-					{countSubmitClicked++;
-						if(countSubmitClicked==1)
-						{
-							AlertDialog.Builder alertDialog = new AlertDialog.Builder(OrderReview.this);
-
-							// Setting Dialog Title
-							alertDialog.setTitle("Information");
-							alertDialog.setIcon(R.drawable.error_info_ico);
-							alertDialog.setCancelable(false);
-							// Setting Dialog Message
-							alertDialog.setMessage("Your current location is same as previous, so please turn off your location services then turn on, it back again.");
-
-							// On pressing Settings button
-							alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
-									countSubmitClicked++;
-									Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-									startActivity(intent);
-								}
-							});
-
-							// Showing Alert Message
-							alertDialog.show();
-
-
-
-						}
-						else
-						{
-							UpdateLocationAndProductAllData();
-						}
-
-
-					}
-
-				}
-
-			}
-			
-		}
-		 protected void stopLocationUpdates() {
+	 protected void stopLocationUpdates() {
 		        LocationServices.FusedLocationApi.removeLocationUpdates(
 		                mGoogleApiClient, this);
 		      
@@ -9569,11 +9317,11 @@ public void loadPurchaseProductDefault()
 								 String FusedAccuracy="0";
 								 String FusedAddress="0";
 								 checkHighAccuracyLocationMode(OrderReview.this);
-								 dbengine.open();
+								/* dbengine.open();
 								 dbengine.UpdateStoreActualLatLongi(storeID,String.valueOf(fnLati), String.valueOf(fnLongi), "" + fnAccuracy,fnAccurateProvider,flgLocationServicesOnOffOrderReview,flgGPSOnOffOrderReview,flgNetworkOnOffOrderReview,flgFusedOnOffOrderReview,flgInternetOnOffWhileLocationTrackingOrderReview,flgRestartOrderReview,flgStoreOrderOrderReview);
 
 
-								 dbengine.close();
+								 dbengine.close();*/
 
 								 if(butClickForGPS==1)
 								 {
@@ -10010,12 +9758,12 @@ public void loadPurchaseProductDefault()
 	public void UpdateLocationAndProductAllData()
 	{
 		checkHighAccuracyLocationMode(OrderReview.this);
-		dbengine.open();
+		/*dbengine.open();
 		dbengine.UpdateStoreActualLatLongi(storeID,String.valueOf(fnLati), String.valueOf(fnLongi), "" + fnAccuracy,fnAccurateProvider,flgLocationServicesOnOffOrderReview,flgGPSOnOffOrderReview,flgNetworkOnOffOrderReview,flgFusedOnOffOrderReview,flgInternetOnOffWhileLocationTrackingOrderReview,flgRestartOrderReview,flgStoreOrderOrderReview);
 
 
 		dbengine.close();
-
+*/
 		if(butClickForGPS==1)
 		{
 			butClickForGPS=0;
@@ -10691,4 +10439,65 @@ public void loadPurchaseProductDefault()
 
 
 	}
+	@Override
+	public void testFunctionOne(String fnLati, String fnLongi, String finalAccuracy, String fnAccurateProvider, String GpsLat, String GpsLong, String GpsAccuracy, String NetwLat, String NetwLong, String NetwAccuracy, String FusedLat, String FusedLong, String FusedAccuracy, String AllProvidersLocation, String GpsAddress, String NetwAddress, String FusedAddress, String FusedLocationLatitudeWithFirstAttempt, String FusedLocationLongitudeWithFirstAttempt, String FusedLocationAccuracyWithFirstAttempt, int flgLocationServicesOnOff, int flgGPSOnOff, int flgNetworkOnOff, int flgFusedOnOff, int flgInternetOnOffWhileLocationTracking, String address, String pincode, String city, String state) {
+
+		System.out.println("SHIVA"+fnLati+","+fnLongi+","+finalAccuracy+","+fnAccurateProvider+","+GpsLat+","+GpsLong+","+GpsAccuracy+","+NetwLat+","+NetwLong+","+NetwAccuracy+","+FusedLat+","+FusedLong+","+FusedAccuracy+","+AllProvidersLocation+","+GpsAddress+","+NetwAddress+","+FusedAddress+","+FusedLocationLatitudeWithFirstAttempt+","+FusedLocationLongitudeWithFirstAttempt+","+FusedLocationAccuracyWithFirstAttempt+","+fnLongi+","+flgLocationServicesOnOff+","+flgGPSOnOff+","+flgNetworkOnOff+","+flgFusedOnOff+","+flgInternetOnOffWhileLocationTracking+","+address+","+pincode+","+city+","+state);
+
+
+		dbengine.fndeleteOldAddressDetailsofVisitedStore(storeID);
+		dbengine.saveLatLngToTxtFile(storeID,fnLati, fnLongi,finalAccuracy,fnAccurateProvider,GpsLat,GpsLong,GpsAccuracy,NetwLat,NetwLong,NetwAccuracy,FusedLat,FusedLong,FusedAccuracy,3,"0",
+				FusedAddress,AllProvidersLocation,GpsAddress,NetwAddress,FusedAddress,FusedLocationLatitudeWithFirstAttempt
+				,FusedLocationLongitudeWithFirstAttempt,FusedLocationAccuracyWithFirstAttempt);
+		dbengine.open();
+		dbengine.UpdateStoreActualLatLongi(storeID, String.valueOf(fnLati), String.valueOf(fnLongi), "" + finalAccuracy, fnAccurateProvider,flgLocationServicesOnOff,flgGPSOnOff,flgNetworkOnOff,flgFusedOnOff,flgInternetOnOffWhileLocationTracking,flgRestart,flgStoreOrder);
+		dbengine.close();
+		if(!checkLastFinalLoctionIsRepeated(String.valueOf(fnLati), String.valueOf(fnLongi), String.valueOf(finalAccuracy)))
+		{
+
+			fnCreateLastKnownFinalLocation(String.valueOf(fnLati), String.valueOf(fnLongi), String.valueOf(finalAccuracy));
+
+			UpdateLocationAndProductAllData();
+		}
+		else
+		{
+			countSubmitClicked++;
+			if(countSubmitClicked==1)
+			{
+				AlertDialog.Builder alertDialog = new AlertDialog.Builder(OrderReview.this);
+
+				// Setting Dialog Title
+				alertDialog.setTitle("Information");
+				alertDialog.setIcon(R.drawable.error_info_ico);
+				alertDialog.setCancelable(false);
+				// Setting Dialog Message
+				alertDialog.setMessage("Your current location is same as previous, so please turn off your location services then turn on, it back again.");
+
+				// On pressing Settings button
+				alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						//countSubmitClicked++;
+						Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+						startActivity(intent);
+					}
+				});
+
+				// Showing Alert Message
+				alertDialog.show();
+
+
+
+			}
+			else
+			{
+				UpdateLocationAndProductAllData();
+
+			}
+
+
+		}
+
+
+	}
+
 }

@@ -1869,11 +1869,11 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
                 dbengine.deleteLocationTable();
                 dbengine.saveTblLocationDetails("NA", "NA", "NA","NA","NA","NA","NA","NA", "NA", "NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA");
                 dbengine.close();
-                if(pDialog2STANDBY.isShowing())
-                {
-                    pDialog2STANDBY.dismiss();
+                if(pDialog2STANDBY!=null) {
+                    if (pDialog2STANDBY.isShowing()) {
+                        pDialog2STANDBY.dismiss();
+                    }
                 }
-
 
                 if(flgAddButtonCliked==0)
                 {
@@ -1947,9 +1947,10 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
                     dbengine.deleteLocationTable();
                     dbengine.saveTblLocationDetails(fnLati, fnLongi, String.valueOf(fnAccuracy), addr, city, zipcode, state,fnAccurateProvider,GpsLat,GpsLong,GpsAccuracy,NetwLat,NetwLong,NetwAccuracy,FusedLat,FusedLong,FusedAccuracy,AllProvidersLocation,GpsAddress,NetwAddress,FusedAddress,FusedLocationLatitudeWithFirstAttempt,FusedLocationLongitudeWithFirstAttempt,FusedLocationAccuracyWithFirstAttempt);
                     dbengine.close();
-                    if(pDialog2STANDBY.isShowing())
-                    {
-                        pDialog2STANDBY.dismiss();
+                    if(pDialog2STANDBY!=null) {
+                        if (pDialog2STANDBY.isShowing()) {
+                            pDialog2STANDBY.dismiss();
+                        }
                     }
 
                     //send to addstore Dynamic page direct-----------------------------
@@ -2052,9 +2053,10 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
                             {
                                 addViewIntoTable();
                             }
-                            if(pDialog2STANDBY.isShowing())
-                            {
-                                pDialog2STANDBY.dismiss();
+                            if(pDialog2STANDBY!=null) {
+                                if (pDialog2STANDBY.isShowing()) {
+                                    pDialog2STANDBY.dismiss();
+                                }
                             }
                        /* Intent intent =new Intent(LauncherActivity.this,StorelistActivity.class);
                         LauncherActivity.this.startActivity(intent);
@@ -2063,9 +2065,10 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
                         }
                         else
                         {
-                            if(pDialog2STANDBY.isShowing())
-                            {
-                                pDialog2STANDBY.dismiss();
+                            if(pDialog2STANDBY!=null) {
+                                if (pDialog2STANDBY.isShowing()) {
+                                    pDialog2STANDBY.dismiss();
+                                }
                             }
                         }
                     }
@@ -2092,11 +2095,11 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
                         intent.putExtra("RouteNodeID", ""+0);
                         intent.putExtra("StoreCategoryType", StoreCategoryType);
                         intent.putExtra("StoreSectionCount", ""+StoreSectionCount);
-                        if(pDialog2STANDBY.isShowing())
-                        {
-                            pDialog2STANDBY.dismiss();
+                        if(pDialog2STANDBY!=null) {
+                            if (pDialog2STANDBY.isShowing()) {
+                                pDialog2STANDBY.dismiss();
+                            }
                         }
-
                         StorelistActivity.this.startActivity(intent);
                         finish();
                     }

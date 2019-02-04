@@ -1,7 +1,13 @@
 package project.astix.com.ltfoodfsd;
 
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.StringReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -34,6 +40,7 @@ import org.xml.sax.InputSource;
 
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.os.Environment;
 
 import com.astix.Common.CommonInfo;
 
@@ -814,17 +821,17 @@ public class ServiceWorker
 		}
 
 	}
-	
-	
-	public ServiceWorker getAvailableAndUpdatedVersionOfAppNew(Context ctx,String uuid,String CurDate,int DatabaseVersion,int ApplicationID) 
+
+
+	public ServiceWorker getAvailableAndUpdatedVersionOfAppNew(Context ctx,String uuid,String CurDate,int DatabaseVersion,int ApplicationID)
 	{
-		
+
 		this.context = ctx;
 		DBAdapterKenya dbengine = new DBAdapterKenya(context);
-		 dbengine.open();
-		
+		dbengine.open();
+
 		decimalFormat.applyPattern(pattern);
-		
+
 		int chkTblStoreListContainsRow=1;
 		StringReader read;
 		InputSource inputstream;
@@ -832,7 +839,7 @@ public class ServiceWorker
 		final String METHOD_NAME = "GetIMEIVersionDetailStatusNew";
 		final String NAMESPACE = "http://tempuri.org/";
 		final String URL = UrlForWebService;
-	    //Create request
+		//Create request
 		SoapObject table = null; // Contains table of dataset that returned
 		// through SoapObject
 		SoapObject client = null; // Its the client petition to the web service
@@ -844,197 +851,267 @@ public class ServiceWorker
 		SoapSerializationEnvelope sse = null;
 
 		sse = new SoapSerializationEnvelope(SoapEnvelope.VER11);
-		
+
 		sse.dotNet = true;
 		HttpTransportSE androidHttpTransport = new HttpTransportSE(URL,timeout);
-		
+
 		ServiceWorker setmovie = new ServiceWorker();
-		
-		
+
+
 		// // System.out.println("Kajol 100");
-		
+
 		try {
 			client = new SoapObject(NAMESPACE, METHOD_NAME);
-			
-			
-		
+
+
+
 			// // System.out.println("Kajol 101");
 			client.addProperty("uuid", uuid.toString());
 			client.addProperty("DatabaseVersion", DatabaseVersion);
 			client.addProperty("ApplicationID", ApplicationID);
 
-			
 			// // System.out.println("Kajol 102");
 			sse.setOutputSoapObject(client);
 			// // System.out.println("Kajol 103");
 			sse.bodyOut = client;
 			// // System.out.println("Kajol 104");
-			 
+
 			androidHttpTransport.call(SOAP_ACTION, sse);
-			
+
 			// // System.out.println("Kajol 1");
-			
+
 			responseBody = (SoapObject)sse.bodyIn;
 			// This step: get file XML
 			//responseBody = (SoapObject) sse.getResponse();
 			int totalCount = responseBody.getPropertyCount();
 
 			// // System.out.println("Kajol 2 :"+totalCount);
-	        String resultString=androidHttpTransport.responseDump;
-			
-	        String name=responseBody.getProperty(0).toString();
-	        
-	       // // System.out.println("Kajol 3 :"+name);
-	        
-	        XMLParser xmlParser = new XMLParser();
-	        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-	            DocumentBuilder db = dbf.newDocumentBuilder();
-	            InputSource is = new InputSource();
-	            is.setCharacterStream(new StringReader(name));
-	            Document doc = db.parse(is);
-	           
-	            
-	                dbengine.droptblUserAuthenticationMstrTBL();
-				    dbengine.createtblUserAuthenticationMstrTBL();
-				    dbengine.dropAvailbUpdatedVersionTBL();
-				    dbengine.createAvailbUpdatedVersionTBL();
-					dbengine.droptblManagerMstr();
-					dbengine.createtblManagerMstr();
+			String resultString=androidHttpTransport.responseDump;
 
-	            
-	            NodeList tblSchemeStoreMappingNode = doc.getElementsByTagName("tblUserAuthentication");
-	            
-	            for (int i = 0; i < tblSchemeStoreMappingNode.getLength(); i++)
-	            {
-	            	String flgUserAuthenticated="0";
-					int flgAllRoutesData=0;
-					int PersonNodeID=0;
-					int PersonNodeType=0;
-					int CoverageAreaNodeID=0;
-					int CoverageAreaNodeType=0;
-					String flgAppStatus="0";
-					String DisplayMessage="No Message";
-					String flgValidApplication="0";
-					String	MessageForInvalid="No Message";
-	            	
-	                Element element = (Element) tblSchemeStoreMappingNode.item(i);
+			String name=responseBody.getProperty(0).toString();
 
-	                NodeList StoreIDNode = element.getElementsByTagName("flgUserAuthenticated");
-	                Element line = (Element) StoreIDNode.item(0);
-	                flgUserAuthenticated=xmlParser.getCharacterDataFromElement(line);
+			// // System.out.println("Kajol 3 :"+name);
 
-					NodeList flgToShowAllRoutesDataNode = element.getElementsByTagName("flgToShowAllRoutesData");
-					line = (Element) flgToShowAllRoutesDataNode.item(0);
-					if(flgToShowAllRoutesDataNode.getLength()>0)
+			XMLParser xmlParser = new XMLParser();
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			InputSource is = new InputSource();
+			is.setCharacterStream(new StringReader(name));
+			Document doc = db.parse(is);
+
+
+			dbengine.droptblUserAuthenticationMstrTBL();
+			dbengine.createtblUserAuthenticationMstrTBL();
+			dbengine.dropAvailbUpdatedVersionTBL();
+			dbengine.createAvailbUpdatedVersionTBL();
+			dbengine.droptblManagerMstr();
+			dbengine.createtblManagerMstr();
+
+
+			NodeList tblSchemeStoreMappingNode = doc.getElementsByTagName("tblUserAuthentication");
+
+			for (int i = 0; i < tblSchemeStoreMappingNode.getLength(); i++)
+			{
+				String flgUserAuthenticated="0";
+				int flgAllRoutesData=0;
+				String flgAppStatus="0";
+				String DisplayMessage="No Message";
+				String flgValidApplication="0";
+				String	MessageForInvalid="No Message";
+				String PersonName="0";
+				String FlgRegistered="0";
+				int flgISR=0;
+				String PersonNodeID="0";
+				String PersonNodeType="0";
+				String SalesAreaName="0";
+				String ContactNumber="0";
+				String flgPersonTodaysAtt="0";
+
+
+				Element element = (Element) tblSchemeStoreMappingNode.item(i);
+
+				NodeList StoreIDNode = element.getElementsByTagName("flgUserAuthenticated");
+				Element line = (Element) StoreIDNode.item(0);
+				flgUserAuthenticated=xmlParser.getCharacterDataFromElement(line);
+
+
+
+				if(!element.getElementsByTagName("PersonName").equals(null))
+				{
+
+					NodeList PersonNameNode = element.getElementsByTagName("PersonName");
+					Element     line1 = (Element) PersonNameNode.item(0);
+
+					if(PersonNameNode.getLength()>0)
 					{
-                        flgAllRoutesData=Integer.parseInt(xmlParser.getCharacterDataFromElement(line));
+
+						PersonName=xmlParser.getCharacterDataFromElement(line1);
 					}
+				}
+				if(!element.getElementsByTagName("FlgRegistered").equals(null))
+				{
 
+					NodeList FlgRegisteredNode = element.getElementsByTagName("FlgRegistered");
+					Element     line2 = (Element) FlgRegisteredNode.item(0);
 
-					NodeList SONodeIDNode = element.getElementsByTagName("PersonNodeID");
-					line = (Element) SONodeIDNode.item(0);
-					if(SONodeIDNode.getLength()>0)
+					if(FlgRegisteredNode.getLength()>0)
 					{
-                        PersonNodeID=Integer.parseInt(xmlParser.getCharacterDataFromElement(line));
-					}
 
-					NodeList SONodeTypeNode = element.getElementsByTagName("PersonNodeType");
-					line = (Element) SONodeTypeNode.item(0);
-					if(SONodeTypeNode.getLength()>0)
-					{
-                        PersonNodeType=Integer.parseInt(xmlParser.getCharacterDataFromElement(line));
+						FlgRegistered=xmlParser.getCharacterDataFromElement(line2);
 					}
+				}
 
-					NodeList CoverageAreaNodeIDNode = element.getElementsByTagName("CoverageAreaNodeID");
-					line = (Element) CoverageAreaNodeIDNode.item(0);
-					if(CoverageAreaNodeIDNode.getLength()>0)
-					{
-						CoverageAreaNodeID=Integer.parseInt(xmlParser.getCharacterDataFromElement(line));
-					}
+				if(!element.getElementsByTagName("ContactNumber").equals(null))
+				{
 
-					NodeList CoverageAreaNodeTypeNode = element.getElementsByTagName("CoverageAreaNodeType");
-					line = (Element) CoverageAreaNodeTypeNode.item(0);
-					if(CoverageAreaNodeTypeNode.getLength()>0)
-					{
-						CoverageAreaNodeType=Integer.parseInt(xmlParser.getCharacterDataFromElement(line));
-					}
+					NodeList ContactNumberNode = element.getElementsByTagName("ContactNumber");
+					Element     line2 = (Element) ContactNumberNode.item(0);
 
-					NodeList flgAppStatusNode = element.getElementsByTagName("flgAppStatus");
-					line = (Element) flgAppStatusNode.item(0);
-					if(flgAppStatusNode.getLength()>0)
+					if(ContactNumberNode.getLength()>0)
 					{
-						flgAppStatus=xmlParser.getCharacterDataFromElement(line);
-					}
-					NodeList DisplayMessageNode = element.getElementsByTagName("DisplayMessage");
-					line = (Element) DisplayMessageNode.item(0);
-					if(DisplayMessageNode.getLength()>0)
-					{
-						DisplayMessage=xmlParser.getCharacterDataFromElement(line);
-					}
-					NodeList flgValidApplicationNode = element.getElementsByTagName("flgValidApplication");
-					line = (Element) flgValidApplicationNode.item(0);
-					if(flgValidApplicationNode.getLength()>0)
-					{
-						flgValidApplication=xmlParser.getCharacterDataFromElement(line);
-					}
-					NodeList MessageForInvalidNode = element.getElementsByTagName("MessageForInvalid");
-					line = (Element) MessageForInvalidNode.item(0);
-					if(MessageForInvalidNode.getLength()>0)
-					{
-						MessageForInvalid=xmlParser.getCharacterDataFromElement(line);
-					}
 
-					dbengine.savetblUserAuthenticationMstr(flgUserAuthenticated,flgAllRoutesData,PersonNodeID,PersonNodeType,CoverageAreaNodeID,CoverageAreaNodeType,flgAppStatus,DisplayMessage,flgValidApplication,MessageForInvalid);
-	                
-	             }
+						ContactNumber=xmlParser.getCharacterDataFromElement(line2);
+					}
+				}
+				if(!element.getElementsByTagName("PersonNodeID").equals(null))
+				{
 
-	          
-	            NodeList tblSchemeMstrNode = doc.getElementsByTagName("tblAvailableVersion");
-	            for (int i = 0; i < tblSchemeMstrNode.getLength(); i++)
-	            {
-	            	
-	            	
-	            	String VersionID = "0";
-					String VersionSerialNo= "NA";
-					String VersionDownloadStatus= "NA";
-					Date pdaDate=new Date();
-					SimpleDateFormat sdfPDaDate = new SimpleDateFormat("dd-MMM-yyyy",Locale.ENGLISH);
-					String fDatePda = sdfPDaDate.format(pdaDate).toString().trim();
-					String ServerDate= fDatePda;
-	            	
-	                Element element = (Element) tblSchemeMstrNode.item(i);
-	                NodeList SchemeIDNode = element.getElementsByTagName("VersionID");
-	  	            Element line = (Element) SchemeIDNode.item(0);
-	  	            VersionID=xmlParser.getCharacterDataFromElement(line);
-  	                // System.out.println("Kajol tblSchemeMstr: VersionID" +VersionID );
-  	                
+					NodeList PersonNodeIDNode = element.getElementsByTagName("PersonNodeID");
+					Element     line2 = (Element) PersonNodeIDNode.item(0);
 
-	                NodeList SchemeNameNode = element.getElementsByTagName("VersionSerialNo");
-	                line = (Element) SchemeNameNode.item(0);
-	                VersionSerialNo=xmlParser.getCharacterDataFromElement(line);
-	                // System.out.println("Kajol tblSchemeMstr: VersionSerialNo " +VersionSerialNo );
-	                
-	                
-	                
-	                NodeList SchemeApplicationIDNode = element.getElementsByTagName("VersionDownloadStatus");
-	                line = (Element) SchemeApplicationIDNode.item(0);
-	                VersionDownloadStatus=xmlParser.getCharacterDataFromElement(line);
-	                // System.out.println("Kajol tblSchemeMstr: VersionDownloadStatus " +VersionDownloadStatus );
-	                
-	                NodeList SchemeAppliedRuleNode = element.getElementsByTagName("ServerDate");
-	                line = (Element) SchemeAppliedRuleNode.item(0);
-	                ServerDate=xmlParser.getCharacterDataFromElement(line);
-	                // System.out.println("Kajol tblSchemeMstr: ServerDate " +ServerDate );
-	                
-	                
-	                dbengine.savetblAvailbUpdatedVersion(VersionID.trim(), VersionSerialNo.trim(),VersionDownloadStatus.trim(),ServerDate);
-					
-	                
-	                
-					
-					
-	                
-	             }
+					if(PersonNodeIDNode.getLength()>0)
+					{
+
+						PersonNodeID=xmlParser.getCharacterDataFromElement(line2);
+					}
+				}
+				if(!element.getElementsByTagName("PersonNodeType").equals(null))
+				{
+
+					NodeList PersonNodeTypeNode = element.getElementsByTagName("PersonNodeType");
+					Element     line2 = (Element) PersonNodeTypeNode.item(0);
+
+					if(PersonNodeTypeNode.getLength()>0)
+					{
+
+						PersonNodeType=xmlParser.getCharacterDataFromElement(line2);
+					}
+				}
+				if(!element.getElementsByTagName("SalesAreaName").equals(null))
+				{
+
+					NodeList SalesAreaNameNode = element.getElementsByTagName("SalesAreaName");
+					Element     line2 = (Element) SalesAreaNameNode.item(0);
+
+					if(SalesAreaNameNode.getLength()>0)
+					{
+
+						SalesAreaName=xmlParser.getCharacterDataFromElement(line2);
+					}
+				}
+
+
+				// System.out.println("Kajol tblUserAuthentication StoreID: " +flgUserAuthenticated );
+				NodeList flgAllRoutesDataNode = element.getElementsByTagName("flgToShowAllRoutesData");
+				Element line1 = (Element) flgAllRoutesDataNode.item(0);
+				flgAllRoutesData=Integer.parseInt(xmlParser.getCharacterDataFromElement(line1));
+
+
+				NodeList flgAppStatusNode = element.getElementsByTagName("flgAppStatus");
+				line = (Element) flgAppStatusNode.item(0);
+				if(flgAppStatusNode.getLength()>0)
+				{
+					flgAppStatus=xmlParser.getCharacterDataFromElement(line);
+				}
+				NodeList DisplayMessageNode = element.getElementsByTagName("DisplayMessage");
+				line = (Element) DisplayMessageNode.item(0);
+				if(DisplayMessageNode.getLength()>0)
+				{
+					DisplayMessage=xmlParser.getCharacterDataFromElement(line);
+				}
+				NodeList flgValidApplicationNode = element.getElementsByTagName("flgValidApplication");
+				line = (Element) flgValidApplicationNode.item(0);
+				if(flgValidApplicationNode.getLength()>0)
+				{
+					flgValidApplication=xmlParser.getCharacterDataFromElement(line);
+				}
+				NodeList MessageForInvalidNode = element.getElementsByTagName("MessageForInvalid");
+				line = (Element) MessageForInvalidNode.item(0);
+				if(MessageForInvalidNode.getLength()>0)
+				{
+					MessageForInvalid=xmlParser.getCharacterDataFromElement(line);
+				}
+
+				if(!element.getElementsByTagName("flgISR").equals(null))
+				{
+
+					NodeList flgISRNode = element.getElementsByTagName("flgISR");
+					Element     line2 = (Element) flgISRNode.item(0);
+
+					if(flgISRNode.getLength()>0)
+					{
+
+						flgISR=Integer.parseInt(xmlParser.getCharacterDataFromElement(line2));
+					}
+				}
+
+				NodeList flgPersonTodaysAttNode = element.getElementsByTagName("flgPersonTodaysAtt");
+				line = (Element) flgPersonTodaysAttNode.item(0);
+				if(flgPersonTodaysAttNode.getLength()>0)
+				{
+					flgPersonTodaysAtt=xmlParser.getCharacterDataFromElement(line);
+				}
+				dbengine.savetblUserAuthenticationMstr(flgUserAuthenticated,flgAllRoutesData,flgAppStatus,DisplayMessage,flgValidApplication,MessageForInvalid,PersonName,FlgRegistered,flgISR,PersonNodeID,PersonNodeType,SalesAreaName,ContactNumber,flgPersonTodaysAtt);
+
+			}
+
+
+			NodeList tblSchemeMstrNode = doc.getElementsByTagName("tblAvailableVersion");
+			for (int i = 0; i < tblSchemeMstrNode.getLength(); i++)
+			{
+
+
+				String VersionID = "0";
+				String VersionSerialNo= "NA";
+				String VersionDownloadStatus= "NA";
+				Date pdaDate=new Date();
+				SimpleDateFormat sdfPDaDate = new SimpleDateFormat("dd-MMM-yyyy",Locale.ENGLISH);
+				String fDatePda = sdfPDaDate.format(pdaDate).toString().trim();
+				String ServerDate= fDatePda;
+
+				Element element = (Element) tblSchemeMstrNode.item(i);
+				NodeList SchemeIDNode = element.getElementsByTagName("VersionID");
+				Element line = (Element) SchemeIDNode.item(0);
+				VersionID=xmlParser.getCharacterDataFromElement(line);
+				// System.out.println("Kajol tblSchemeMstr: VersionID" +VersionID );
+
+
+				NodeList SchemeNameNode = element.getElementsByTagName("VersionSerialNo");
+				line = (Element) SchemeNameNode.item(0);
+				VersionSerialNo=xmlParser.getCharacterDataFromElement(line);
+				// System.out.println("Kajol tblSchemeMstr: VersionSerialNo " +VersionSerialNo );
+
+
+
+				NodeList SchemeApplicationIDNode = element.getElementsByTagName("VersionDownloadStatus");
+				line = (Element) SchemeApplicationIDNode.item(0);
+				VersionDownloadStatus=xmlParser.getCharacterDataFromElement(line);
+				// System.out.println("Kajol tblSchemeMstr: VersionDownloadStatus " +VersionDownloadStatus );
+
+				NodeList SchemeAppliedRuleNode = element.getElementsByTagName("ServerDate");
+				line = (Element) SchemeAppliedRuleNode.item(0);
+				ServerDate=xmlParser.getCharacterDataFromElement(line);
+				// System.out.println("Kajol tblSchemeMstr: ServerDate " +ServerDate );
+
+
+				dbengine.savetblAvailbUpdatedVersion(VersionID.trim(), VersionSerialNo.trim(),VersionDownloadStatus.trim(),ServerDate);
+
+
+
+
+
+
+			}
 
 
 			NodeList tblManagerMstrNode = doc.getElementsByTagName("tblManagerMstr");
@@ -1114,22 +1191,22 @@ public class ServiceWorker
 
 
 			setmovie.director = "1";
-            dbengine.close();
+			dbengine.close();
 			return setmovie;
 
 		} catch (Exception e) {
-			
+
 			// System.out.println("Aman Exception occur in GetIMEIVersionDetailStatusNew :"+e.toString());
 			setmovie.director = e.toString();
 			setmovie.movie_name = e.toString();
 			dbengine.close();
-			
+
 			return setmovie;
 		}
-	
-		
-		
-		
+
+
+
+
 
 	}
 
@@ -16441,169 +16518,235 @@ public class ServiceWorker
 			}
 
 		}
-		
-		public ServiceWorker getCallspToGetReasonMasterForNoVisit(Context ctx, String dateVAL, String uuid)
-		{
-			this.context = ctx;
-			
-			DBAdapterKenya dbengine = new DBAdapterKenya(context);
-			dbengine.open();
-			
-			final String SOAP_ACTION = "http://tempuri.org/CallspToGetReasonMasterForNoVisit";
-			final String METHOD_NAME = "CallspToGetReasonMasterForNoVisit";
-			final String NAMESPACE = "http://tempuri.org/";
-			final String URL = UrlForWebService;
-		
 
-			
-			SoapObject table = null; // Contains table of dataset that returned
-										// through SoapObject
-			SoapObject client = null; // Its the client petition to the web service
-			SoapObject tableRow = null; // Contains row of table
-			SoapObject responseBody = null; // Contains XML content of dataset
-			
-			//SoapObject param
-			HttpTransportSE transport = null; // That call webservice
-			SoapSerializationEnvelope sse = null;
+	public ServiceWorker getCallspToGetReasonMasterForNoVisit(Context ctx, String dateVAL, String uuid)
+	{
+		this.context = ctx;
 
-		
-			
-			sse = new SoapSerializationEnvelope(SoapEnvelope.VER11);
-			sse.addMapping(NAMESPACE, "ServiceWorker", this.getClass());
-			// Note if class name isn't "movie" ,you must change
-			sse.dotNet = true; // if WebService written .Net is result=true
-			HttpTransportSE androidHttpTransport = new HttpTransportSE(
-					URL,timeout);
+		DBAdapterKenya dbengine = new DBAdapterKenya(context);
+		dbengine.open();
 
-			ServiceWorker setmovie = new ServiceWorker();
-			try {
-				client = new SoapObject(NAMESPACE, METHOD_NAME);
-				
-				client.addProperty("IMEINo", uuid.toString());
-				client.addProperty("bydate", dateVAL.toString());
-				
-				//client.addProperty("CityId", 1);   
-				
+		final String SOAP_ACTION = "http://tempuri.org/CallspToGetReasonMasterForNoVisit";
+		final String METHOD_NAME = "CallspToGetReasonMasterForNoVisit";
+		final String NAMESPACE = "http://tempuri.org/";
+		final String URL = UrlForWebService;
+
+
+
+		SoapObject table = null; // Contains table of dataset that returned
+		// through SoapObject
+		SoapObject client = null; // Its the client petition to the web service
+		SoapObject tableRow = null; // Contains row of table
+		SoapObject responseBody = null; // Contains XML content of dataset
+
+		//SoapObject param
+		HttpTransportSE transport = null; // That call webservice
+		SoapSerializationEnvelope sse = null;
+
+
+
+		sse = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+		sse.addMapping(NAMESPACE, "ServiceWorker", this.getClass());
+		// Note if class name isn't "movie" ,you must change
+		sse.dotNet = true; // if WebService written .Net is result=true
+		HttpTransportSE androidHttpTransport = new HttpTransportSE(
+				URL,timeout);
+
+		ServiceWorker setmovie = new ServiceWorker();
+		try {
+			client = new SoapObject(NAMESPACE, METHOD_NAME);
+
+			client.addProperty("IMEINo", uuid.toString());
+			client.addProperty("bydate", dateVAL.toString());
+
+			//client.addProperty("CityId", 1);
+
 			sse.setOutputSoapObject(client);
-				sse.bodyOut = client;
-				androidHttpTransport.call(SOAP_ACTION, sse);
+			sse.bodyOut = client;
+			androidHttpTransport.call(SOAP_ACTION, sse);
 
-				// This step: get file XML
-				responseBody = (SoapObject) sse.getResponse();
-				//// System.out.println("TradeChannel  a8 :"+responseBody);
-				  SoapObject soDiffg = (SoapObject) responseBody.getProperty("diffgram");
-					
-		            if(soDiffg.hasProperty("NewDataSet"))
-		            {
-		            	// remove information XML,only retrieved results that returned
-		    			responseBody = (SoapObject) responseBody.getProperty(1);
-		    			
-		    			// get information XMl of tables that is returned
-		    			table = (SoapObject) responseBody.getProperty(0);
-		            }
-		            else
-		            {
-		            	
-		            }
-				
-				
-				
-						
-				
-				
-				int chkTblTradeChannelContainsRow=0;
-				
-				 if(soDiffg.hasProperty("NewDataSet"))
-		            {
-					 chkTblTradeChannelContainsRow=1;
-					 dbengine.deletetblNoVisitReasonMaster();
-		            }
-				
-				
-				if(chkTblTradeChannelContainsRow==1)
-				{
-					int AutoIdStore=0;
-					if( table.getPropertyCount()>1)
-					{
-						for(int i = 0; i <= table.getPropertyCount() -1 ; i++)
-						{
-			 		
-						  	tableRow = (SoapObject) table.getProperty(i);
-							
-							String ReasonId="0";
-							String ReasonDescr="NA";
-							int FlgToShowTextBox=0;
-							
-							
-							if (tableRow.hasProperty("ReasonId") ) 
-							{
-								if (tableRow.getProperty("ReasonId").toString().isEmpty() ) 
-								{
-									ReasonId="0";
-								} 
-								else
-								{
-									ReasonId = tableRow.getProperty("ReasonId").toString().trim();
-									//TradeChannelID=Integer.parseInt(abc);
-								}
-							} 
-							if (tableRow.hasProperty("ReasonDescr") ) 
-							{
-								if (tableRow.getProperty("ReasonDescr").toString().isEmpty() ) 
-								{
-									ReasonDescr="NA";
-								} 
-								else
-								{
-									ReasonDescr = tableRow.getProperty("ReasonDescr").toString().trim();
-								}
-							} 
-							if (tableRow.hasProperty("FlgToShowTextBox") ) 
-							{
-								if (tableRow.getProperty("FlgToShowTextBox").toString().isEmpty() ) 
-								{
-									FlgToShowTextBox=0;
-								} 
-								else
-								{
-									String abc = tableRow.getProperty("FlgToShowTextBox").toString().trim();
-									FlgToShowTextBox=Integer.parseInt(abc);
-								}
-							} 
-							
-							
-							
-							AutoIdStore= i +1;
-							
-							
-							dbengine.savetblNoVisitReasonMaster(AutoIdStore,ReasonId,ReasonDescr,FlgToShowTextBox);
-						
-							
-							
-						}
-					}
-					
-				}
-				
-				
-				dbengine.close();		// #4
-				
-				setmovie.director = "1";
-				flagExecutedServiceSuccesfully=38;
-				return setmovie;
-	//return counts;
-			} catch (Exception e) 
+			// This step: get file XML
+			responseBody = (SoapObject) sse.getResponse();
+			//// System.out.println("TradeChannel  a8 :"+responseBody);
+			SoapObject soDiffg = (SoapObject) responseBody.getProperty("diffgram");
+
+			if(soDiffg.hasProperty("NewDataSet"))
 			{
-				
-				// System.out.println("Arjun getStoreTypeMstr: 2 "+e.toString());
-				setmovie.director = e.toString();
-				setmovie.movie_name = e.toString();
-				flagExecutedServiceSuccesfully=0;
-				dbengine.close();
-				return setmovie;
+				// remove information XML,only retrieved results that returned
+				responseBody = (SoapObject) responseBody.getProperty(1);
+
+				// get information XMl of tables that is returned
+				table = (SoapObject) responseBody.getProperty(0);
+			}
+			else
+			{
+
 			}
 
+
+
+
+
+
+			int chkTblTradeChannelContainsRow=0;
+
+			if(soDiffg.hasProperty("NewDataSet"))
+			{
+				chkTblTradeChannelContainsRow=1;
+				dbengine.deletetblNoVisitReasonMaster();
+			}
+
+
+			if(chkTblTradeChannelContainsRow==1)
+			{
+				int AutoIdStore=0;
+				if( table.getPropertyCount()>1)
+				{
+					for(int i = 0; i <= table.getPropertyCount() -1 ; i++)
+					{
+
+						tableRow = (SoapObject) table.getProperty(i);
+
+						String ReasonId="0";
+						String ReasonDescr="NA";
+						int FlgToShowTextBox=0;
+						int flgSOApplicable=0;
+						int flgDSRApplicable=0;
+						int flgNoVisitOption=0;
+						int SeqNo=0;
+						int flgDelayedReason=0;
+
+
+						if (tableRow.hasProperty("ReasonId") )
+						{
+							if (tableRow.getProperty("ReasonId").toString().isEmpty() )
+							{
+								ReasonId="0";
+							}
+							else
+							{
+								ReasonId = tableRow.getProperty("ReasonId").toString().trim();
+								//TradeChannelID=Integer.parseInt(abc);
+							}
+						}
+						if (tableRow.hasProperty("ReasonDescr") )
+						{
+							if (tableRow.getProperty("ReasonDescr").toString().isEmpty() )
+							{
+								ReasonDescr="NA";
+							}
+							else
+							{
+								ReasonDescr = tableRow.getProperty("ReasonDescr").toString().trim();
+							}
+						}
+						if (tableRow.hasProperty("FlgToShowTextBox") )
+						{
+							if (tableRow.getProperty("FlgToShowTextBox").toString().isEmpty() )
+							{
+								FlgToShowTextBox=0;
+							}
+							else
+							{
+								String abc = tableRow.getProperty("FlgToShowTextBox").toString().trim();
+								FlgToShowTextBox=Integer.parseInt(abc);
+							}
+						}
+						if (tableRow.hasProperty("flgSOApplicable") )
+						{
+							if (tableRow.getProperty("flgSOApplicable").toString().isEmpty() )
+							{
+								flgSOApplicable=0;
+							}
+							else
+							{
+								flgSOApplicable=Integer.parseInt(tableRow.getProperty("flgSOApplicable").toString().trim());
+							}
+						}
+						if (tableRow.hasProperty("flgDSRApplicable") )
+						{
+							if (tableRow.getProperty("flgDSRApplicable").toString().isEmpty() )
+							{
+								flgDSRApplicable=0;
+							}
+							else
+							{
+								String abc = tableRow.getProperty("flgDSRApplicable").toString().trim();
+								flgDSRApplicable=Integer.parseInt(abc);
+							}
+						}
+						if (tableRow.hasProperty("flgNoVisitOption") )
+						{
+							if (tableRow.getProperty("flgNoVisitOption").toString().isEmpty() )
+							{
+								flgNoVisitOption=0;
+							}
+							else
+							{
+								String abc = tableRow.getProperty("flgNoVisitOption").toString().trim();
+								flgNoVisitOption=Integer.parseInt(abc);
+							}
+						}
+						if (tableRow.hasProperty("SeqNo") )
+						{
+							if (tableRow.getProperty("SeqNo").toString().isEmpty() )
+							{
+								SeqNo=0;
+							}
+							else
+							{
+								String abc = tableRow.getProperty("SeqNo").toString().trim();
+								SeqNo=Integer.parseInt(abc);
+							}
+						}
+						if (tableRow.hasProperty("flgDelayedReason") )
+						{
+							if (tableRow.getProperty("flgDelayedReason").toString().isEmpty() )
+							{
+								flgDelayedReason=0;
+							}
+							else
+							{
+								String abc = tableRow.getProperty("flgDelayedReason").toString().trim();
+								flgDelayedReason=Integer.parseInt(abc);
+							}
+						}
+
+
+
+						AutoIdStore= i +1;
+
+
+						//dbengine.savetblNoVisitReasonMaster(AutoIdStore,ReasonId,ReasonDescr,FlgToShowTextBox);
+						dbengine.savetblNoVisitReasonMaster(AutoIdStore,ReasonId,ReasonDescr,FlgToShowTextBox,flgSOApplicable,flgDSRApplicable,flgNoVisitOption,SeqNo,flgDelayedReason);
+
+
+
+
+					}
+				}
+
+			}
+
+
+			dbengine.close();		// #4
+
+			setmovie.director = "1";
+			flagExecutedServiceSuccesfully=38;
+			return setmovie;
+			//return counts;
+		} catch (Exception e)
+		{
+
+			// System.out.println("Arjun getStoreTypeMstr: 2 "+e.toString());
+			setmovie.director = e.toString();
+			setmovie.movie_name = e.toString();
+			flagExecutedServiceSuccesfully=0;
+			dbengine.close();
+			return setmovie;
 		}
+
+	}
 		
 		
 		public ServiceWorker getCallspSaveReasonForNoVisit(Context ctx, String dateVAL, String uuid,String ReasonId,String ReasonText)
@@ -23854,6 +23997,729 @@ public class ServiceWorker
 
 
 
+
+	}
+	public ServiceWorker getDsrRegistrationDataWithIMEI(Context ctx,String IMEINo)
+	{
+
+		this.context = ctx;
+		DBAdapterKenya dbengine = new DBAdapterKenya(context);
+		dbengine.open();
+
+		decimalFormat.applyPattern(pattern);
+
+		int chkTblStoreListContainsRow=1;
+		StringReader read;
+		InputSource inputstream;
+		final String SOAP_ACTION = "http://tempuri.org/fnGetPersonDetailsForRegistrationAgainstIMEI";
+		final String METHOD_NAME = "fnGetPersonDetailsForRegistrationAgainstIMEI";
+		final String NAMESPACE = "http://tempuri.org/";
+		final String URL = UrlForWebService;
+		//Create request
+		SoapObject table = null; // Contains table of dataset that returned
+		// through SoapObject
+		SoapObject client = null; // Its the client petition to the web service
+		SoapObject tableRow = null; // Contains row of table
+		SoapObject responseBody = null; // Contains XML content of dataset
+
+		//SoapObject param
+		HttpTransportSE transport = null; // That call webservice
+		SoapSerializationEnvelope sse = null;
+
+		sse = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+
+		sse.dotNet = true;
+		HttpTransportSE androidHttpTransport = new HttpTransportSE(URL,timeout);
+
+		ServiceWorker setmovie = new ServiceWorker();
+
+
+		// // System.out.println("Kajol 100");
+
+		try {
+			client = new SoapObject(NAMESPACE, METHOD_NAME);
+
+
+
+			// // System.out.println("Kajol 101");
+			client.addProperty("IMEINo", IMEINo.toString().trim());
+				/*client.addProperty("MobNo", MobNo.toString().trim());
+				client.addProperty("DOB", DOB.toString().trim());*/
+
+			// // System.out.println("Kajol 102");
+			sse.setOutputSoapObject(client);
+			// // System.out.println("Kajol 103");
+			sse.bodyOut = client;
+			// // System.out.println("Kajol 104");
+
+			androidHttpTransport.call(SOAP_ACTION, sse);
+
+			// // System.out.println("Kajol 1");
+
+			responseBody = (SoapObject)sse.bodyIn;
+			// This step: get file XML
+			//responseBody = (SoapObject) sse.getResponse();
+			int totalCount = responseBody.getPropertyCount();
+
+			// // System.out.println("Kajol 2 :"+totalCount);
+			String resultString=androidHttpTransport.responseDump;
+
+			String name=responseBody.getProperty(0).toString();
+
+			// // System.out.println("Kajol 3 :"+name);
+
+			XMLParser xmlParser = new XMLParser();
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			InputSource is = new InputSource();
+			is.setCharacterStream(new StringReader(name));
+			Document doc = db.parse(is);
+
+			dbengine.Delete_tblUserRegistarationStatus();
+			dbengine.Delete_tblDsrRegDetails();
+
+
+
+
+
+
+
+				/*NodeList tblUserRegistarationStatusNode = doc.getElementsByTagName("tblUserRegistarationStatus");
+				for (int i = 0; i < tblUserRegistarationStatusNode.getLength(); i++)
+				{
+
+					String Flag="0";
+					String MsgToDisplay="0";
+
+					Element element = (Element) tblUserRegistarationStatusNode.item(i);
+
+					if(!element.getElementsByTagName("Flag").equals(null))
+					{
+						NodeList FlagNode = element.getElementsByTagName("Flag");
+						Element line = (Element) FlagNode.item(0);
+						if(FlagNode.getLength()>0)
+						{
+							Flag=xmlParser.getCharacterDataFromElement(line);
+						}}
+					if(!element.getElementsByTagName("MsgToDisplay").equals(null))
+					{
+						NodeList MsgToDisplayNode = element.getElementsByTagName("MsgToDisplay");
+						Element	 line = (Element) MsgToDisplayNode.item(0);
+						if(MsgToDisplayNode.getLength()>0)
+						{
+							MsgToDisplay=xmlParser.getCharacterDataFromElement(line);
+						}}
+
+					dbengine.savetblUserRegistarationStatus(Flag,MsgToDisplay);
+
+				}*/
+
+			NodeList tblUserRegisteredPersonalDetailsNode = doc.getElementsByTagName("tblUserRegisteredPersonalDetails");
+			for (int i = 0; i < tblUserRegisteredPersonalDetailsNode.getLength(); i++)
+			{
+				String PersonNodeId="0";
+				String PersonNodeType="0";
+				String Name="0";
+				String ContactNo="0";
+				String DOB_string="0";
+				String SelfieName="0";
+				String SignImgName="0";
+				String BankAccountnumber="0";
+				String BankID="0";
+				String IFSCCode="0";
+				String flgUPIID="0";
+				String UPIID="0";
+				String SelfieNameURL="0";
+				String EmailId="0";
+
+
+
+
+
+
+
+
+
+				Element element = (Element) tblUserRegisteredPersonalDetailsNode.item(i);
+
+				if(!element.getElementsByTagName("Name").equals(null))
+				{
+					NodeList FirstNameNode = element.getElementsByTagName("Name");
+					Element line = (Element) FirstNameNode.item(0);
+					if(FirstNameNode.getLength()>0)
+					{
+						Name=xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+
+
+				if(!element.getElementsByTagName("ContactNo").equals(null))
+				{
+					NodeList ContactNoNode = element.getElementsByTagName("ContactNo");
+					Element line = (Element) ContactNoNode.item(0);
+					if(ContactNoNode.getLength()>0)
+					{
+						ContactNo=xmlParser.getCharacterDataFromElement(line);
+					}}
+				if(!element.getElementsByTagName("DOB").equals(null)) {
+					NodeList DOBNode = element.getElementsByTagName("DOB");
+					Element line = (Element) DOBNode.item(0);
+					if (DOBNode.getLength() > 0) {
+						DOB_string = xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+
+
+
+
+				if(!element.getElementsByTagName("SelfieName").equals(null)) {
+					NodeList PhotoNameNode = element.getElementsByTagName("SelfieName");
+					Element line = (Element) PhotoNameNode.item(0);
+					if (PhotoNameNode.getLength() > 0) {
+						SelfieName = xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+				if(!element.getElementsByTagName("SignImgName").equals(null)) {
+					NodeList PhotoNameNode = element.getElementsByTagName("SignImgName");
+					Element line = (Element) PhotoNameNode.item(0);
+					if (PhotoNameNode.getLength() > 0) {
+						SignImgName = xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+				if(!element.getElementsByTagName("BankAccountnumber").equals(null)) {
+					NodeList PhotoNameNode = element.getElementsByTagName("BankAccountnumber");
+					Element line = (Element) PhotoNameNode.item(0);
+					if (PhotoNameNode.getLength() > 0) {
+						BankAccountnumber = xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+				if(!element.getElementsByTagName("BankID").equals(null)) {
+					NodeList PhotoNameNode = element.getElementsByTagName("BankID");
+					Element line = (Element) PhotoNameNode.item(0);
+					if (PhotoNameNode.getLength() > 0) {
+						BankID = xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+				if(!element.getElementsByTagName("IFSCCode").equals(null)) {
+					NodeList PhotoNameNode = element.getElementsByTagName("IFSCCode");
+					Element line = (Element) PhotoNameNode.item(0);
+					if (PhotoNameNode.getLength() > 0) {
+						IFSCCode = xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+				if(!element.getElementsByTagName("UPIID").equals(null)) {
+					NodeList PhotoNameNode = element.getElementsByTagName("UPIID");
+					Element line = (Element) PhotoNameNode.item(0);
+					if (PhotoNameNode.getLength() > 0) {
+						UPIID = xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+				if(!element.getElementsByTagName("flgUPIID").equals(null)) {
+					NodeList PhotoNameNode = element.getElementsByTagName("flgUPIID");
+					Element line = (Element) PhotoNameNode.item(0);
+					if (PhotoNameNode.getLength() > 0) {
+						flgUPIID = xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+
+				if(!element.getElementsByTagName("PersonNodeId").equals(null)) {
+					NodeList PersonNodeIdNode = element.getElementsByTagName("PersonNodeId");
+					Element line = (Element) PersonNodeIdNode.item(0);
+					if(PersonNodeIdNode.getLength()>0)
+					{
+						PersonNodeId=xmlParser.getCharacterDataFromElement(line);
+					}}
+				if(!element.getElementsByTagName("PersonNodeType").equals(null)) {
+					NodeList PersonNodeTypeNode = element.getElementsByTagName("PersonNodeType");
+					Element	line = (Element) PersonNodeTypeNode.item(0);
+					if(PersonNodeTypeNode.getLength()>0)
+					{
+						PersonNodeType=xmlParser.getCharacterDataFromElement(line);
+					}}
+				if(!element.getElementsByTagName("SelfieNameURL").equals(null)) {
+					NodeList SelfieNameURLNode = element.getElementsByTagName("SelfieNameURL");
+					Element	line = (Element) SelfieNameURLNode.item(0);
+					if(SelfieNameURLNode.getLength()>0)
+					{
+						SelfieNameURL=xmlParser.getCharacterDataFromElement(line);
+					}}
+				if(!element.getElementsByTagName("EmailId").equals(null)) {
+					NodeList EmailIdNode = element.getElementsByTagName("EmailId");
+					Element	line = (Element) EmailIdNode.item(0);
+					if(EmailIdNode.getLength()>0)
+					{
+						EmailId=xmlParser.getCharacterDataFromElement(line);
+					}}
+
+				if(SelfieNameURL!=null && SelfieName!=null){
+					if((!SelfieNameURL.equals("")) && (!SelfieName.equals("")) && (!SelfieNameURL.equals("0")) && (!SelfieName.equals("0"))){
+						downLoadingSelfieImage(SelfieNameURL,SelfieName);
+					}
+				}
+
+
+				dbengine.savetblDsrRegDetails(PersonNodeId,PersonNodeType,Name,ContactNo,DOB_string,SelfieName,SignImgName,BankAccountnumber,BankID,IFSCCode,flgUPIID,UPIID,SelfieNameURL,EmailId);
+
+			}
+
+
+
+
+			setmovie.director = "1";
+			dbengine.close();
+			return setmovie;
+
+		} catch (Exception e) {
+
+			// System.out.println("Aman Exception occur in GetIMEIVersionDetailStatusNew :"+e.toString());
+			setmovie.director = e.toString();
+			setmovie.movie_name = e.toString();
+			dbengine.close();
+
+			return setmovie;
+		}
+
+
+
+
+
+	}
+	public String getCurrentDateTime(String uuid,int DatabaseVersion,int ApplicationID)
+	{
+
+
+		String serverTime="";
+		decimalFormat.applyPattern(pattern);
+
+		int chkTblStoreListContainsRow=1;
+		StringReader read;
+		InputSource inputstream;
+		final String SOAP_ACTION = "http://tempuri.org/GetServerTime";
+		final String METHOD_NAME = "GetServerTime";
+		//final String METHOD_NAME = "GetIMEIVersionDetailStatusNewTest";
+		final String NAMESPACE = "http://tempuri.org/";
+		final String URL = UrlForWebService;
+
+		SoapObject table = null; // Contains table of dataset that returned
+
+		SoapObject client = null; // Its the client petition to the web service
+		SoapObject tableRow = null; // Contains row of table
+		SoapObject responseBody = null; // Contains XML content of dataset
+
+		HttpTransportSE transport = null; // That call webservice
+		SoapSerializationEnvelope sse = null;
+
+		sse = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+
+		sse.dotNet = true;
+		HttpTransportSE androidHttpTransport = new HttpTransportSE(URL,timeout);
+
+		ServiceWorker setmovie = new ServiceWorker();
+
+		try
+		{
+			client = new SoapObject(NAMESPACE, METHOD_NAME);
+			client.addProperty("uuid", uuid.toString());
+			client.addProperty("DatabaseVersion", DatabaseVersion);
+			client.addProperty("ApplicationID", ApplicationID);
+
+			sse.setOutputSoapObject(client);
+			sse.bodyOut = client;
+			androidHttpTransport.call(SOAP_ACTION, sse);
+			responseBody = (SoapObject)sse.bodyIn;
+			int totalCount = responseBody.getPropertyCount();
+
+			String resultString=androidHttpTransport.responseDump;
+
+			String name=responseBody.getProperty(0).toString();
+
+			XMLParser xmlParser = new XMLParser();
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			InputSource is = new InputSource();
+			is.setCharacterStream(new StringReader(name));
+			Document doc = db.parse(is);
+
+
+
+
+
+
+
+
+
+
+			NodeList tblBloodGroupNode = doc.getElementsByTagName("tblServerTime");
+
+
+
+
+			Element element = (Element) tblBloodGroupNode.item(0);
+
+			NodeList BloddGroupsNode = element.getElementsByTagName("ServerTime");
+			Element line = (Element) BloddGroupsNode.item(0);
+			if(BloddGroupsNode.getLength()>0)
+			{
+				serverTime=xmlParser.getCharacterDataFromElement(line);
+			}
+
+
+
+
+
+
+
+
+
+
+			return serverTime;
+		}
+		catch (Exception e)
+		{
+
+
+
+			return serverTime;
+		}
+	}
+
+	public ServiceWorker getDsrRegistrationData(Context ctx,String IMEINo,String MobNo,String DOB)
+	{
+
+		this.context = ctx;
+		DBAdapterKenya dbengine = new DBAdapterKenya(context);
+		dbengine.open();
+
+		decimalFormat.applyPattern(pattern);
+
+		int chkTblStoreListContainsRow=1;
+		StringReader read;
+		InputSource inputstream;
+		final String SOAP_ACTION = "http://tempuri.org/fnPDAGetPersonDetailsForRegistration";
+		final String METHOD_NAME = "fnPDAGetPersonDetailsForRegistration";
+		final String NAMESPACE = "http://tempuri.org/";
+		final String URL = UrlForWebService;
+		//Create request
+		SoapObject table = null; // Contains table of dataset that returned
+		// through SoapObject
+		SoapObject client = null; // Its the client petition to the web service
+		SoapObject tableRow = null; // Contains row of table
+		SoapObject responseBody = null; // Contains XML content of dataset
+
+		//SoapObject param
+		HttpTransportSE transport = null; // That call webservice
+		SoapSerializationEnvelope sse = null;
+
+		sse = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+
+		sse.dotNet = true;
+		HttpTransportSE androidHttpTransport = new HttpTransportSE(URL,timeout);
+
+		ServiceWorker setmovie = new ServiceWorker();
+
+
+		// // System.out.println("Kajol 100");
+
+		try {
+			client = new SoapObject(NAMESPACE, METHOD_NAME);
+
+
+
+			// // System.out.println("Kajol 101");
+			client.addProperty("IMEINo", IMEINo.toString().trim());
+			client.addProperty("MobNo", MobNo.toString().trim());
+			client.addProperty("DOB", DOB.toString().trim());
+
+			// // System.out.println("Kajol 102");
+			sse.setOutputSoapObject(client);
+			// // System.out.println("Kajol 103");
+			sse.bodyOut = client;
+			// // System.out.println("Kajol 104");
+
+			androidHttpTransport.call(SOAP_ACTION, sse);
+
+			// // System.out.println("Kajol 1");
+
+			responseBody = (SoapObject)sse.bodyIn;
+			// This step: get file XML
+			//responseBody = (SoapObject) sse.getResponse();
+			int totalCount = responseBody.getPropertyCount();
+
+			// // System.out.println("Kajol 2 :"+totalCount);
+			String resultString=androidHttpTransport.responseDump;
+
+			String name=responseBody.getProperty(0).toString();
+
+			// // System.out.println("Kajol 3 :"+name);
+
+			XMLParser xmlParser = new XMLParser();
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			InputSource is = new InputSource();
+			is.setCharacterStream(new StringReader(name));
+			Document doc = db.parse(is);
+
+			dbengine.Delete_tblUserRegistarationStatus();
+
+
+
+
+
+
+
+
+			NodeList tblUserRegistarationStatusNode = doc.getElementsByTagName("tblUserRegistarationStatus");
+			for (int i = 0; i < tblUserRegistarationStatusNode.getLength(); i++)
+			{
+
+				String Flag="0";
+				String MsgToDisplay="0";
+
+				Element element = (Element) tblUserRegistarationStatusNode.item(i);
+
+				if(!element.getElementsByTagName("Flag").equals(null))
+				{
+					NodeList FlagNode = element.getElementsByTagName("Flag");
+					Element line = (Element) FlagNode.item(0);
+					if(FlagNode.getLength()>0)
+					{
+						Flag=xmlParser.getCharacterDataFromElement(line);
+					}}
+				if(!element.getElementsByTagName("MsgToDisplay").equals(null))
+				{
+					NodeList MsgToDisplayNode = element.getElementsByTagName("MsgToDisplay");
+					Element	 line = (Element) MsgToDisplayNode.item(0);
+					if(MsgToDisplayNode.getLength()>0)
+					{
+						MsgToDisplay=xmlParser.getCharacterDataFromElement(line);
+					}}
+
+				dbengine.Delete_tblDsrRegDetails();
+
+
+				dbengine.savetblUserRegistarationStatus(Flag,MsgToDisplay);
+
+			}
+
+			NodeList tblUserRegisteredPersonalDetailsNode = doc.getElementsByTagName("tblUserRegisteredPersonalDetails");
+			for (int i = 0; i < tblUserRegisteredPersonalDetailsNode.getLength(); i++)
+			{
+				String PersonNodeId="0";
+				String PersonNodeType="0";
+				String Name="0";
+				String ContactNo="0";
+				String DOB_string="0";
+				String SelfieName="0";
+				String SignImgName="0";
+				String BankAccountnumber="0";
+				String BankID="0";
+				String IFSCCode="0";
+				String flgUPIID="0";
+				String UPIID="0";
+				String SelfieNameURL="0";
+				String EmailId="0";
+
+
+
+
+
+
+
+
+
+				Element element = (Element) tblUserRegisteredPersonalDetailsNode.item(i);
+
+				if(!element.getElementsByTagName("Name").equals(null))
+				{
+					NodeList FirstNameNode = element.getElementsByTagName("Name");
+					Element line = (Element) FirstNameNode.item(0);
+					if(FirstNameNode.getLength()>0)
+					{
+						Name=xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+
+
+				if(!element.getElementsByTagName("ContactNo").equals(null))
+				{
+					NodeList ContactNoNode = element.getElementsByTagName("ContactNo");
+					Element line = (Element) ContactNoNode.item(0);
+					if(ContactNoNode.getLength()>0)
+					{
+						ContactNo=xmlParser.getCharacterDataFromElement(line);
+					}}
+				if(!element.getElementsByTagName("DOB").equals(null)) {
+					NodeList DOBNode = element.getElementsByTagName("DOB");
+					Element line = (Element) DOBNode.item(0);
+					if (DOBNode.getLength() > 0) {
+						DOB_string = xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+
+
+
+
+				if(!element.getElementsByTagName("SelfieName").equals(null)) {
+					NodeList PhotoNameNode = element.getElementsByTagName("SelfieName");
+					Element line = (Element) PhotoNameNode.item(0);
+					if (PhotoNameNode.getLength() > 0) {
+						SelfieName = xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+				if(!element.getElementsByTagName("SignImgName").equals(null)) {
+					NodeList PhotoNameNode = element.getElementsByTagName("SignImgName");
+					Element line = (Element) PhotoNameNode.item(0);
+					if (PhotoNameNode.getLength() > 0) {
+						SignImgName = xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+				if(!element.getElementsByTagName("BankAccountnumber").equals(null)) {
+					NodeList PhotoNameNode = element.getElementsByTagName("BankAccountnumber");
+					Element line = (Element) PhotoNameNode.item(0);
+					if (PhotoNameNode.getLength() > 0) {
+						BankAccountnumber = xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+				if(!element.getElementsByTagName("BankID").equals(null)) {
+					NodeList PhotoNameNode = element.getElementsByTagName("BankID");
+					Element line = (Element) PhotoNameNode.item(0);
+					if (PhotoNameNode.getLength() > 0) {
+						BankID = xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+				if(!element.getElementsByTagName("IFSCCode").equals(null)) {
+					NodeList PhotoNameNode = element.getElementsByTagName("IFSCCode");
+					Element line = (Element) PhotoNameNode.item(0);
+					if (PhotoNameNode.getLength() > 0) {
+						IFSCCode = xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+				if(!element.getElementsByTagName("UPIID").equals(null)) {
+					NodeList PhotoNameNode = element.getElementsByTagName("UPIID");
+					Element line = (Element) PhotoNameNode.item(0);
+					if (PhotoNameNode.getLength() > 0) {
+						UPIID = xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+				if(!element.getElementsByTagName("flgUPIID").equals(null)) {
+					NodeList PhotoNameNode = element.getElementsByTagName("flgUPIID");
+					Element line = (Element) PhotoNameNode.item(0);
+					if (PhotoNameNode.getLength() > 0) {
+						flgUPIID = xmlParser.getCharacterDataFromElement(line);
+					}
+				}
+
+				if(!element.getElementsByTagName("PersonNodeId").equals(null)) {
+					NodeList PersonNodeIdNode = element.getElementsByTagName("PersonNodeId");
+					Element line = (Element) PersonNodeIdNode.item(0);
+					if(PersonNodeIdNode.getLength()>0)
+					{
+						PersonNodeId=xmlParser.getCharacterDataFromElement(line);
+					}}
+				if(!element.getElementsByTagName("PersonNodeType").equals(null)) {
+					NodeList PersonNodeTypeNode = element.getElementsByTagName("PersonNodeType");
+					Element	line = (Element) PersonNodeTypeNode.item(0);
+					if(PersonNodeTypeNode.getLength()>0)
+					{
+						PersonNodeType=xmlParser.getCharacterDataFromElement(line);
+					}}
+				if(!element.getElementsByTagName("SelfieNameURL").equals(null)) {
+					NodeList SelfieNameURLNode = element.getElementsByTagName("SelfieNameURL");
+					Element	line = (Element) SelfieNameURLNode.item(0);
+					if(SelfieNameURLNode.getLength()>0)
+					{
+						SelfieNameURL=xmlParser.getCharacterDataFromElement(line);
+					}}
+				if(!element.getElementsByTagName("EmailId").equals(null)) {
+					NodeList EmailIdNode = element.getElementsByTagName("EmailId");
+					Element	line = (Element) EmailIdNode.item(0);
+					if(EmailIdNode.getLength()>0)
+					{
+						EmailId=xmlParser.getCharacterDataFromElement(line);
+					}}
+
+				if(SelfieNameURL!=null && SelfieName!=null){
+					if((!SelfieNameURL.equals("")) && (!SelfieName.equals("")) && (!SelfieNameURL.equals("0")) && (!SelfieName.equals("0"))){
+						downLoadingSelfieImage(SelfieNameURL,SelfieName);
+					}
+				}
+
+				dbengine.savetblDsrRegDetails(PersonNodeId,PersonNodeType,Name,ContactNo,DOB_string,SelfieName,SignImgName,BankAccountnumber,BankID,IFSCCode,flgUPIID,UPIID,SelfieNameURL,EmailId);
+
+			}
+
+
+
+
+			setmovie.director = "1";
+			dbengine.close();
+			return setmovie;
+
+		} catch (Exception e) {
+
+			// System.out.println("Aman Exception occur in GetIMEIVersionDetailStatusNew :"+e.toString());
+			setmovie.director = e.toString();
+			setmovie.movie_name = e.toString();
+			dbengine.close();
+
+			return setmovie;
+		}
+
+
+
+
+
+	}
+	public void downLoadingSelfieImage(String SelfieNameURL,String SelfieName){
+		String URL_String=  SelfieNameURL;
+		String Video_Name=  SelfieName;
+
+		try {
+
+			URL url = new URL(URL_String);
+			URLConnection connection = url.openConnection();
+			HttpURLConnection urlConnection = (HttpURLConnection) connection;
+			urlConnection.setRequestMethod("GET");
+			urlConnection.setDoInput(true);
+			urlConnection.connect();
+			String PATH = Environment.getExternalStorageDirectory() + "/" + CommonInfo.ImagesFolderServer + "/";
+
+			File file2 = new File(PATH + Video_Name);
+			if (file2.exists()) {
+				file2.delete();
+			}
+
+			File file1 = new File(PATH);
+			if (!file1.exists()) {
+				file1.mkdirs();
+			}
+
+
+			File file = new File(file1, Video_Name);
+
+			int size = connection.getContentLength();
+
+
+			FileOutputStream fileOutput = new FileOutputStream(file);
+
+			InputStream inputStream = urlConnection.getInputStream();
+
+			byte[] buffer = new byte[size];
+			int bufferLength = 0;
+			long total = 0;
+			int current = 0;
+			while ((bufferLength = inputStream.read(buffer)) != -1) {
+				total += bufferLength;
+
+				fileOutput.write(buffer, 0, bufferLength);
+			}
+
+			fileOutput.close();
+
+		}
+		catch (Exception e){
+
+		}
 
 	}
 }

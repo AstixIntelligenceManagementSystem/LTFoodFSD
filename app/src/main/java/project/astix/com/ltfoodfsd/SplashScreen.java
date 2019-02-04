@@ -30,12 +30,14 @@ import com.bugsense.trace.BugSenseHandler;
 
 
 import com.astix.Common.CommonInfo;
+import com.crashlytics.android.Crashlytics;
 import com.example.gcm.ApplicationConstants;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.loopj.android.http.RequestParams;
 
+import io.fabric.sdk.android.Fabric;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
@@ -65,7 +67,7 @@ public class SplashScreen extends AppCompatActivity
     public int syncFLAG = 0;
     public ProgressDialog pDialogGetStores;
     String serverDateForSPref;
-    SharedPreferences sPref;
+    SharedPreferences sPref,sPrefAttandance;
     public int flgTodaySalesTargetToShow=0;
 
     DBAdapterKenya dbengine = new DBAdapterKenya(this);
@@ -90,6 +92,7 @@ public class SplashScreen extends AppCompatActivity
     public void onCreateFunctionality()
     {
         sharedPref = getSharedPreferences(CommonInfo.Preference, MODE_PRIVATE);
+        sPrefAttandance=getSharedPreferences(CommonInfo.AttandancePreference, MODE_PRIVATE);
         if(sharedPref.contains("CoverageAreaNodeID"))
         {
             if(sharedPref.getInt("CoverageAreaNodeID",0)!=0)
@@ -134,10 +137,10 @@ public class SplashScreen extends AppCompatActivity
 
       // imei="359495060489571";
 
-        //imei="863408031291603_FS";
+       // imei="863408031291603_FS";
         // imei="35299064153201";//Live User
-       // imei="869124026917219"; // Test Release given by varun sir
-       // imei="863408031291603";  /// Test Release given by varun sir
+       //imei="869124026917219"; // Test Release given by varun sir
+        //imei="352801088236109";  /// Test Release given by varun sir
 
         CommonInfo.imei = imei;
         sPref=getSharedPreferences(CommonInfo.Preference, MODE_PRIVATE);
@@ -248,6 +251,7 @@ public class SplashScreen extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_splash);
         BugSenseHandler.setup(this, "05adf314");
         if (android.os.Build.VERSION.SDK_INT > 9)
@@ -610,8 +614,9 @@ public class SplashScreen extends AppCompatActivity
                                 {
                                     SharedPreferences.Editor editor=sPref.edit();
                                     editor.clear();
-                                    editor.commit();
                                     sPref.edit().putString("DatePref", serverDateForSPref).commit();
+                                    editor.commit();
+
                                     fnShowAlertBeforeRedirectingToLauncher();
                                 }
                             }
@@ -823,7 +828,7 @@ public class SplashScreen extends AppCompatActivity
 
             try
             {
-                for(int mm = 1; mm<11; mm++)
+                for(int mm = 1; mm<12; mm++)
                 {
                     System.out.println("RAM = "+mm);
                     if(mm==1)
@@ -858,7 +863,10 @@ public class SplashScreen extends AppCompatActivity
                             }
 
                         }*/
-                     }
+                        newservice = newservice.fnGetPDACollectionMaster(getApplicationContext(), fDate, imei, "0");
+
+
+                    }
                     if(mm==4)
                     {
                         newservice = newservice.getCallspToGetReasonMasterForNoVisit(getApplicationContext(), fDate, imei);
@@ -941,6 +949,22 @@ public class SplashScreen extends AppCompatActivity
 
                         }
                     }
+                    if(mm==11)
+                    {
+
+
+                        newservice = newservice.getDsrRegistrationDataWithIMEI(SplashScreen.this,imei);
+                        if(!newservice.director.toString().trim().equals("1"))
+                        {
+                            if(chkFlgForErrorToCloseApp==0)
+                            {
+                                chkFlgForErrorToCloseApp=1;
+                                break;
+                            }
+
+                        }
+                    }
+
                   /*  if(mm==9)
                     {
                         newservice = newservice.fngetVisitPlanDetails(getApplicationContext(), fDate, imei);
@@ -1013,12 +1037,24 @@ public class SplashScreen extends AppCompatActivity
 
                             if(sPref.getString("DatePref", "").equals(serverDateForSPref))
                             {
-
-                                Intent intent = new Intent(SplashScreen.this, AllButtonActivity.class);
-                                //Intent intent = new Intent(SplashScreen.this, LauncherActivity.class);
-                                intent.putExtra("imei", imei);
-                                SplashScreen.this.startActivity(intent);
-                                finish();
+                              /*  dbengine.open();
+                                dbengine.reCreateDB();
+                                dbengine.close();*/
+                                if(!sPrefAttandance.contains("AttandancePref"))
+                                {
+                                    //callDayStartActivity();
+                                    Intent i = new Intent(SplashScreen.this, RegistrationActivity.class);
+                                    i.putExtra("IntentFrom", "SPLASH");
+                                    startActivity(i);
+                                    finish();
+                                }
+                                else
+                                {
+                                    Intent intent = new Intent(SplashScreen.this, AllButtonActivity.class);
+                                    intent.putExtra("imei", imei);
+                                    SplashScreen.this.startActivity(intent);
+                                    finish();
+                                }
 
 
                             }
@@ -1026,34 +1062,63 @@ public class SplashScreen extends AppCompatActivity
                             {	SharedPreferences.Editor editor=sPref.edit();
                                 editor.clear();
                                 editor.commit();
-                                sPref.edit().putString("DatePref", serverDateForSPref).commit();
-                               // fnShowAlertBeforeRedirectingToLauncher();
-                               /* Intent i=new Intent(SplashScreen.this,SalesValueTarget.class);
-                                i.putExtra("IntentFrom", 0);
+                                // sPref.edit().putString("DatePref", serverDateForSPref).commit();
+                                // fnShowAlertBeforeRedirectingToLauncher();
+                                Intent i=new Intent(SplashScreen.this,IncentiveActivity.class);
+                                i.putExtra("IntentFrom", "SPLASH");
                                 startActivity(i);
-                                finish();*/
-
-                                Intent intent = new Intent(SplashScreen.this, AllButtonActivity.class);
-                                //Intent intent = new Intent(SplashScreen.this, LauncherActivity.class);
-                                intent.putExtra("imei", imei);
-                                SplashScreen.this.startActivity(intent);
                                 finish();
                             }
                         }
                         else
                         {
+                            SharedPreferences.Editor editor=sPref.edit();
+                            editor.clear();
                             sPref.edit().putString("DatePref", serverDateForSPref).commit();
-                           // fnShowAlertBeforeRedirectingToLauncher();
-                          /*  Intent i=new Intent(SplashScreen.this,SalesValueTarget.class);
-                            i.putExtra("IntentFrom", 0);
+                            editor.commit();
+
+
+                            SharedPreferences.Editor editor1=sPrefAttandance.edit();
+                            editor1.clear();
+                            editor1.commit();
+
+                            if(!sPrefAttandance.contains("AttandancePref"))
+                            {
+                                //callDayStartActivity();
+                                dbengine.open();
+                                int flgPersonTodaysAtt=dbengine.FetchflgPersonTodaysAtt();
+                                dbengine.close();
+
+                                if(flgPersonTodaysAtt==0)
+                                {
+                                    Intent i = new Intent(SplashScreen.this, RegistrationActivity.class);
+                                    i.putExtra("IntentFrom", "SPLASH");
+                                    startActivity(i);
+                                    finish();
+                                }
+                                else {
+
+                                    sPrefAttandance.edit().putString("AttandancePref", fDate).commit();
+
+                                    Intent intent = new Intent(SplashScreen.this, AllButtonActivity.class);
+                                    intent.putExtra("imei", imei);
+                                    SplashScreen.this.startActivity(intent);
+                                    finish();
+                                }
+                            }
+                            else
+                            {
+                                Intent intent = new Intent(SplashScreen.this, AllButtonActivity.class);
+                                intent.putExtra("imei", imei);
+                                SplashScreen.this.startActivity(intent);
+                                finish();
+                            }
+                            // sPref.edit().putString("DatePref", serverDateForSPref).commit();
+                            // fnShowAlertBeforeRedirectingToLauncher();
+                          /*  Intent i=new Intent(SplashScreen.this,IncentiveActivity.class);
+                            i.putExtra("IntentFrom", "SPLASH");
                             startActivity(i);
                             finish();*/
-
-                            Intent intent = new Intent(SplashScreen.this, AllButtonActivity.class);
-                            //Intent intent = new Intent(SplashScreen.this, LauncherActivity.class);
-                            intent.putExtra("imei", imei);
-                            SplashScreen.this.startActivity(intent);
-                            finish();
                         }
 
                     }

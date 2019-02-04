@@ -142,6 +142,10 @@ public class SyncMaster extends BaseActivity
 		{
 			alertDialogSyncError.setMessage(getText(R.string.syncAlertErrMsgDayEndOrChangeRoute));
 		}
+		else if(whereTo.contentEquals("DayStart"))
+		{
+			finish();
+		}
 		else
 		{
 		alertDialogSyncError.setMessage(getText(R.string.syncAlertErrMsg));
@@ -181,10 +185,15 @@ public class SyncMaster extends BaseActivity
 
 
 						dialog.dismiss();
-						Intent submitStoreIntent = new Intent(SyncMaster.this, AllButtonActivity.class);
-						startActivity(submitStoreIntent);
-						finish();
-
+						if(whereTo.contentEquals("DayStart"))
+						{
+							finish();
+						}
+						else {
+							Intent submitStoreIntent = new Intent(SyncMaster.this, AllButtonActivity.class);
+							startActivity(submitStoreIntent);
+							finish();
+						}
 
 					}
 				});
@@ -575,6 +584,10 @@ public class SyncMaster extends BaseActivity
 		{
 			alertDialogSyncOK.setMessage(getText(R.string.syncAlertStoreQuotationOKMsg));
 		}
+		else if(whereTo.contentEquals("DayStart"))
+		{
+			alertDialogSyncOK.setMessage(getText(R.string.syncDataAlertOKMsg));
+		}
 		else
 		{
 			alertDialogSyncOK.setMessage(getText(R.string.syncAlertOKMsg));
@@ -690,6 +703,12 @@ public class SyncMaster extends BaseActivity
 									startActivity(syncIntent);
 									finish();
 								}
+								else if(whereTo.contentEquals("DayStart"))
+								{
+									Intent submitStoreIntent = new Intent(SyncMaster.this, AllButtonActivity.class);
+									startActivity(submitStoreIntent);
+									finish();
+								}
 								else {
 									Intent submitStoreIntent = new Intent(SyncMaster.this, SplashScreen.class);
 									startActivity(submitStoreIntent);
@@ -718,6 +737,18 @@ public class SyncMaster extends BaseActivity
 								syncIntent.putExtra("bck", 1);
 								startActivity(syncIntent);
 								finish();
+							}
+							else if(whereTo.contentEquals("DayStart"))
+							{
+								if(CommonInfo.DayStartClick==2)
+								{
+									finishAffinity();
+								}
+								else {
+									Intent submitStoreIntent = new Intent(SyncMaster.this, AllButtonActivity.class);
+									startActivity(submitStoreIntent);
+									finish();
+								}
 							}
 							else {
 								Intent submitStoreIntent = new Intent(SyncMaster.this, LauncherActivity.class);
@@ -1024,6 +1055,11 @@ public class SyncMaster extends BaseActivity
 				{
 					 pDialogGetStores.setMessage("Submitting Quotation Details...");
 					}
+				else if(DayStartActivity.flgDaySartWorking==1)
+				{
+					pDialogGetStores.setMessage(getResources().getString(R.string.submittingDayStart));
+
+				}
 				else
 				{
 				pDialogGetStores.setMessage("Submitting Order Details...");
@@ -1825,6 +1861,11 @@ public String BitMapToString(Bitmap bitmap)
 				{
 					 pDialogGetStores.setMessage("Submitting Quotation Details...");
 					}
+				else if(DayStartActivity.flgDaySartWorking==1)
+				{
+					pDialogGetStores.setMessage(getResources().getString(R.string.submittingDayStart));
+
+				}
 				else
 				{
 				pDialogGetStores.setMessage("Submitting Order Details...");
@@ -2094,6 +2135,10 @@ public String BitMapToString(Bitmap bitmap)
 								{
 			            			showSyncError();
 								}
+							else if(whereTo.contentEquals("DayStart"))
+							{
+								showSyncError();
+							}
 			            		else
 			            		{
 
@@ -2190,6 +2235,7 @@ public String BitMapToString(Bitmap bitmap)
 											finish();
 										}
 									}
+
 									else
 									{
 										showSyncSuccess();
@@ -2348,6 +2394,11 @@ public String BitMapToString(Bitmap bitmap)
 			}else if(StoreSelection.flgChangeRouteOrDayEnd==3)
 			{
 				pDialogGetStores.setMessage("Submitting Quotation Details...");
+			}
+			else if(DayStartActivity.flgDaySartWorking==1)
+			{
+				pDialogGetStores.setMessage(getResources().getString(R.string.submittingDayStart));
+
 			}
 			else
 			{

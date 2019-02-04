@@ -102,6 +102,7 @@ public class DatabaseAssistant
 		if (1==1)
 		{			//reqd. if.. block
 			//exportTabletblTransac("tblStoreProdcutPurchaseDetails");
+			exportTable("tblAttandanceDetails");
 			exportTable("tblStoreProdcutPurchaseDetails");
 			exportTabletblInvoice("tblInvoice");
 			exportTableStoreList("tblStoreList");
@@ -156,7 +157,7 @@ public class DatabaseAssistant
 			exportTable("tblSpecialRemarks");
 			exportTable("tblFeedbackCompetitr");
 			exportTable("tblHealthReltnshp");
-
+			exportTable("tblRegistrationDetail");
 
 
 			//String routeID=GetActiveRouteIDSunil();

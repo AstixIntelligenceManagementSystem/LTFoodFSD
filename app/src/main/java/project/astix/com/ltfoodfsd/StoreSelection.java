@@ -2266,6 +2266,7 @@ public void DayEndWithoutalert()
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_store_selection);
+		DayStartActivity.flgDaySartWorking=0;
 		try
 		{
 			if(dbengine.isDBOpen())

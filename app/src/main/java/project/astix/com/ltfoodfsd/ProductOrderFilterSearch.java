@@ -9351,11 +9351,11 @@ public void InvoiceTableDataDeleteAndSaving(int Outstat)
 								 String FusedAccuracy="0";
 								 String FusedAddress="0";
 								 checkHighAccuracyLocationMode(ProductOrderFilterSearch.this);
-								 dbengine.open();
+								/* dbengine.open();
 								 dbengine.UpdateStoreActualLatLongi(storeID,String.valueOf(fnLati), String.valueOf(fnLongi), "" + fnAccuracy,fnAccurateProvider,flgLocationServicesOnOffOrderReview,flgGPSOnOffOrderReview,flgNetworkOnOffOrderReview,flgFusedOnOffOrderReview,flgInternetOnOffWhileLocationTrackingOrderReview,flgRestartOrderReview,flgStoreOrderOrderReview);
 
 
-								 dbengine.close();
+								 dbengine.close();*/
 
 								 if(butClickForGPS==1)
 								 {

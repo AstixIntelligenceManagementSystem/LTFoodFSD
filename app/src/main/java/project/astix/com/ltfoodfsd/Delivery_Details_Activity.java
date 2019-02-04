@@ -1059,14 +1059,23 @@ public class Delivery_Details_Activity extends BaseActivity implements  DatePick
 
 		System.out.println("SHIVA"+fnLati+","+fnLongi+","+finalAccuracy+","+fnAccurateProvider+","+GpsLat+","+GpsLong+","+GpsAccuracy+","+NetwLat+","+NetwLong+","+NetwAccuracy+","+FusedLat+","+FusedLong+","+FusedAccuracy+","+AllProvidersLocation+","+GpsAddress+","+NetwAddress+","+FusedAddress+","+FusedLocationLatitudeWithFirstAttempt+","+FusedLocationLongitudeWithFirstAttempt+","+FusedLocationAccuracyWithFirstAttempt+","+fnLongi+","+flgLocationServicesOnOff+","+flgGPSOnOff+","+flgNetworkOnOff+","+flgFusedOnOff+","+flgInternetOnOffWhileLocationTracking+","+address+","+pincode+","+city+","+state);
 
+		dbengine.fndeleteOldAddressDetailsofVisitedStore(storeID);
+		dbengine.saveLatLngToTxtFile(storeID,fnLati, fnLongi,finalAccuracy,fnAccurateProvider,GpsLat,GpsLong,GpsAccuracy,NetwLat,NetwLong,NetwAccuracy,FusedLat,FusedLong,FusedAccuracy,3,"0",
+				FusedAddress,AllProvidersLocation,GpsAddress,NetwAddress,FusedAddress,FusedLocationLatitudeWithFirstAttempt
+				,FusedLocationLongitudeWithFirstAttempt,FusedLocationAccuracyWithFirstAttempt);
+		dbengine.open();
+		dbengine.UpdateStoreActualLatLongi(storeID, String.valueOf(fnLati), String.valueOf(fnLongi), "" + finalAccuracy, fnAccurateProvider,flgLocationServicesOnOff,flgGPSOnOff,flgNetworkOnOff,flgFusedOnOff,flgInternetOnOffWhileLocationTracking,flgRestart,flgStoreOrder);
+
+
+		dbengine.close();
 		if(!checkLastFinalLoctionIsRepeated(String.valueOf(fnLati), String.valueOf(fnLongi), String.valueOf(finalAccuracy)))
 		{
 
 			fnCreateLastKnownFinalLocation(String.valueOf(fnLati), String.valueOf(fnLongi), String.valueOf(finalAccuracy));
 
-			dbengine.open();
+			/*dbengine.open();
 			dbengine.UpdateStoreActualLatLongi(storeID,String.valueOf(fnLati), String.valueOf(fnLongi), "" + finalAccuracy,fnAccurateProvider,flgLocationServicesOnOff,flgGPSOnOff,flgNetworkOnOff,flgFusedOnOff,flgInternetOnOffWhileLocationTracking,flgRestart,flgStoreOrder);
-			dbengine.close();
+			dbengine.close();*/
 			savingDataOfDeliverySectionTodatabase();
 			saveDataToDataBase();
 		}
@@ -1087,7 +1096,7 @@ public class Delivery_Details_Activity extends BaseActivity implements  DatePick
 				// On pressing Settings button
 				alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-						countSubmitClicked++;
+						//countSubmitClicked++;
 						Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 						startActivity(intent);
 					}
@@ -1101,9 +1110,7 @@ public class Delivery_Details_Activity extends BaseActivity implements  DatePick
 			}
 			else
 			{
-				dbengine.open();
-				dbengine.UpdateStoreActualLatLongi(storeID,String.valueOf(fnLati), String.valueOf(fnLongi), "" + finalAccuracy,fnAccurateProvider,flgLocationServicesOnOff,flgGPSOnOff,flgNetworkOnOff,flgFusedOnOff,flgInternetOnOffWhileLocationTracking,flgRestart,flgStoreOrder);
-				dbengine.close();
+
 				savingDataOfDeliverySectionTodatabase();
 				saveDataToDataBase();
 
@@ -1330,7 +1337,7 @@ public class Delivery_Details_Activity extends BaseActivity implements  DatePick
 						else
 						{
 							LocationRetreivingGlobal llaaa=new LocationRetreivingGlobal();
-							llaaa.locationRetrievingAndDistanceCalculating(Delivery_Details_Activity.this);
+							llaaa.locationRetrievingAndDistanceCalculating(Delivery_Details_Activity.this,false,50);
 						}
 
 
@@ -2717,6 +2724,55 @@ public class Delivery_Details_Activity extends BaseActivity implements  DatePick
 
 		// Showing Alert Message
 		alertDialog.show();
+	}
+	@Override
+	protected void onResume()
+	{
+		// TODO Auto-generated method stub
+		super.onResume();
+
+
+		if(locationManager!=null)
+		{
+			boolean isGPSokCheckInResume = false;
+			boolean isNWokCheckInResume=false;
+			isGPSokCheckInResume = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+			isNWokCheckInResume = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+			if(!isGPSokCheckInResume && !isNWokCheckInResume)
+			{
+				try
+				{
+					showSettingsAlert();
+				}
+				catch(Exception e)
+				{
+
+				}
+				isGPSokCheckInResume = false;
+				isNWokCheckInResume=false;
+			}
+			else
+			{
+
+
+				if(countSubmitClicked==1)
+				{
+
+					LocationRetreivingGlobal llaaa=new LocationRetreivingGlobal();
+					llaaa.locationRetrievingAndDistanceCalculating(Delivery_Details_Activity.this,false,50);
+
+					countSubmitClicked++;
+
+
+				}
+
+
+
+
+			}
+		}
+		//new GetData().execute();
 	}
 
 

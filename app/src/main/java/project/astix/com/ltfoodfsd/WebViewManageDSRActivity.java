@@ -106,7 +106,7 @@ public class WebViewManageDSRActivity extends Activity
         imei = tManager.getDeviceId();
 
 
-        if(CommonInfo.imei.trim().equals(null) || CommonInfo.imei.trim().equals(""))
+        if(CommonInfo.imei == null || CommonInfo.imei.trim().equals(""))
         {
             imei = tManager.getDeviceId();
             CommonInfo.imei=imei;

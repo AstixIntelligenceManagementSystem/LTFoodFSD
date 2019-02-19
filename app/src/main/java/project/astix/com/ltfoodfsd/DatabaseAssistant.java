@@ -80,7 +80,7 @@ public class DatabaseAssistant
 
 		//////System.out.println("abhinav raj File Name Called 2:"+exportFileNamePrefix);
 		xmlBuilder = new XmlBuilder();
-		xmlBuilder.start(dbName);
+		xmlBuilder.start(CommonInfo.Database_Assistant_DB_NAME);
 
 		// get the tables
 		String sql = "select * from sqlite_master";

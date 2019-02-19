@@ -1,5 +1,34 @@
 package project.astix.com.ltfoodfsd;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Environment;
+import android.util.Base64;
+import android.util.Log;
+
+import com.astix.Common.CommonInfo;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -26,395 +55,183 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
+public class SyncMaster extends BaseActivity {
 
-import android.media.MediaScannerConnection;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Environment;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Base64;
-import android.util.Log;
-
-import com.astix.Common.CommonInfo;
+    public Timer timerForDataSubmission;
+    public MyTimerTaskForDataSubmission myTimerTaskForDataSubmission;
 
 
-public class SyncMaster extends BaseActivity
-{
+    // New Sync way
 
-	public Timer timerForDataSubmission;
-	public	MyTimerTaskForDataSubmission myTimerTaskForDataSubmission;
+    SyncImageData task1;
+    SyncXMLfileData task2;
 
+    SyncVedioData task5;
 
+    private String FilePathStrings;
+    public String fnameIMG;
 
-	// New Sync way
+    public String UploadingImageName;
 
-	 SyncImageData task1;
-	 SyncXMLfileData task2;
-
-	 SyncVedioData task5;
-
-	 private String FilePathStrings;
-     public String fnameIMG;
-
-	 public String UploadingImageName;
-
-	 private File[] listFile;
-	 public  File fileintial;
-	 public String routeID="0";
-	 String xmlFileName;
-	 int serverResponseCode = 0;
+    private File[] listFile;
+    public File fileintial;
+    public String routeID = "0";
+    String xmlFileName;
+    int serverResponseCode = 0;
 
 
+    Timer timer, timer2;
+    String progressMsg;
+    /* MyTimerTask myTimerTask;
+     MyTimerTask2 mytimerTask2;
+     SyncPROdata task;*/
+    ProgressDialog pDialogGetStores;
 
 
+    public String[] xmlForWeb = new String[1];
+
+    //ProgressDialog dialog = null;
+
+    //public TextView chkString;
+    HttpEntity resEntity;
+    private SyncMaster _activity;
+
+    private static final String DATASUBDIRECTORY = "NMPphotos";
 
 
+    public int syncFLAG = 0;
+    public int res_code;
+    public String zipFileName;
+    ProgressDialog PDpicTasker;
+    public String whereTo;
+    public int IMGsyOK = 0;
+    ProgressDialog pDialog2;
+    InputStream inputStream;
 
 
+    // SyncTextFileTaster task1;
+    public File dir;
 
+    DBAdapterKenya db = new DBAdapterKenya(this);
+    DBAdapterKenya dbengine = new DBAdapterKenya(this);
+    //DBAdapterLtFoods dbengineSO = new DBAdapterLtFoods(this);
 
-
-
-	Timer timer,timer2;
-	String progressMsg;
-	/* MyTimerTask myTimerTask;
-	 MyTimerTask2 mytimerTask2;
-	 SyncPROdata task;*/
-	 ProgressDialog pDialogGetStores;
-
-
-	public String[] xmlForWeb = new String[1];
-
-	//ProgressDialog dialog = null;
-
-	//public TextView chkString;
-	HttpEntity resEntity;
-	private SyncMaster _activity;
-
-	private static final String DATASUBDIRECTORY = "NMPphotos";
-
-
-	public int syncFLAG = 0;
-	public int res_code;
-	public String zipFileName;
-	ProgressDialog PDpicTasker;
-	public String whereTo;
-	public int IMGsyOK = 0;
-	ProgressDialog pDialog2;
-	InputStream inputStream;
-
-
-
-	// SyncTextFileTaster task1;
-	 public  File dir;
-
-	DBAdapterKenya db = new DBAdapterKenya(this);
-	DBAdapterKenya dbengine = new DBAdapterKenya(this);
-	//DBAdapterLtFoods dbengineSO = new DBAdapterLtFoods(this);
-
-	public void showSyncError() {
-		AlertDialog.Builder alertDialogSyncError = new AlertDialog.Builder(
-				SyncMaster.this);
-		alertDialogSyncError.setTitle("Sync Error!");
-		alertDialogSyncError.setCancelable(false);
+    public void showSyncError() {
+        AlertDialog.Builder alertDialogSyncError = new AlertDialog.Builder(
+                SyncMaster.this);
+        alertDialogSyncError.setTitle("Sync Error!");
+        alertDialogSyncError.setCancelable(false);
 		/*alertDialogSyncError
 				.setMessage("Sync was not successful! Please try again.");*/
-		if(whereTo.contentEquals("11"))
-		{
-			alertDialogSyncError.setMessage(getText(R.string.syncAlertErrMsgDayEndOrChangeRoute));
-		}
-		else if(whereTo.contentEquals("DayStart"))
-		{
-			finish();
-		}
-		else
-		{
-		alertDialogSyncError.setMessage(getText(R.string.syncAlertErrMsg));
-		}
-		alertDialogSyncError.setNeutralButton("OK",
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
+        if (whereTo.contentEquals("11")) {
+            alertDialogSyncError.setMessage(getText(R.string.syncAlertErrMsgDayEndOrChangeRoute));
+        } else if (whereTo.contentEquals("DayStart")) {
+            finish();
+        } else {
+            alertDialogSyncError.setMessage(getText(R.string.syncAlertErrMsg));
+        }
+        alertDialogSyncError.setNeutralButton("OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
 
 
-						dialog.dismiss();
-						// finishing activity & stepping back
-						if(whereTo.contentEquals("11")) {
+                        dialog.dismiss();
+                        // finishing activity & stepping back
+                        if (whereTo.contentEquals("11")) {
 
-						}
-						else {
-							Intent submitStoreIntent = new Intent(SyncMaster.this, LauncherActivity.class);
-							startActivity(submitStoreIntent);
-							finish();
-						}
-						//SyncMaster.this.finish();
-					}
-				});
-		alertDialogSyncError.setIcon(R.drawable.sync_error_ico);
+                        } else {
+                            Intent submitStoreIntent = new Intent(SyncMaster.this, LauncherActivity.class);
+                            startActivity(submitStoreIntent);
+                            finish();
+                        }
+                        //SyncMaster.this.finish();
+                    }
+                });
+        alertDialogSyncError.setIcon(R.drawable.sync_error_ico);
 
-		AlertDialog alert = alertDialogSyncError.create();
-		alert.show();
-		// alertDialogLowbatt.show();
-	}
-	public void showSyncErrorStart() {
-		AlertDialog.Builder alertDialogSyncError = new AlertDialog.Builder(SyncMaster.this);
-		alertDialogSyncError.setTitle("Sync Error!");
-		alertDialogSyncError.setCancelable(false);
-		alertDialogSyncError.setMessage("Sync Error! \n\n Please check your Internet Connectivity & Try Again!");
-		alertDialogSyncError.setNeutralButton("OK",
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
+        AlertDialog alert = alertDialogSyncError.create();
+        alert.show();
+        // alertDialogLowbatt.show();
+    }
+
+    public void showSyncErrorStart() {
+        AlertDialog.Builder alertDialogSyncError = new AlertDialog.Builder(SyncMaster.this);
+        alertDialogSyncError.setTitle("Sync Error!");
+        alertDialogSyncError.setCancelable(false);
+        alertDialogSyncError.setMessage("Sync Error! \n\n Please check your Internet Connectivity & Try Again!");
+        alertDialogSyncError.setNeutralButton("OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
 
 
-						dialog.dismiss();
-						if(whereTo.contentEquals("DayStart"))
-						{
-							finish();
-						}
-						else {
-							Intent submitStoreIntent = new Intent(SyncMaster.this, AllButtonActivity.class);
-							startActivity(submitStoreIntent);
-							finish();
-						}
+                        dialog.dismiss();
+                        if (whereTo.contentEquals("DayStart")) {
+                            finish();
+                        } else {
+                            Intent submitStoreIntent = new Intent(SyncMaster.this, AllButtonActivity.class);
+                            startActivity(submitStoreIntent);
+                            finish();
+                        }
 
-					}
-				});
-		alertDialogSyncError.setIcon(R.drawable.sync_error_ico);
+                    }
+                });
+        alertDialogSyncError.setIcon(R.drawable.sync_error_ico);
 
-		AlertDialog alert = alertDialogSyncError.create();
-		alert.show();
-		// alertDialogLowbatt.show();
-	}
-	public void showSyncSuccessStart()
-	{
-		AlertDialog.Builder alertDialogSyncOK = new AlertDialog.Builder(SyncMaster.this);
-		alertDialogSyncOK.setTitle("Information");
-		alertDialogSyncOK.setCancelable(false);
-		if(StoreSelection.flgChangeRouteOrDayEnd==3)
-		{
-			alertDialogSyncOK.setMessage(getText(R.string.syncAlertStoreQuotationOKMsg));
-		}
-		else
-		{
-			alertDialogSyncOK.setMessage(getText(R.string.syncAlertOKMsg));
-		}
+        AlertDialog alert = alertDialogSyncError.create();
+        alert.show();
+        // alertDialogLowbatt.show();
+    }
 
-		alertDialogSyncOK.setNeutralButton("OK",
-				new DialogInterface.OnClickListener()
-		         {
-					public void onClick(DialogInterface dialog, int which)
-					{
+    public void showSyncSuccessStart() {
+        AlertDialog.Builder alertDialogSyncOK = new AlertDialog.Builder(SyncMaster.this);
+        alertDialogSyncOK.setTitle("Information");
+        alertDialogSyncOK.setCancelable(false);
+        if (StoreSelection.flgChangeRouteOrDayEnd == 3) {
+            alertDialogSyncOK.setMessage(getText(R.string.syncAlertStoreQuotationOKMsg));
+        } else {
+            alertDialogSyncOK.setMessage(getText(R.string.syncAlertOKMsg));
+        }
 
-					dialog.dismiss();
+        alertDialogSyncOK.setNeutralButton("OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
 
-					db.open();
-					//System.out.println("Indubati flgChangeRouteOrDayEnd :"+StoreSelection_Old.flgChangeRouteOrDayEnd);
+                        dialog.dismiss();
+
+                        db.open();
+                        //System.out.println("Indubati flgChangeRouteOrDayEnd :"+StoreSelection_Old.flgChangeRouteOrDayEnd);
 					/*if(StoreSelection.flgChangeRouteOrDayEnd==1 || StoreSelection.flgChangeRouteOrDayEnd==2)
 					{
 						db.reTruncateRouteTbl();
 					}*/
 
 
-					db.reCreateDB();
-					db.close();
+                        db.reCreateDB();
+                        db.close();
 
-					Intent submitStoreIntent = new Intent(SyncMaster.this, AllButtonActivity.class);
-					startActivity(submitStoreIntent);
-					finish();
+                        Intent submitStoreIntent = new Intent(SyncMaster.this, AllButtonActivity.class);
+                        startActivity(submitStoreIntent);
+                        finish();
 					/*destroyNcleanup(1);
 					imgs = null;
 					uComments.clear();*/
 
-				//	finish();
+                        //	finish();
 
 
-					}
-				});
-		alertDialogSyncOK.setIcon(R.drawable.info_ico);
+                    }
+                });
+        alertDialogSyncOK.setIcon(R.drawable.info_ico);
 
-		AlertDialog alert = alertDialogSyncOK.create();
-		alert.show();
+        AlertDialog alert = alertDialogSyncOK.create();
+        alert.show();
 
-	}
-
-
-
-	public  int upLoad2Server(String sourceFileUri,String fileUri)
-	{
-
-		     String fileName = fileUri;
-		   //  String upLoadServerUri ="http://103.16.141.16/ReadTxtFileForFerrero/Default.aspx?CLIENTFILENAME="+fileUri;
+    }
 
 
 
-			   String upLoadServerUri = CommonInfo.OrderTextSyncPath.trim()+"?CLIENTFILENAME=" +fileUri;
 
-
-		   //  String upLoadServerUri ="http://103.16.141.16/ReadTxtFileForPrabhatFDPSFALive/Default.aspx?CLIENTFILENAME="+fileUri;
-
-
-
-		    // http://103.16.141.16/ReadTxtFileForPrabhatFDPSFALive/Default.aspx
-
-		      int serverResponseCode = 0;
-		      HttpClient httpclient = null;
-			  HttpURLConnection conn = null;
-			  DataOutputStream dos = null;
-			  DataInputStream inStream = null;
-			  String lineEnd = "\r\n";
-			  String twoHyphens = "--";
-			  String boundary = "*****";
-			  int bytesRead, bytesAvailable, bufferSize;
-			  byte[] buffer;
-			  int maxBufferSize = 1024;
-			  String responseFromServer = "";
-		      String Title="MyVedio";
-
-
-			  File sourceFile = new File(sourceFileUri);
-			  if (!sourceFile.isFile())
-			  {
-				  System.out.println("S6 I M in the upLoad2Server End"+"Source File Does not exist");
-			      Log.e("Huzza", "Source File Does not exist");
-			      return 0;
-			  }
-
-			  try
-			      { 	// open a URL connection to the Servlet
-				  		FileInputStream fileInputStream = new FileInputStream(sourceFile);
-				  		//  System.out.println("End_fileInputStream"+fileInputStream);
-
-
-
-			   URL url = new URL(upLoadServerUri);
-			 //  System.out.println("End_fileInputStream_url"+url);
-			   conn = (HttpURLConnection) url.openConnection(); // Open a HTTP  connection to  the URL
-			 //  System.out.println("End_fileInputStream_url_conn"+conn);
-			   conn.setDoInput(true); // Allow Inputs
-			   conn.setDoOutput(true); // Allow Outputs
-			   conn.setUseCaches(false); // Don't use a Cached Copy
-			   conn.setRequestMethod("POST");
-			   conn.setRequestProperty("Connection", "Keep-Alive");
-			   conn.setRequestProperty("ENCTYPE", "multipart/form-data");
-			   conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-			   conn.setRequestProperty("uploaded_file", fileName);
-			  // System.out.println("uploaded_file"+fileName);
-			   dos = new DataOutputStream(conn.getOutputStream());
-			  // System.out.println("End_fileInputStream_url_dos"+dos);
-			   dos.writeBytes(twoHyphens + boundary + lineEnd);
-			  // System.out.println("FileName_Niti"+fileName);
-			   dos.writeBytes("Content-Disposition: form-data; name=\"title\"" + lineEnd);
-			   dos.writeBytes(lineEnd);
-			   dos.writeBytes(Title);
-			   dos.writeBytes(lineEnd);
-			   dos.writeBytes(twoHyphens + boundary + lineEnd);
-			   dos.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""+ fileName + "\"" + lineEnd);
-			   dos.writeBytes(lineEnd);
-
-			   bytesAvailable = fileInputStream.available(); // create a buffer of  maximum size
-			  // Log.i("Huzza", "Initial .available : " + bytesAvailable);
-
-			   bufferSize = Math.min(bytesAvailable, maxBufferSize);
-			   buffer = new byte[bufferSize];
-
-			   // read file and write it into form...
-			   bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-			  // System.out.println("End_fileInputStream_url_dos_bytesRead"+bytesRead);
-			   while (bytesRead > 0)
-			   {
-				   dos.write(buffer, 0, bufferSize);
-				   bytesAvailable = fileInputStream.available();
-				   bufferSize = Math.min(bytesAvailable, maxBufferSize);
-				   bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-			    }
-
-			   // send multipart form data necesssary after file data...
-			   dos.writeBytes(lineEnd);
-			   dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
-			   fileInputStream.close();
-			   // Responses from the server (code and message)
-			   serverResponseCode = conn.getResponseCode();
-			   if(serverResponseCode==200)
-			    {
-				// System.out.println("Ajay delete file from sdcard"+ new File(dir, fileUri).delete());
-				   dbengine.open();
-				   dbengine.upDateTextFileFlag(fileUri, 1);
-				   dbengine.close();
-				   		new File(dir, fileUri).delete();
-			           // System.out.println("Ajay file deleted");
-			         //   dbengine.open();
-			           // System.out.println("Ajay  delete file from our database start");
-				   		dbengine.open();
-			            dbengine.deleteTextFileRow(fileUri);
-			            dbengine.close();
-			           // System.out.println("Ajay delete file from our database end");
-			          //  dbengine.close();
-
-
-			        //}
-			     //   nitishStart();
-			    }
-
-
-			  // System.out.println("Ajay Server return serverResponseCode :"+serverResponseCode);
-			   String serverResponseMessage = conn.getResponseMessage();
-
-			  // Log.i("Upload file to server", "HTTP Response is : " + serverResponseMessage + ": " + serverResponseCode);
-
-			   // close streams
-			  // Log.i("Upload file to server", fileName + " File is written");
-
-			   dos.flush();
-			   dos.close();
-			  } catch (MalformedURLException ex) {
-			   ex.printStackTrace();
-			   Log.e("Upload file to server", "error: " + ex.getMessage(), ex);
-			  } catch (Exception e) {
-			   e.printStackTrace();
-			  }
-			//this block will give the response of upload link
-			  try {
-			   BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-			   String line;
-			   while ((line = rd.readLine()) != null)
-			   {
-				  // System.out.println("End_fileInputStream_url_dos_bytesRead_line"+line);
-
-			    Log.i("Huzza", "RES Message: " + line);
-			   }
-			   rd.close();
-			  } catch (IOException ioex) {
-			   Log.e("Huzza", "error: " + ioex.getMessage(), ioex);
-			  }
-			  System.out.println("End_fileInputStream_url_dos_bytesRead_serverResponseCode"+serverResponseCode);
-
-			  return serverResponseCode;  // like 200 (Ok)
-
-			 }
-
-
-
-	public String convertResponseToString(HttpResponse response) throws IllegalStateException, IOException
-	{
+    public String convertResponseToString(HttpResponse response) throws IllegalStateException, IOException {
 
         String res = "";
         StringBuffer buffer = new StringBuffer();
@@ -422,52 +239,41 @@ public class SyncMaster extends BaseActivity
         int contentLength = (int) response.getEntity().getContentLength(); //getting content length�..
         //System.out.println("contentLength : " + contentLength);
         //Toast.makeText(MainActivity.this, "contentLength : " + contentLength, Toast.LENGTH_LONG).show();
-        if (contentLength < 0)
-        {
-        }
-        else
-        {
-               byte[] data = new byte[512];
-               int len = 0;
-               try
-               {
-                   while (-1 != (len = inputStream.read(data)) )
-                   {
-                       buffer.append(new String(data, 0, len)); //converting to string and appending  to stringbuffer�..
-                   }
-               }
-               catch (IOException e)
-               {
-                   e.printStackTrace();
-               }
-               try
-               {
-                   inputStream.close(); // closing the stream�..
-               }
-               catch (IOException e)
-               {
-                   e.printStackTrace();
-               }
-               res = buffer.toString();     // converting stringbuffer to string�..
+        if (contentLength < 0) {
+        } else {
+            byte[] data = new byte[512];
+            int len = 0;
+            try {
+                while (-1 != (len = inputStream.read(data))) {
+                    buffer.append(new String(data, 0, len)); //converting to string and appending  to stringbuffer�..
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                inputStream.close(); // closing the stream�..
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            res = buffer.toString();     // converting stringbuffer to string�..
 
-               //System.out.println("Result : " + res);
-               //Toast.makeText(MainActivity.this, "Result : " + res, Toast.LENGTH_LONG).show();
-               ////System.out.println("Response => " +  EntityUtils.toString(response.getEntity()));
+            //System.out.println("Result : " + res);
+            //Toast.makeText(MainActivity.this, "Result : " + res, Toast.LENGTH_LONG).show();
+            ////System.out.println("Response => " +  EntityUtils.toString(response.getEntity()));
         }
         return res;
-   }
+    }
 
-	public void sysncStart()
-	{
-		/*if(isOnline()){*/
+    public void sysncStart() {
+        /*if(isOnline()){*/
 
-			 String[] fp2s; // = "/mnt/sdcard/NMPphotos/1539_24-05-2013_1.jpg";
+        String[] fp2s; // = "/mnt/sdcard/NMPphotos/1539_24-05-2013_1.jpg";
 
-				try {
-					db.open();
-					String[] sySTidS = db.getStoreIDTblSelectedStoreIDinChangeRouteCase();
-					//String date= db.GetPickerDate();
-					db.close();
+        try {
+            db.open();
+            String[] sySTidS = db.getStoreIDTblSelectedStoreIDinChangeRouteCase();
+            //String date= db.GetPickerDate();
+            db.close();
 					/*for(int chkCountstore=0; chkCountstore < sySTidS.length;chkCountstore++)
 					{
 						db.open();
@@ -509,16 +315,14 @@ public class SyncMaster extends BaseActivity
 
 					showSyncSuccessStart();
 					}*/
-					showSyncSuccessStart();
+            showSyncSuccessStart();
 
 
-
-				} catch (Exception e)
-				{
-					// TODO Auto-generated catch block
-					db.close();
-					e.printStackTrace();
-				} /*catch (ExecutionException e) {
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            db.close();
+            e.printStackTrace();
+        } /*catch (ExecutionException e) {
 					// TODO Auto-generated catch block
 					db.close();
 					e.printStackTrace();
@@ -529,11 +333,10 @@ public class SyncMaster extends BaseActivity
 
 				Toast.makeText(getApplicationContext(), "No Active Internet Connection! \n\nPlease check your Internet Connectivity & Try Again", Toast.LENGTH_SHORT).show();
 			}*/
-	}
+    }
 
 
-	 public static boolean deleteFolderFiles(File path)
-	 {
+    public static boolean deleteFolderFiles(File path) {
 
 	/*  // Check if file is directory/folder
 	  if(file.isDirectory())
@@ -554,167 +357,127 @@ public class SyncMaster extends BaseActivity
 
 	  }*/
 
-		 if( path.exists() )
-		 {
-	            File[] files = path.listFiles();
-	            for(int i=0; i<files.length; i++)
-	            {
-	                if(files[i].isDirectory())
-	                {
-	                	deleteFolderFiles(files[i]);
-	                }
-	                else
-	                {
-	                    files[i].delete();
-	                }
-	            }
-	      }
-	        return(path.delete());
+        if (path.exists()) {
+            File[] files = path.listFiles();
+            for (int i = 0; i < files.length; i++) {
+                if (files[i].isDirectory()) {
+                    deleteFolderFiles(files[i]);
+                } else {
+                    files[i].delete();
+                }
+            }
+        }
+        return (path.delete());
 
-	 }
-	public void showSyncSuccess()
-	{
-		AlertDialog.Builder alertDialogSyncOK = new AlertDialog.Builder(SyncMaster.this);
-		alertDialogSyncOK.setTitle("Information");
-		alertDialogSyncOK.setCancelable(false);
+    }
+
+    public void showSyncSuccess() {
+        AlertDialog.Builder alertDialogSyncOK = new AlertDialog.Builder(SyncMaster.this);
+        alertDialogSyncOK.setTitle("Information");
+        alertDialogSyncOK.setCancelable(false);
 		/*alertDialogSyncOK
 				.setMessage("Sync was successful!");*/
-		//alertDialogSyncOK.setMessage(getText(R.string.syncAlertOKMsg));
-		if(StoreSelection.flgChangeRouteOrDayEnd==3)
-		{
-			alertDialogSyncOK.setMessage(getText(R.string.syncAlertStoreQuotationOKMsg));
-		}
-		else if(whereTo.contentEquals("DayStart"))
-		{
-			alertDialogSyncOK.setMessage(getText(R.string.syncDataAlertOKMsg));
-		}
-		else
-		{
-			alertDialogSyncOK.setMessage(getText(R.string.syncAlertOKMsg));
-		}
-		alertDialogSyncOK.setNeutralButton("OK",new DialogInterface.OnClickListener()
-		    {
-					public void onClick(DialogInterface dialog, int which)
-					{
+        //alertDialogSyncOK.setMessage(getText(R.string.syncAlertOKMsg));
+        if (StoreSelection.flgChangeRouteOrDayEnd == 3) {
+            alertDialogSyncOK.setMessage(getText(R.string.syncAlertStoreQuotationOKMsg));
+        } else if (whereTo.contentEquals("DayStart")) {
+            alertDialogSyncOK.setMessage(getText(R.string.syncDataAlertOKMsg));
+        } else {
+            alertDialogSyncOK.setMessage(getText(R.string.syncAlertOKMsg));
+        }
+        alertDialogSyncOK.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
 
-						//db.deleteAllSubmitDataToServer(4);
-						CommonInfo.AnyVisit=1;
-						dialog.dismiss();
+                //db.deleteAllSubmitDataToServer(4);
+                CommonInfo.AnyVisit = 1;
+                dialog.dismiss();
 
-						int flag=0;
-						String[] imageToBeDeletedFromSdCard=db.deletFromSDcCardPhotoValidationBasedSstat("4");
-			    		if(!imageToBeDeletedFromSdCard[0].equals("No Data"))
-			    		{
-				    			for(int i=0;i<imageToBeDeletedFromSdCard.length;i++)
-				    		     {
-				    				flag=1;
+                int flag = 0;
+                String[] imageToBeDeletedFromSdCard = db.deletFromSDcCardPhotoValidationBasedSstat("4");
+                if (!imageToBeDeletedFromSdCard[0].equals("No Data")) {
+                    for (int i = 0; i < imageToBeDeletedFromSdCard.length; i++) {
+                        flag = 1;
 
-				    				 String file_dj_path = Environment.getExternalStorageDirectory() + "/" + CommonInfo.ImagesFolder + "/" +imageToBeDeletedFromSdCard[i].toString().trim();
+                        String file_dj_path = Environment.getExternalStorageDirectory() + "/" + CommonInfo.ImagesFolder + "/" + imageToBeDeletedFromSdCard[i].toString().trim();
 
-									 File fdelete = new File(file_dj_path);
-							        if (fdelete.exists())
-							        {
-							            if (fdelete.delete())
-							            {
-							                callBroadCast();
-							            }
-							            else
-							            {
+                        File fdelete = new File(file_dj_path);
+                        if (fdelete.exists()) {
+                            if (fdelete.delete()) {
+                                callBroadCast();
+                            } else {
 
-							            }
-							        }
-				    			}
-			    		}
+                            }
+                        }
+                    }
+                }
 
-						String[] imageToBeDeletedFromtableImage=db.deletFromtableImageValidationBasedSstat("4");
-						if(!imageToBeDeletedFromtableImage[0].equals("No Data"))
-						{
-							for(int i=0;i<imageToBeDeletedFromtableImage.length;i++)
-							{
-								flag=1;
+                String[] imageToBeDeletedFromtableImage = db.deletFromtableImageValidationBasedSstat("4");
+                if (!imageToBeDeletedFromtableImage[0].equals("No Data")) {
+                    for (int i = 0; i < imageToBeDeletedFromtableImage.length; i++) {
+                        flag = 1;
 
-								String file_dj_path = Environment.getExternalStorageDirectory() + "/" + CommonInfo.ImagesFolder + "/" +imageToBeDeletedFromSdCard[i].toString().trim();
+                        String file_dj_path = Environment.getExternalStorageDirectory() + "/" + CommonInfo.ImagesFolder + "/" + imageToBeDeletedFromSdCard[i].toString().trim();
 
-								File fdelete = new File(file_dj_path);
-								if (fdelete.exists())
-								{
-									if (fdelete.delete())
-									{
-										callBroadCast();
-									}
-									else
-									{
+                        File fdelete = new File(file_dj_path);
+                        if (fdelete.exists()) {
+                            if (fdelete.delete()) {
+                                callBroadCast();
+                            } else {
 
-									}
-								}
-							}
-						}
+                            }
+                        }
+                    }
+                }
 
 
-
-
-
-
-
-
-
-
-						// finishing activity & stepping back
-						if(whereTo.contentEquals("11"))
-						{
-							int chkSct=0;
+                // finishing activity & stepping back
+                if (whereTo.contentEquals("11")) {
+                    int chkSct = 0;
 							/*db.open();
 							chkSct=db.getExistingPicNosOnRemStoreOnChangeRoute();
 							db.close();*/
-							if(chkSct>0)
-							{
-								whereTo = "";
-								//sysncStart();
+                    if (chkSct > 0) {
+                        whereTo = "";
+                        //sysncStart();
 
-								File dirORIGimg = new File(Environment.getExternalStorageDirectory(),DATASUBDIRECTORY);
-								deleteFolderFiles(dirORIGimg);
-
-
-							}
-							else
-							{
-								whereTo = "";
-
-								File dirORIGimg = new File(Environment.getExternalStorageDirectory(),DATASUBDIRECTORY);
-								deleteFolderFiles(dirORIGimg);
+                        File dirORIGimg = new File(Environment.getExternalStorageDirectory(), DATASUBDIRECTORY);
+                        deleteFolderFiles(dirORIGimg);
 
 
-								db.open();
-								if(StoreSelection.flgChangeRouteOrDayEnd==1 || StoreSelection.flgChangeRouteOrDayEnd==2)
-								{
-									db.reTruncateRouteTbl();
-									//db.reTruncateRouteMstrTbl();
-								}
-								db.reCreateDB();
-								db.close();
-								if(StoreSelection.flgChangeRouteOrDayEnd==3){
-									Intent syncIntent = new Intent(SyncMaster.this, LastVisitDetail_AllButton.class);
-									syncIntent.putExtra("storeID", QuotationActivity.storeID);
-									syncIntent.putExtra("SN", QuotationActivity.selStoreName);
-									syncIntent.putExtra("imei",QuotationActivity.imei);
-									syncIntent.putExtra("userDate",QuotationActivity.date);
-									syncIntent.putExtra("pickerDate",QuotationActivity.pickerDate);
-									syncIntent.putExtra("bck", 1);
-									startActivity(syncIntent);
-									finish();
-								}
-								else if(whereTo.contentEquals("DayStart"))
-								{
-									Intent submitStoreIntent = new Intent(SyncMaster.this, AllButtonActivity.class);
-									startActivity(submitStoreIntent);
-									finish();
-								}
-								else {
-									Intent submitStoreIntent = new Intent(SyncMaster.this, SplashScreen.class);
-									startActivity(submitStoreIntent);
-									finish();
-								}
-							}
+                    } else {
+                        whereTo = "";
+
+                        File dirORIGimg = new File(Environment.getExternalStorageDirectory(), DATASUBDIRECTORY);
+                        deleteFolderFiles(dirORIGimg);
+
+
+                        db.open();
+                        if (StoreSelection.flgChangeRouteOrDayEnd == 1 || StoreSelection.flgChangeRouteOrDayEnd == 2) {
+                            db.reTruncateRouteTbl();
+                            //db.reTruncateRouteMstrTbl();
+                        }
+                        db.reCreateDB();
+                        db.close();
+                        if (StoreSelection.flgChangeRouteOrDayEnd == 3) {
+                            Intent syncIntent = new Intent(SyncMaster.this, LastVisitDetail_AllButton.class);
+                            syncIntent.putExtra("storeID", QuotationActivity.storeID);
+                            syncIntent.putExtra("SN", QuotationActivity.selStoreName);
+                            syncIntent.putExtra("imei", QuotationActivity.imei);
+                            syncIntent.putExtra("userDate", QuotationActivity.date);
+                            syncIntent.putExtra("pickerDate", QuotationActivity.pickerDate);
+                            syncIntent.putExtra("bck", 1);
+                            startActivity(syncIntent);
+                            finish();
+                        } else if (whereTo.contentEquals("DayStart")) {
+                            Intent submitStoreIntent = new Intent(SyncMaster.this, AllButtonActivity.class);
+                            startActivity(submitStoreIntent);
+                            finish();
+                        } else {
+                            Intent submitStoreIntent = new Intent(SyncMaster.this, SplashScreen.class);
+                            startActivity(submitStoreIntent);
+                            finish();
+                        }
+                    }
 						/*	whereTo = "";
 							db.open();
 							db.reCreateDB();
@@ -723,114 +486,94 @@ public class SyncMaster extends BaseActivity
 							Intent submitStoreIntent = new Intent(SyncMaster.this, LauncherActivity.class);
 							startActivity(submitStoreIntent);
 							finish();*/
-						}
+                } else {
+                    if (StoreSelection.flgChangeRouteOrDayEnd == 3) {
+                        Intent syncIntent = new Intent(SyncMaster.this, LastVisitDetail_AllButton.class);
+                        syncIntent.putExtra("storeID", QuotationActivity.storeID);
+                        syncIntent.putExtra("SN", QuotationActivity.selStoreName);
+                        syncIntent.putExtra("imei", QuotationActivity.imei);
+                        syncIntent.putExtra("userDate", QuotationActivity.date);
+                        syncIntent.putExtra("pickerDate", QuotationActivity.pickerDate);
+                        syncIntent.putExtra("bck", 1);
+                        startActivity(syncIntent);
+                        finish();
+                    } else if (whereTo.contentEquals("DayStart")) {
+                        if (CommonInfo.DayStartClick == 2) {
+                            finishAffinity();
+                        } else {
+                            Intent submitStoreIntent = new Intent(SyncMaster.this, AllButtonActivity.class);
+                            startActivity(submitStoreIntent);
+                            finish();
+                        }
+                    } else {
+                        Intent submitStoreIntent = new Intent(SyncMaster.this, LauncherActivity.class);
+                        startActivity(submitStoreIntent);
+                        finish();
+                    }
+                }
+                //finish();
+                //SyncMaster.this.finish();
+            }
+        });
+        alertDialogSyncOK.setIcon(R.drawable.info_ico);
 
-						else
-						{
-							if(StoreSelection.flgChangeRouteOrDayEnd==3){
-								Intent syncIntent = new Intent(SyncMaster.this, LastVisitDetail_AllButton.class);
-								syncIntent.putExtra("storeID", QuotationActivity.storeID);
-								syncIntent.putExtra("SN", QuotationActivity.selStoreName);
-								syncIntent.putExtra("imei",QuotationActivity.imei);
-								syncIntent.putExtra("userDate",QuotationActivity.date);
-								syncIntent.putExtra("pickerDate",QuotationActivity.pickerDate);
-								syncIntent.putExtra("bck", 1);
-								startActivity(syncIntent);
-								finish();
-							}
-							else if(whereTo.contentEquals("DayStart"))
-							{
-								if(CommonInfo.DayStartClick==2)
-								{
-									finishAffinity();
-								}
-								else {
-									Intent submitStoreIntent = new Intent(SyncMaster.this, AllButtonActivity.class);
-									startActivity(submitStoreIntent);
-									finish();
-								}
-							}
-							else {
-								Intent submitStoreIntent = new Intent(SyncMaster.this, LauncherActivity.class);
-								startActivity(submitStoreIntent);
-								finish();
-							}
-						}
-						//finish();
-						//SyncMaster.this.finish();
-					}
-				});
-		alertDialogSyncOK.setIcon(R.drawable.info_ico);
+        AlertDialog alert = alertDialogSyncOK.create();
+        alert.show();
+        // alertDialogLowbatt.show();
+    }
 
-		AlertDialog alert = alertDialogSyncOK.create();
-		alert.show();
-		// alertDialogLowbatt.show();
-	}
+    //
+    public void delXML(String delPath) {
+        //System.out.println("Deleting..: " + delPath);
+        File file = new File(delPath);
+        file.delete();
+        File file1 = new File(delPath.toString().replace(".xml", ".zip"));
+        file1.delete();
+    }
 
-	//
-	public void delXML(String delPath)
-	{
-		//System.out.println("Deleting..: " + delPath);
-		File file = new File(delPath);
-	    file.delete();
-	    File file1 = new File(delPath.toString().replace(".xml", ".zip"));
-	     file1.delete();
-	}
-	//
-	//
-	public static void zip(String[] files, String zipFile) throws IOException
-	{
-	    BufferedInputStream origin = null;
-	    final int BUFFER_SIZE = 2048;
+    //
+    //
+    public static void zip(String[] files, String zipFile) throws IOException {
+        BufferedInputStream origin = null;
+        final int BUFFER_SIZE = 2048;
 
-	    ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)));
-	    try
-	    {
-	        byte data[] = new byte[BUFFER_SIZE];
+        ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)));
+        try {
+            byte data[] = new byte[BUFFER_SIZE];
 
-	        for (int i = 0; i < files.length; i++)
-	          {
-	            FileInputStream fi = new FileInputStream(files[i]);
-	            origin = new BufferedInputStream(fi, BUFFER_SIZE);
-	            try
-	              {
-		                ZipEntry entry = new ZipEntry(files[i].substring(files[i].lastIndexOf("/") + 1));
-		                out.putNextEntry(entry);
-		                int count;
-		                while ((count = origin.read(data, 0, BUFFER_SIZE)) != -1)
-		                {
-		                    out.write(data, 0, count);
-		                }
-	              }
-	            finally
-	            {
-	                origin.close();
-	            }
-	        }
-	    }
-	    finally
-	    {
-	        out.close();
-	    }
-	}
+            for (int i = 0; i < files.length; i++) {
+                FileInputStream fi = new FileInputStream(files[i]);
+                origin = new BufferedInputStream(fi, BUFFER_SIZE);
+                try {
+                    ZipEntry entry = new ZipEntry(files[i].substring(files[i].lastIndexOf("/") + 1));
+                    out.putNextEntry(entry);
+                    int count;
+                    while ((count = origin.read(data, 0, BUFFER_SIZE)) != -1) {
+                        out.write(data, 0, count);
+                    }
+                } finally {
+                    origin.close();
+                }
+            }
+        } finally {
+            out.close();
+        }
+    }
 
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_sync_master);
 
-
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_sync_master);
-
-		_activity = this;
-		//System.out.println("Induwati 0");
-		Intent syncIntent = getIntent();
-		 xmlForWeb[0] = syncIntent.getStringExtra("xmlPathForSync");
-		zipFileName = syncIntent.getStringExtra("OrigZipFileName");
-		whereTo = syncIntent.getStringExtra("whereTo");
-		//System.out.println("Induwati 1");
-		//System.out.println("XML path: " + xmlForWeb);
+        _activity = this;
+        //System.out.println("Induwati 0");
+        Intent syncIntent = getIntent();
+        xmlForWeb[0] = syncIntent.getStringExtra("xmlPathForSync");
+        zipFileName = syncIntent.getStringExtra("OrigZipFileName");
+        whereTo = syncIntent.getStringExtra("whereTo");
+        //System.out.println("Induwati 1");
+        //System.out.println("XML path: " + xmlForWeb);
 
 		/*chkString = (TextView)findViewById(R.id.textview1_testString);
 		chkString.setText(xmlForWeb);*/
@@ -845,32 +588,27 @@ public class SyncMaster extends BaseActivity
 		}*/
 
 
-		try
-		{
+        try {
 
 
+            try {
+                task1 = new SyncImageData(SyncMaster.this);
+                task1.execute();
 
-			try
-			{
-			 task1 = new SyncImageData(SyncMaster.this);
-			 task1.execute();
+                if (timerForDataSubmission != null) {
+                    timerForDataSubmission.cancel();
+                    timerForDataSubmission = null;
+                }
 
-				if (timerForDataSubmission != null) {
-					timerForDataSubmission.cancel();
-					timerForDataSubmission = null;
-				}
+                timerForDataSubmission = new Timer();
+                myTimerTaskForDataSubmission = new MyTimerTaskForDataSubmission();
+                timerForDataSubmission.schedule(myTimerTaskForDataSubmission, 300000);
+            } catch (Exception e) {
 
-				timerForDataSubmission = new Timer();
-				myTimerTaskForDataSubmission = new MyTimerTaskForDataSubmission();
-				timerForDataSubmission.schedule(myTimerTaskForDataSubmission, 300000);
-			}
-			catch(Exception e)
-			{
+            }
 
-			}
-
-		    // task = new SyncPROdata(SyncMaster.this);
-			// task.execute();
+            // task = new SyncPROdata(SyncMaster.this);
+            // task.execute();
 
 				/*if(whereTo.equals("Regular"))
 				{
@@ -890,12 +628,12 @@ public class SyncMaster extends BaseActivity
 				      }
 
 				}*/
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-	}
+    }
 
 	/*class MyTimerTask extends TimerTask {
 
@@ -1023,1025 +761,884 @@ public class SyncMaster extends BaseActivity
 
 	   }*/
 
-	private class SyncImageData extends AsyncTask<Void, Void, Void>
-	{
-		 String[] fp2s;
-		 String[] NoOfOutletID;
+    private class SyncImageData extends AsyncTask<Void, Void, Void> {
+        String[] fp2s;
+        String[] NoOfOutletID;
 
-		public SyncImageData(SyncMaster activity)
-		{
-			pDialogGetStores = new ProgressDialog(activity);
-		}
+        public SyncImageData(SyncMaster activity) {
+            pDialogGetStores = new ProgressDialog(activity);
+        }
 
-		@Override
-		 protected void onPreExecute()
-		  {
-			    super.onPreExecute();
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
 
-			    dbengine.open();
-			    routeID=dbengine.GetActiveRouteID();
-				dbengine.close();
+            dbengine.open();
+            routeID = dbengine.GetActiveRouteID();
+            dbengine.close();
 
 
-			    pDialogGetStores.setTitle(getText(R.string.genTermPleaseWaitNew));
-			  //  pDialogGetStores.setMessage("Uploading Data...");
-			    if(StoreSelection.flgChangeRouteOrDayEnd==1)
-				{
-				 pDialogGetStores.setMessage("Ending your day visit ...");
-				}else if(StoreSelection.flgChangeRouteOrDayEnd==2)
-				{
-				 pDialogGetStores.setMessage("Changing the route....");
-				}else if(StoreSelection.flgChangeRouteOrDayEnd==3)
-				{
-					 pDialogGetStores.setMessage("Submitting Quotation Details...");
-					}
-				else if(DayStartActivity.flgDaySartWorking==1)
-				{
-					pDialogGetStores.setMessage(getResources().getString(R.string.submittingDayStart));
+            pDialogGetStores.setTitle(getText(R.string.genTermPleaseWaitNew));
+            //  pDialogGetStores.setMessage("Uploading Data...");
+            if (StoreSelection.flgChangeRouteOrDayEnd == 1) {
+                pDialogGetStores.setMessage("Ending your day visit ...");
+            } else if (StoreSelection.flgChangeRouteOrDayEnd == 2) {
+                pDialogGetStores.setMessage("Changing the route....");
+            } else if (StoreSelection.flgChangeRouteOrDayEnd == 3) {
+                pDialogGetStores.setMessage("Submitting Quotation Details...");
+            } else if (DayStartActivity.flgDaySartWorking == 1) {
+                pDialogGetStores.setMessage(getResources().getString(R.string.submittingDayStart));
 
-				}
-				else
-				{
-				pDialogGetStores.setMessage("Submitting Order Details...");
-				}
-				pDialogGetStores.setIndeterminate(false);
-				pDialogGetStores.setCancelable(false);
-				pDialogGetStores.setCanceledOnTouchOutside(false);
-				pDialogGetStores.show();
+            } else {
+                pDialogGetStores.setMessage("Submitting Order Details...");
+            }
+            pDialogGetStores.setIndeterminate(false);
+            pDialogGetStores.setCancelable(false);
+            pDialogGetStores.setCanceledOnTouchOutside(false);
+            pDialogGetStores.show();
 
 
-				if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED))
-				{
+            if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
 
-				}
-				else
-				{
-					// Locate the image folder in your SD Card
-					fileintial = new File(Environment.getExternalStorageDirectory()
-							+ File.separator + CommonInfo.ImagesFolder);
-					// Create a new folder if no folder named SDImageTutorial exist
-					fileintial.mkdirs();
-				}
+            } else {
+                // Locate the image folder in your SD Card
+                fileintial = new File(Environment.getExternalStorageDirectory()
+                        + File.separator + CommonInfo.ImagesFolder);
+                // Create a new folder if no folder named SDImageTutorial exist
+                fileintial.mkdirs();
+            }
 
 
-				if (fileintial.isDirectory())
-				   {
-					   listFile = fileintial.listFiles();
-				   }
+            if (fileintial.isDirectory()) {
+                listFile = fileintial.listFiles();
+            }
 
 
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
 
 
+            // Sync POS Images
 
-	        }
+            try {
 
-			@Override
-			protected Void doInBackground(Void... params)
-			{
+                try {
+                    db.open();
+                    NoOfOutletID = db.getAllStoreIDIntblStoreMaterialPhotoDetail();
+                    db.close();
 
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    db.close();
+                    e.printStackTrace();
+                }
+                for (int chkCountstore = 0; chkCountstore < NoOfOutletID.length; chkCountstore++) {
+                    db.open();
+                    int NoOfImages = db.getExistingPicNos(NoOfOutletID[chkCountstore].toString());
+                    String[] NoOfImgsPath = db.getImgsPath(NoOfOutletID[chkCountstore].toString());
+                    db.close();
 
-				// Sync POS Images
+                    fp2s = new String[2];
 
-				  try
-			        {
+                    for (int syCOUNT = 0; syCOUNT < NoOfImages; syCOUNT++) {
+                        fp2s[0] = NoOfImgsPath[syCOUNT];
+                        fp2s[1] = NoOfOutletID[chkCountstore];
 
-					  try
-						{
-							db.open();
-							NoOfOutletID = db.getAllStoreIDIntblStoreMaterialPhotoDetail();
-							db.close();
+                        // New Way
 
-						} catch (Exception e)
-						{
-							// TODO Auto-generated catch block
-							db.close();
-							e.printStackTrace();
-						}
-				for(int chkCountstore=0; chkCountstore < NoOfOutletID.length;chkCountstore++)
-				{
-					db.open();
-					int NoOfImages = db.getExistingPicNos(NoOfOutletID[chkCountstore].toString());
-					String[] NoOfImgsPath = db.getImgsPath(NoOfOutletID[chkCountstore].toString());
-					db.close();
-
-					fp2s = new String[2];
-
-					for(int syCOUNT = 0; syCOUNT < NoOfImages; syCOUNT++)
-					{
-						fp2s[0] = NoOfImgsPath[syCOUNT];
-						fp2s[1] = NoOfOutletID[chkCountstore];
-
-						// New Way
-
-						fnameIMG = fp2s[0];
-						UploadingImageName=fp2s[0];
+                        fnameIMG = fp2s[0];
+                        UploadingImageName = fp2s[0];
 
 
-						String stID = fp2s[1];
-						String currentImageFileName=fnameIMG;
+                        String stID = fp2s[1];
+                        String currentImageFileName = fnameIMG;
 
-						boolean isImageExist=false;
-						for (int i = 0; i < listFile.length; i++)
-						{
-							FilePathStrings = listFile[i].getAbsolutePath();
-							if(listFile[i].getName().equals(fnameIMG))
-							{
-								fnameIMG=listFile[i].getAbsolutePath();
-								isImageExist=true;
-								break;
-							}
-						}
-						if(isImageExist)
-						{
-							 Bitmap bmp = BitmapFactory.decodeFile(fnameIMG);
-				             ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        boolean isImageExist = false;
+                        for (int i = 0; i < listFile.length; i++) {
+                            FilePathStrings = listFile[i].getAbsolutePath();
+                            if (listFile[i].getName().equals(fnameIMG)) {
+                                fnameIMG = listFile[i].getAbsolutePath();
+                                isImageExist = true;
+                                break;
+                            }
+                        }
+                        if (isImageExist) {
+                            Bitmap bmp = BitmapFactory.decodeFile(fnameIMG);
+                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
-				             String image_str=  BitMapToString(bmp);
-				             ArrayList<NameValuePair> nameValuePairs = new  ArrayList<NameValuePair>();
+                            String image_str = BitMapToString(bmp);
+                            ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 
 
-				        try
-				        {
-							stream.flush();
-						}
-				        catch (IOException e1)
-						{
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-				        try
-				        {
-							stream.close();
-						}
-				        catch (IOException e1)
-						{
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
+                            try {
+                                stream.flush();
+                            } catch (IOException e1) {
+                                // TODO Auto-generated catch block
+                                e1.printStackTrace();
+                            }
+                            try {
+                                stream.close();
+                            } catch (IOException e1) {
+                                // TODO Auto-generated catch block
+                                e1.printStackTrace();
+                            }
 
-				        long syncTIMESTAMP = System.currentTimeMillis();
-				        Date datefromat = new Date(syncTIMESTAMP);
-						SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss.SSS",Locale.ENGLISH);
-					    String onlyDate=df.format(datefromat);
+                            long syncTIMESTAMP = System.currentTimeMillis();
+                            Date datefromat = new Date(syncTIMESTAMP);
+                            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss.SSS", Locale.ENGLISH);
+                            String onlyDate = df.format(datefromat);
 
 
-				        nameValuePairs.add(new BasicNameValuePair("image", image_str));
-				        nameValuePairs.add(new BasicNameValuePair("FileName",currentImageFileName));
-				        nameValuePairs.add(new BasicNameValuePair("comment","NA"));
-				        nameValuePairs.add(new BasicNameValuePair("storeID",stID));
-				        nameValuePairs.add(new BasicNameValuePair("date",onlyDate));
-				        nameValuePairs.add(new BasicNameValuePair("routeID",routeID));
+                            nameValuePairs.add(new BasicNameValuePair("image", image_str));
+                            nameValuePairs.add(new BasicNameValuePair("FileName", currentImageFileName));
+                            nameValuePairs.add(new BasicNameValuePair("comment", "NA"));
+                            nameValuePairs.add(new BasicNameValuePair("storeID", stID));
+                            nameValuePairs.add(new BasicNameValuePair("date", onlyDate));
+                            nameValuePairs.add(new BasicNameValuePair("routeID", routeID));
 
-				        try
-				        {
+                            try {
 
-				        	  HttpParams httpParams = new BasicHttpParams();
-				              HttpConnectionParams.setSoTimeout(httpParams, 0);
-				        	  HttpClient httpclient = new DefaultHttpClient(httpParams);
-				              HttpPost httppost = new HttpPost(CommonInfo.ImageSyncPath.trim());
+                                HttpParams httpParams = new BasicHttpParams();
+                                HttpConnectionParams.setSoTimeout(httpParams, 0);
+                                HttpClient httpclient = new DefaultHttpClient(httpParams);
+//				              HttpPost httppost = new HttpPost(CommonInfo.ImageSyncPath.trim());
+                                HttpPost httppost = new HttpPost(CommonInfo.COMMON_SYNC_PATH_URL.trim() + CommonInfo.ClientFileNameImageSyncPath );
 
 
-				            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-				            HttpResponse response = httpclient.execute(httppost);
-				            String the_string_response = convertResponseToString(response);
+                                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                                HttpResponse response = httpclient.execute(httppost);
+                                String the_string_response = convertResponseToString(response);
 
-				            System.out.println("Sunil Doing Testing Response after sending Image" + the_string_response);
+                                System.out.println("Sunil Doing Testing Response after sending Image" + the_string_response);
 
-				          //  if(serverResponseCode == 200)
-				            if(the_string_response.equals("Abhinav"))
-				               {
+                                //  if(serverResponseCode == 200)
+                                if (the_string_response.equalsIgnoreCase("success")) {
 
-				            	 System.out.println("Sunil Doing Testing Response after sending Image inside if" + the_string_response);
-				            	 db.updateImageRecordsSyncdforPOSMaterial(UploadingImageName.toString().trim());
-				            	// String file_dj_path = Environment.getExternalStorageDirectory() + "/RSPLSFAImages/"+UploadingImageName.toString().trim();
-								   String file_dj_path = Environment.getExternalStorageDirectory() + "/" + CommonInfo.ImagesFolder + "/" +UploadingImageName.toString().trim();
+                                    System.out.println("Sunil Doing Testing Response after sending Image inside if" + the_string_response);
+                                    db.updateImageRecordsSyncdforPOSMaterial(UploadingImageName.toString().trim());
+                                    // String file_dj_path = Environment.getExternalStorageDirectory() + "/RSPLSFAImages/"+UploadingImageName.toString().trim();
+                                    String file_dj_path = Environment.getExternalStorageDirectory() + "/" + CommonInfo.ImagesFolder + "/" + UploadingImageName.toString().trim();
 
-								   File fdelete = new File(file_dj_path);
-							        if (fdelete.exists())
-							        {
-							            if (fdelete.delete())
-							            {
-							                Log.e("-->", "file Deleted :" + file_dj_path);
-							                callBroadCast();
-							            }
-							            else
-							            {
-							                Log.e("-->", "file not Deleted :" + file_dj_path);
-							            }
-							        }
+                                    File fdelete = new File(file_dj_path);
+                                    if (fdelete.exists()) {
+                                        if (fdelete.delete()) {
+                                            Log.e("-->", "file Deleted :" + file_dj_path);
+                                            callBroadCast();
+                                        } else {
+                                            Log.e("-->", "file not Deleted :" + file_dj_path);
+                                        }
+                                    }
 				            	/* File file = new File(UploadingImageName.toString().trim());
 				         	    file.delete();*/
 
-				               }
+                                }
 
-				        }catch(Exception e)
-				        {
-				            IMGsyOK = 1;
+                            } catch (Exception e) {
+                                IMGsyOK = 1;
 
-				        }
-						}
-
-
-					}
+                            }
+                        }
 
 
-				}
-			 }
-				catch(Exception e)
-		        {
-		             IMGsyOK = 1;
-
-		        }
+                    }
 
 
-				  // Sync Return Images
+                }
+            } catch (Exception e) {
+                IMGsyOK = 1;
 
-				  try
-				  {
-
-					  try
-						{
-
-							db.open();
-							NoOfOutletID = db.getAllStoreIDIntblStoreReturnPhotoDetail();
-							db.close();
-
-						} catch (Exception e)
-						{
-							// TODO Auto-generated catch block
-							db.close();
-							e.printStackTrace();
-						}
-
-						for(int chkCountstore=0; chkCountstore < NoOfOutletID.length;chkCountstore++)
-						{
-							db.open();
-							int NoOfImages = db.getExistingPicNosForReturn(NoOfOutletID[chkCountstore].toString());
-							String[] NoOfImgsPath = db.getImgsPathForReturn(NoOfOutletID[chkCountstore].toString());
-							db.close();
-
-							fp2s = new String[2];
-
-							for(int syCOUNT = 0; syCOUNT < NoOfImages; syCOUNT++)
-							{
-								fp2s[0] = NoOfImgsPath[syCOUNT];
-								fp2s[1] = NoOfOutletID[chkCountstore];
-
-								// New Way
-
-								fnameIMG = fp2s[0];
-								UploadingImageName=fp2s[0];
+            }
 
 
-								String stID = fp2s[1];
-								String currentImageFileName=fnameIMG;
+            // Sync Return Images
 
-								boolean isImageExist=false;
-								for (int i = 0; i < listFile.length; i++)
-								{
-									FilePathStrings = listFile[i].getAbsolutePath();
-									if(listFile[i].getName().equals(fnameIMG))
-									{
-										fnameIMG=listFile[i].getAbsolutePath();
-										isImageExist=true;
-										break;
-									}
-								}
-								if(isImageExist)
-								{
-									 Bitmap bmp = BitmapFactory.decodeFile(fnameIMG);
-						             ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            try {
 
-						             String image_str=  BitMapToString(bmp);
-						             ArrayList<NameValuePair> nameValuePairs = new  ArrayList<NameValuePair>();
+                try {
 
+                    db.open();
+                    NoOfOutletID = db.getAllStoreIDIntblStoreReturnPhotoDetail();
+                    db.close();
 
-						        try
-						        {
-									stream.flush();
-								}
-						        catch (IOException e1)
-								{
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								}
-						        try
-						        {
-									stream.close();
-								}
-						        catch (IOException e1)
-								{
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								}
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    db.close();
+                    e.printStackTrace();
+                }
 
-						        long syncTIMESTAMP = System.currentTimeMillis();
-						        Date datefromat = new Date(syncTIMESTAMP);
-								SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss.SSS",Locale.ENGLISH);
-							    String onlyDate=df.format(datefromat);
+                for (int chkCountstore = 0; chkCountstore < NoOfOutletID.length; chkCountstore++) {
+                    db.open();
+                    int NoOfImages = db.getExistingPicNosForReturn(NoOfOutletID[chkCountstore].toString());
+                    String[] NoOfImgsPath = db.getImgsPathForReturn(NoOfOutletID[chkCountstore].toString());
+                    db.close();
+
+                    fp2s = new String[2];
+
+                    for (int syCOUNT = 0; syCOUNT < NoOfImages; syCOUNT++) {
+                        fp2s[0] = NoOfImgsPath[syCOUNT];
+                        fp2s[1] = NoOfOutletID[chkCountstore];
+
+                        // New Way
+
+                        fnameIMG = fp2s[0];
+                        UploadingImageName = fp2s[0];
 
 
-						        nameValuePairs.add(new BasicNameValuePair("image", image_str));
-						        nameValuePairs.add(new BasicNameValuePair("FileName",currentImageFileName));
-						        nameValuePairs.add(new BasicNameValuePair("comment","NA"));
-						        nameValuePairs.add(new BasicNameValuePair("storeID",stID));
-						        nameValuePairs.add(new BasicNameValuePair("date",onlyDate));
-						        nameValuePairs.add(new BasicNameValuePair("routeID",routeID));
+                        String stID = fp2s[1];
+                        String currentImageFileName = fnameIMG;
 
-						        try
-						        {
+                        boolean isImageExist = false;
+                        for (int i = 0; i < listFile.length; i++) {
+                            FilePathStrings = listFile[i].getAbsolutePath();
+                            if (listFile[i].getName().equals(fnameIMG)) {
+                                fnameIMG = listFile[i].getAbsolutePath();
+                                isImageExist = true;
+                                break;
+                            }
+                        }
+                        if (isImageExist) {
+                            Bitmap bmp = BitmapFactory.decodeFile(fnameIMG);
+                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
-						        	  HttpParams httpParams = new BasicHttpParams();
-						              HttpConnectionParams.setSoTimeout(httpParams, 0);
-						        	  HttpClient httpclient = new DefaultHttpClient(httpParams);
-						              HttpPost httppost = new HttpPost(CommonInfo.ImageSyncPath.trim());
+                            String image_str = BitMapToString(bmp);
+                            ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 
 
-						            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-						            HttpResponse response = httpclient.execute(httppost);
-						            String the_string_response = convertResponseToString(response);
+                            try {
+                                stream.flush();
+                            } catch (IOException e1) {
+                                // TODO Auto-generated catch block
+                                e1.printStackTrace();
+                            }
+                            try {
+                                stream.close();
+                            } catch (IOException e1) {
+                                // TODO Auto-generated catch block
+                                e1.printStackTrace();
+                            }
 
-						            System.out.println("Sunil Doing Testing Response after sending Image" + the_string_response);
+                            long syncTIMESTAMP = System.currentTimeMillis();
+                            Date datefromat = new Date(syncTIMESTAMP);
+                            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss.SSS", Locale.ENGLISH);
+                            String onlyDate = df.format(datefromat);
 
-						          //  if(serverResponseCode == 200)
-						            if(the_string_response.equals("Abhinav"))
-						               {
 
-						            	 System.out.println("Sunil Doing Testing Response after sending Image inside if" + the_string_response);
-						            	 db.updateImageRecordsSyncdForReturn(UploadingImageName.toString().trim());
-						            	// String file_dj_path = Environment.getExternalStorageDirectory() + "/RSPLSFAImages/"+UploadingImageName.toString().trim();
-										   String file_dj_path = Environment.getExternalStorageDirectory() + "/" + CommonInfo.ImagesFolder + "/" +UploadingImageName.toString().trim();
+                            nameValuePairs.add(new BasicNameValuePair("image", image_str));
+                            nameValuePairs.add(new BasicNameValuePair("FileName", currentImageFileName));
+                            nameValuePairs.add(new BasicNameValuePair("comment", "NA"));
+                            nameValuePairs.add(new BasicNameValuePair("storeID", stID));
+                            nameValuePairs.add(new BasicNameValuePair("date", onlyDate));
+                            nameValuePairs.add(new BasicNameValuePair("routeID", routeID));
 
-										   File fdelete = new File(file_dj_path);
-									        if (fdelete.exists())
-									        {
-									            if (fdelete.delete())
-									            {
-									                Log.e("-->", "file Deleted :" + file_dj_path);
-									                callBroadCast();
-									            }
-									            else
-									            {
-									                Log.e("-->", "file not Deleted :" + file_dj_path);
-									            }
-									        }
+                            try {
+
+                                HttpParams httpParams = new BasicHttpParams();
+                                HttpConnectionParams.setSoTimeout(httpParams, 0);
+                                HttpClient httpclient = new DefaultHttpClient(httpParams);
+//						              HttpPost httppost = new HttpPost(CommonInfo.ImageSyncPath.trim());
+                                HttpPost httppost = new HttpPost(CommonInfo.COMMON_SYNC_PATH_URL.trim() + CommonInfo.ClientFileNameImageSyncPath );
+
+
+                                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                                HttpResponse response = httpclient.execute(httppost);
+                                String the_string_response = convertResponseToString(response);
+
+                                System.out.println("Sunil Doing Testing Response after sending Image" + the_string_response);
+
+                                //  if(serverResponseCode == 200)
+                                if (the_string_response.equalsIgnoreCase("Abhinav")) {
+
+                                    System.out.println("Sunil Doing Testing Response after sending Image inside if" + the_string_response);
+                                    db.updateImageRecordsSyncdForReturn(UploadingImageName.toString().trim());
+                                    // String file_dj_path = Environment.getExternalStorageDirectory() + "/RSPLSFAImages/"+UploadingImageName.toString().trim();
+                                    String file_dj_path = Environment.getExternalStorageDirectory() + "/" + CommonInfo.ImagesFolder + "/" + UploadingImageName.toString().trim();
+
+                                    File fdelete = new File(file_dj_path);
+                                    if (fdelete.exists()) {
+                                        if (fdelete.delete()) {
+                                            Log.e("-->", "file Deleted :" + file_dj_path);
+                                            callBroadCast();
+                                        } else {
+                                            Log.e("-->", "file not Deleted :" + file_dj_path);
+                                        }
+                                    }
 						            	/* File file = new File(UploadingImageName.toString().trim());
 							         	    file.delete();  */
-						               }
+                                }
 
-						        }catch(Exception e)
-						        {
-						            IMGsyOK = 1;
+                            } catch (Exception e) {
+                                IMGsyOK = 1;
 
-						        }
-								}
-
-
-							}
+                            }
+                        }
 
 
-						}
-
-				  }
-				  catch(Exception e)
-			        {
-			             IMGsyOK = 1;
-
-			        }
+                    }
 
 
-				// Sync Add New Stores Images
+                }
 
-				try
-				{
+            } catch (Exception e) {
+                IMGsyOK = 1;
 
-					try
-					{
-
-						db.open();
-						NoOfOutletID = db.getAllStoreIDIntblNewAddedStorePhotoDetail();
-						db.close();
-
-					} catch (Exception e)
-					{
-						// TODO Auto-generated catch block
-						db.close();
-						e.printStackTrace();
-					}
-
-					for(int chkCountstore=0; chkCountstore < NoOfOutletID.length;chkCountstore++)
-					{
-						db.open();
-						int NoOfImages = db.getExistingPicNosForNewAddedStore(NoOfOutletID[chkCountstore].toString());
-						String[] NoOfImgsPath = db.getImgsPathForNewAddedStore(NoOfOutletID[chkCountstore].toString());
-						db.close();
-
-						fp2s = new String[2];
-
-						for(int syCOUNT = 0; syCOUNT < NoOfImages; syCOUNT++)
-						{
-							fp2s[0] = NoOfImgsPath[syCOUNT];
-							fp2s[1] = NoOfOutletID[chkCountstore];
-
-							// New Way
-
-							fnameIMG = fp2s[0];
-							UploadingImageName=fp2s[0];
+            }
 
 
-							String stID = fp2s[1];
-							String currentImageFileName=fnameIMG;
+            // Sync Add New Stores Images
 
-							boolean isImageExist=false;
-							for (int i = 0; i < listFile.length; i++)
-							{
-								FilePathStrings = listFile[i].getAbsolutePath();
-								if(listFile[i].getName().equals(fnameIMG))
-								{
-									fnameIMG=listFile[i].getAbsolutePath();
-									isImageExist=true;
-									break;
-								}
-							}
-							if(isImageExist)
-							{
-								Bitmap bmp = BitmapFactory.decodeFile(fnameIMG);
-								ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            try {
 
-								String image_str=  BitMapToString(bmp);
-								ArrayList<NameValuePair> nameValuePairs = new  ArrayList<NameValuePair>();
+                try {
 
+                    db.open();
+                    NoOfOutletID = db.getAllStoreIDIntblNewAddedStorePhotoDetail();
+                    db.close();
 
-								try
-								{
-									stream.flush();
-								}
-								catch (IOException e1)
-								{
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								}
-								try
-								{
-									stream.close();
-								}
-								catch (IOException e1)
-								{
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								}
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    db.close();
+                    e.printStackTrace();
+                }
 
-								long syncTIMESTAMP = System.currentTimeMillis();
-								Date datefromat = new Date(syncTIMESTAMP);
-								SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss.SSS",Locale.ENGLISH);
-								String onlyDate=df.format(datefromat);
+                for (int chkCountstore = 0; chkCountstore < NoOfOutletID.length; chkCountstore++) {
+                    db.open();
+                    int NoOfImages = db.getExistingPicNosForNewAddedStore(NoOfOutletID[chkCountstore].toString());
+                    String[] NoOfImgsPath = db.getImgsPathForNewAddedStore(NoOfOutletID[chkCountstore].toString());
+                    db.close();
+
+                    fp2s = new String[2];
+
+                    for (int syCOUNT = 0; syCOUNT < NoOfImages; syCOUNT++) {
+                        fp2s[0] = NoOfImgsPath[syCOUNT];
+                        fp2s[1] = NoOfOutletID[chkCountstore];
+
+                        // New Way
+
+                        fnameIMG = fp2s[0];
+                        UploadingImageName = fp2s[0];
 
 
-								nameValuePairs.add(new BasicNameValuePair("image", image_str));
-								nameValuePairs.add(new BasicNameValuePair("FileName",currentImageFileName));
-								nameValuePairs.add(new BasicNameValuePair("comment","NA"));
-								nameValuePairs.add(new BasicNameValuePair("storeID",stID));
-								nameValuePairs.add(new BasicNameValuePair("date",onlyDate));
-								nameValuePairs.add(new BasicNameValuePair("routeID",routeID));
+                        String stID = fp2s[1];
+                        String currentImageFileName = fnameIMG;
 
-								try
-								{
+                        boolean isImageExist = false;
+                        for (int i = 0; i < listFile.length; i++) {
+                            FilePathStrings = listFile[i].getAbsolutePath();
+                            if (listFile[i].getName().equals(fnameIMG)) {
+                                fnameIMG = listFile[i].getAbsolutePath();
+                                isImageExist = true;
+                                break;
+                            }
+                        }
+                        if (isImageExist) {
+                            Bitmap bmp = BitmapFactory.decodeFile(fnameIMG);
+                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
-									HttpParams httpParams = new BasicHttpParams();
-									HttpConnectionParams.setSoTimeout(httpParams, 0);
-									HttpClient httpclient = new DefaultHttpClient(httpParams);
-									HttpPost httppost = new HttpPost(CommonInfo.ImageSyncPath.trim());
+                            String image_str = BitMapToString(bmp);
+                            ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 
 
-									httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-									HttpResponse response = httpclient.execute(httppost);
-									String the_string_response = convertResponseToString(response);
+                            try {
+                                stream.flush();
+                            } catch (IOException e1) {
+                                // TODO Auto-generated catch block
+                                e1.printStackTrace();
+                            }
+                            try {
+                                stream.close();
+                            } catch (IOException e1) {
+                                // TODO Auto-generated catch block
+                                e1.printStackTrace();
+                            }
 
-									System.out.println("Sunil Doing Testing Response after sending Image" + the_string_response);
+                            long syncTIMESTAMP = System.currentTimeMillis();
+                            Date datefromat = new Date(syncTIMESTAMP);
+                            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss.SSS", Locale.ENGLISH);
+                            String onlyDate = df.format(datefromat);
 
-									//  if(serverResponseCode == 200)
-									if(the_string_response.equals("Abhinav"))
-									{
 
-										System.out.println("Sunil Doing Testing Response after sending Image inside if" + the_string_response);
-										db.updateImageRecordsSyncdForNewAddedStore(UploadingImageName.toString().trim());
-										// String file_dj_path = Environment.getExternalStorageDirectory() + "/RSPLSFAImages/"+UploadingImageName.toString().trim();
-										String file_dj_path = Environment.getExternalStorageDirectory() + "/" + CommonInfo.ImagesFolder + "/" +UploadingImageName.toString().trim();
+                            nameValuePairs.add(new BasicNameValuePair("image", image_str));
+                            nameValuePairs.add(new BasicNameValuePair("FileName", currentImageFileName));
+                            nameValuePairs.add(new BasicNameValuePair("comment", "NA"));
+                            nameValuePairs.add(new BasicNameValuePair("storeID", stID));
+                            nameValuePairs.add(new BasicNameValuePair("date", onlyDate));
+                            nameValuePairs.add(new BasicNameValuePair("routeID", routeID));
 
-										File fdelete = new File(file_dj_path);
-										if (fdelete.exists())
-										{
-											if (fdelete.delete())
-											{
-												//Log.e("-->", "file Deleted :" + file_dj_path);
-												callBroadCast();
-											}
-											else
-											{
-												//Log.e("-->", "file not Deleted :" + file_dj_path);
-											}
-										}
+                            try {
+
+                                HttpParams httpParams = new BasicHttpParams();
+                                HttpConnectionParams.setSoTimeout(httpParams, 0);
+                                HttpClient httpclient = new DefaultHttpClient(httpParams);
+//									HttpPost httppost = new HttpPost(CommonInfo.ImageSyncPath.trim());
+                                HttpPost httppost = new HttpPost(CommonInfo.COMMON_SYNC_PATH_URL.trim() + CommonInfo.ClientFileNameImageSyncPath );
+
+
+                                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                                HttpResponse response = httpclient.execute(httppost);
+                                String the_string_response = convertResponseToString(response);
+
+                                System.out.println("Sunil Doing Testing Response after sending Image" + the_string_response);
+
+                                //  if(serverResponseCode == 200)
+                                if (the_string_response.equalsIgnoreCase("success")) {
+
+                                    System.out.println("Sunil Doing Testing Response after sending Image inside if" + the_string_response);
+                                    db.updateImageRecordsSyncdForNewAddedStore(UploadingImageName.toString().trim());
+                                    // String file_dj_path = Environment.getExternalStorageDirectory() + "/RSPLSFAImages/"+UploadingImageName.toString().trim();
+                                    String file_dj_path = Environment.getExternalStorageDirectory() + "/" + CommonInfo.ImagesFolder + "/" + UploadingImageName.toString().trim();
+
+                                    File fdelete = new File(file_dj_path);
+                                    if (fdelete.exists()) {
+                                        if (fdelete.delete()) {
+                                            //Log.e("-->", "file Deleted :" + file_dj_path);
+                                            callBroadCast();
+                                        } else {
+                                            //Log.e("-->", "file not Deleted :" + file_dj_path);
+                                        }
+                                    }
 						            	/* File file = new File(UploadingImageName.toString().trim());
 							         	    file.delete();  */
-									}
+                                }
 
-								}catch(Exception e)
-								{
-									IMGsyOK = 1;
+                            } catch (Exception e) {
+                                IMGsyOK = 1;
 
-								}
-							}
-
-
-						}
+                            }
+                        }
 
 
-					}
-
-				}
-				catch(Exception e)
-				{
-					IMGsyOK = 1;
-
-				}
-
-				//feed back images sending
+                    }
 
 
-				try
-				{
+                }
 
-					try
-					{
+            } catch (Exception e) {
+                IMGsyOK = 1;
 
-						db.open();
-						NoOfOutletID = db.getAllStoreIDIntblFeedbackImagesPhotoDetail();
-						db.close();
+            }
 
-					} catch (Exception e)
-					{
-						// TODO Auto-generated catch block
-						db.close();
-						e.printStackTrace();
-					}
-
-					for(int chkCountstore=0; chkCountstore < NoOfOutletID.length;chkCountstore++)
-					{
-						db.open();
-						int NoOfImages = db.getExistingPicNosFortblFeedbackImages(NoOfOutletID[chkCountstore].toString());
-						String[] NoOfImgsPath = db.getImgsPathFortblFeedbackImages(NoOfOutletID[chkCountstore].toString());
-						db.close();
-
-						fp2s = new String[2];
-
-						for(int syCOUNT = 0; syCOUNT < NoOfImages; syCOUNT++)
-						{
-							fp2s[0] = NoOfImgsPath[syCOUNT];
-							fp2s[1] = NoOfOutletID[chkCountstore];
-
-							// New Way
-
-							fnameIMG = fp2s[0];
-							UploadingImageName=fp2s[0];
+            //feed back images sending
 
 
-							String stID = fp2s[1];
-							String currentImageFileName=fnameIMG;
+            try {
 
-							boolean isImageExist=false;
-							for (int i = 0; i < listFile.length; i++)
-							{
-								FilePathStrings = listFile[i].getAbsolutePath();
-								if(listFile[i].getName().equals(fnameIMG))
-								{
-									fnameIMG=listFile[i].getAbsolutePath();
-									isImageExist=true;
-									break;
-								}
-							}
-							if(isImageExist)
-							{
-								Bitmap bmp = BitmapFactory.decodeFile(fnameIMG);
-								ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                try {
 
-								String image_str=  BitMapToString(bmp);
-								ArrayList<NameValuePair> nameValuePairs = new  ArrayList<NameValuePair>();
+                    db.open();
+                    NoOfOutletID = db.getAllStoreIDIntblFeedbackImagesPhotoDetail();
+                    db.close();
 
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    db.close();
+                    e.printStackTrace();
+                }
 
-								try
-								{
-									stream.flush();
-								}
-								catch (IOException e1)
-								{
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								}
-								try
-								{
-									stream.close();
-								}
-								catch (IOException e1)
-								{
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								}
+                for (int chkCountstore = 0; chkCountstore < NoOfOutletID.length; chkCountstore++) {
+                    db.open();
+                    int NoOfImages = db.getExistingPicNosFortblFeedbackImages(NoOfOutletID[chkCountstore].toString());
+                    String[] NoOfImgsPath = db.getImgsPathFortblFeedbackImages(NoOfOutletID[chkCountstore].toString());
+                    db.close();
 
-								long syncTIMESTAMP = System.currentTimeMillis();
-								Date datefromat = new Date(syncTIMESTAMP);
-								SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss.SSS",Locale.ENGLISH);
-								String onlyDate=df.format(datefromat);
+                    fp2s = new String[2];
+
+                    for (int syCOUNT = 0; syCOUNT < NoOfImages; syCOUNT++) {
+                        fp2s[0] = NoOfImgsPath[syCOUNT];
+                        fp2s[1] = NoOfOutletID[chkCountstore];
+
+                        // New Way
+
+                        fnameIMG = fp2s[0];
+                        UploadingImageName = fp2s[0];
 
 
-								nameValuePairs.add(new BasicNameValuePair("image", image_str));
-								nameValuePairs.add(new BasicNameValuePair("FileName",currentImageFileName));
-								nameValuePairs.add(new BasicNameValuePair("comment","NA"));
-								nameValuePairs.add(new BasicNameValuePair("storeID",stID));
-								nameValuePairs.add(new BasicNameValuePair("date",onlyDate));
-								nameValuePairs.add(new BasicNameValuePair("routeID",routeID));
+                        String stID = fp2s[1];
+                        String currentImageFileName = fnameIMG;
 
-								try
-								{
+                        boolean isImageExist = false;
+                        for (int i = 0; i < listFile.length; i++) {
+                            FilePathStrings = listFile[i].getAbsolutePath();
+                            if (listFile[i].getName().equals(fnameIMG)) {
+                                fnameIMG = listFile[i].getAbsolutePath();
+                                isImageExist = true;
+                                break;
+                            }
+                        }
+                        if (isImageExist) {
+                            Bitmap bmp = BitmapFactory.decodeFile(fnameIMG);
+                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
-									HttpParams httpParams = new BasicHttpParams();
-									HttpConnectionParams.setSoTimeout(httpParams, 0);
-									HttpClient httpclient = new DefaultHttpClient(httpParams);
-									HttpPost httppost = new HttpPost(CommonInfo.ImageSyncPath.trim());
+                            String image_str = BitMapToString(bmp);
+                            ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 
 
-									httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-									HttpResponse response = httpclient.execute(httppost);
-									String the_string_response = convertResponseToString(response);
+                            try {
+                                stream.flush();
+                            } catch (IOException e1) {
+                                // TODO Auto-generated catch block
+                                e1.printStackTrace();
+                            }
+                            try {
+                                stream.close();
+                            } catch (IOException e1) {
+                                // TODO Auto-generated catch block
+                                e1.printStackTrace();
+                            }
 
-									System.out.println("Sunil Doing Testing Response after sending Image" + the_string_response);
+                            long syncTIMESTAMP = System.currentTimeMillis();
+                            Date datefromat = new Date(syncTIMESTAMP);
+                            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss.SSS", Locale.ENGLISH);
+                            String onlyDate = df.format(datefromat);
 
-									//  if(serverResponseCode == 200)
-									if(the_string_response.equals("Abhinav"))
-									{
 
-										System.out.println("Sunil Doing Testing Response after sending Image inside if" + the_string_response);
-										db.updateImageRecordsSyncdFortblFeedbackImages(UploadingImageName.toString().trim());
-										// String file_dj_path = Environment.getExternalStorageDirectory() + "/RSPLSFAImages/"+UploadingImageName.toString().trim();
-										String file_dj_path = Environment.getExternalStorageDirectory() + "/" + CommonInfo.ImagesFolder + "/" +UploadingImageName.toString().trim();
+                            nameValuePairs.add(new BasicNameValuePair("image", image_str));
+                            nameValuePairs.add(new BasicNameValuePair("FileName", currentImageFileName));
+                            nameValuePairs.add(new BasicNameValuePair("comment", "NA"));
+                            nameValuePairs.add(new BasicNameValuePair("storeID", stID));
+                            nameValuePairs.add(new BasicNameValuePair("date", onlyDate));
+                            nameValuePairs.add(new BasicNameValuePair("routeID", routeID));
 
-										File fdelete = new File(file_dj_path);
-										if (fdelete.exists())
-										{
-											if (fdelete.delete())
-											{
-												//Log.e("-->", "file Deleted :" + file_dj_path);
-												callBroadCast();
-											}
-											else
-											{
-												//Log.e("-->", "file not Deleted :" + file_dj_path);
-											}
-										}
+                            try {
+
+                                HttpParams httpParams = new BasicHttpParams();
+                                HttpConnectionParams.setSoTimeout(httpParams, 0);
+                                HttpClient httpclient = new DefaultHttpClient(httpParams);
+//									HttpPost httppost = new HttpPost(CommonInfo.ImageSyncPath.trim());
+                                HttpPost httppost = new HttpPost(CommonInfo.COMMON_SYNC_PATH_URL.trim() + CommonInfo.ClientFileNameImageSyncPath );
+
+
+                                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                                HttpResponse response = httpclient.execute(httppost);
+                                String the_string_response = convertResponseToString(response);
+
+                                System.out.println("Sunil Doing Testing Response after sending Image" + the_string_response);
+
+                                //  if(serverResponseCode == 200)
+                                if (the_string_response.equalsIgnoreCase("success")) {
+
+                                    System.out.println("Sunil Doing Testing Response after sending Image inside if" + the_string_response);
+                                    db.updateImageRecordsSyncdFortblFeedbackImages(UploadingImageName.toString().trim());
+                                    // String file_dj_path = Environment.getExternalStorageDirectory() + "/RSPLSFAImages/"+UploadingImageName.toString().trim();
+                                    String file_dj_path = Environment.getExternalStorageDirectory() + "/" + CommonInfo.ImagesFolder + "/" + UploadingImageName.toString().trim();
+
+                                    File fdelete = new File(file_dj_path);
+                                    if (fdelete.exists()) {
+                                        if (fdelete.delete()) {
+                                            //Log.e("-->", "file Deleted :" + file_dj_path);
+                                            callBroadCast();
+                                        } else {
+                                            //Log.e("-->", "file not Deleted :" + file_dj_path);
+                                        }
+                                    }
 						            	/* File file = new File(UploadingImageName.toString().trim());
 							         	    file.delete();  */
-									}
+                                }
 
-								}catch(Exception e)
-								{
-									IMGsyOK = 1;
+                            } catch (Exception e) {
+                                IMGsyOK = 1;
 
-								}
-							}
-
-
-						}
+                            }
+                        }
 
 
-					}
-
-				}
-				catch(Exception e)
-				{
-					IMGsyOK = 1;
-
-				}
-				//end here
+                    }
 
 
+                }
+
+            } catch (Exception e) {
+                IMGsyOK = 1;
+
+            }
+            //end here
 
 
+            return null;
+        }
 
-				return null;
-			}
+        @Override
+        protected void onCancelled() {
+            Log.i("SvcMgr", "Service Execution Cancelled");
+        }
 
-			@Override
-			protected void onCancelled()
-			{
-				Log.i("SvcMgr", "Service Execution Cancelled");
-			}
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            if (pDialogGetStores.isShowing()) {
+                pDialogGetStores.dismiss();
+            }
 
-			@Override
-			protected void onPostExecute(Void result)
-			{
-				super.onPostExecute(result);
-				 if(pDialogGetStores.isShowing())
-			      {
-			    	   pDialogGetStores.dismiss();
-				  }
+            if (IMGsyOK == 1) {
+                IMGsyOK = 0;
 
-				 if(IMGsyOK == 1)
-					{
-						IMGsyOK = 0;
+                if (myTimerTaskForDataSubmission != null) {
+                    myTimerTaskForDataSubmission.cancel();
+                    myTimerTaskForDataSubmission = null;
+                }
+                if (timerForDataSubmission != null) {
+                    timerForDataSubmission.cancel();
+                    timerForDataSubmission = null;
+                }
+                showSyncErrorStart();
+            } else {
+                db.open();
 
-						if (myTimerTaskForDataSubmission != null) {
-							myTimerTaskForDataSubmission.cancel();
-							myTimerTaskForDataSubmission=null;
-						}
-						if (timerForDataSubmission!=null)
-						{
-							timerForDataSubmission.cancel();
-							timerForDataSubmission = null;
-						}
-						showSyncErrorStart();
-					}
-					else
-					{
-						db.open();
+                db.updateImageRecordsSyncd();
+                db.close();
 
-			    		db.updateImageRecordsSyncd();
-			    		db.close();
+                //showSyncSuccess();
 
-						//showSyncSuccess();
-
-						//showSyncSuccessStart();
+                //showSyncSuccessStart();
 
 
-						try
-						{
-							task5 = new SyncVedioData(SyncMaster.this);
-							task5.execute();
-						}
-						catch (Exception e)
-						{
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+                try {
+                    task5 = new SyncVedioData(SyncMaster.this);
+                    task5.execute();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
 
-					}
+            }
 
-			}
-		}
+        }
+    }
 
-/*
-	public String BitMapToString(Bitmap bitmap)
-	{
-		int h1=bitmap.getHeight();
-		int w1=bitmap.getWidth();
-		h1=h1/8;
-		w1=w1/8;
-		bitmap=Bitmap.createScaledBitmap(bitmap, w1, h1, true);
+    /*
+        public String BitMapToString(Bitmap bitmap)
+        {
+            int h1=bitmap.getHeight();
+            int w1=bitmap.getWidth();
+            h1=h1/8;
+            w1=w1/8;
+            bitmap=Bitmap.createScaledBitmap(bitmap, w1, h1, true);
 
-        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG,100, baos);
-        byte [] arr=baos.toByteArray();
-        String result=Base64.encodeToString(arr, Base64.DEFAULT);
+            ByteArrayOutputStream baos=new  ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG,100, baos);
+            byte [] arr=baos.toByteArray();
+            String result=Base64.encodeToString(arr, Base64.DEFAULT);
+            return result;
+      }
+    */
+    public String BitMapToString(Bitmap bitmap) {
+        int h1 = bitmap.getHeight();
+        int w1 = bitmap.getWidth();
+
+        if (w1 > 768 || h1 > 1024) {
+            bitmap = Bitmap.createScaledBitmap(bitmap, 1024, 768, true);
+
+        } else {
+
+            bitmap = Bitmap.createScaledBitmap(bitmap, w1, h1, true);
+        }
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] arr = baos.toByteArray();
+        String result = Base64.encodeToString(arr, Base64.DEFAULT);
         return result;
-  }
-*/
-public String BitMapToString(Bitmap bitmap)
-{
-	int h1=bitmap.getHeight();
-	int w1=bitmap.getWidth();
+    }
 
-	if(w1 > 768 || h1 > 1024){
-		bitmap=Bitmap.createScaledBitmap(bitmap,1024,768,true);
-
-	}
+    private class SyncXMLfileData extends AsyncTask<Void, Void, Integer> {
 
 
-	else {
+        public SyncXMLfileData(SyncMaster activity) {
+            pDialogGetStores = new ProgressDialog(activity);
+        }
 
-		bitmap=Bitmap.createScaledBitmap(bitmap,w1,h1,true);
-	}
-
-	ByteArrayOutputStream baos=new  ByteArrayOutputStream();
-	bitmap.compress(Bitmap.CompressFormat.JPEG,100, baos);
-	byte [] arr=baos.toByteArray();
-	String result=Base64.encodeToString(arr, Base64.DEFAULT);
-	return result;
-}
-
-	private class SyncXMLfileData extends AsyncTask<Void, Void, Integer>
-	{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
 
 
+            File OrderXMLFolder = new File(Environment.getExternalStorageDirectory(), CommonInfo.OrderXMLFolder);
 
-		public SyncXMLfileData(SyncMaster activity)
-		{
-			pDialogGetStores = new ProgressDialog(activity);
-		}
+            if (!OrderXMLFolder.exists()) {
+                OrderXMLFolder.mkdirs();
+            }
 
-		@Override
-		 protected void onPreExecute()
-		  {
-			 super.onPreExecute();
+            pDialogGetStores.setTitle(getText(R.string.genTermPleaseWaitNew));
+            if (StoreSelection.flgChangeRouteOrDayEnd == 1) {
+                pDialogGetStores.setMessage("Ending your day visit ...");
+            } else if (StoreSelection.flgChangeRouteOrDayEnd == 2) {
+                pDialogGetStores.setMessage("Changing the route....");
+            } else if (StoreSelection.flgChangeRouteOrDayEnd == 3) {
+                pDialogGetStores.setMessage("Submitting Quotation Details...");
+            } else if (DayStartActivity.flgDaySartWorking == 1) {
+                pDialogGetStores.setMessage(getResources().getString(R.string.submittingDayStart));
 
+            } else {
+                pDialogGetStores.setMessage("Submitting Order Details...");
+            }
+            pDialogGetStores.setIndeterminate(false);
+            pDialogGetStores.setCancelable(false);
+            pDialogGetStores.setCanceledOnTouchOutside(false);
+            pDialogGetStores.show();
 
-			 File OrderXMLFolder = new File(Environment.getExternalStorageDirectory(), CommonInfo.OrderXMLFolder);
+        }
 
-			 if (!OrderXMLFolder.exists())
-				{
-					OrderXMLFolder.mkdirs();
-				}
-
-			    pDialogGetStores.setTitle(getText(R.string.genTermPleaseWaitNew));
-			    if(StoreSelection.flgChangeRouteOrDayEnd==1)
-				{
-				 pDialogGetStores.setMessage("Ending your day visit ...");
-				}else if(StoreSelection.flgChangeRouteOrDayEnd==2)
-				{
-				 pDialogGetStores.setMessage("Changing the route....");
-				}
-				else if(StoreSelection.flgChangeRouteOrDayEnd==3)
-				{
-					 pDialogGetStores.setMessage("Submitting Quotation Details...");
-					}
-				else if(DayStartActivity.flgDaySartWorking==1)
-				{
-					pDialogGetStores.setMessage(getResources().getString(R.string.submittingDayStart));
-
-				}
-				else
-				{
-				pDialogGetStores.setMessage("Submitting Order Details...");
-				}
-				pDialogGetStores.setIndeterminate(false);
-				pDialogGetStores.setCancelable(false);
-				pDialogGetStores.setCanceledOnTouchOutside(false);
-				pDialogGetStores.show();
-
-	        }
-
-		 @Override
-	        protected Integer doInBackground(Void... params)
-		 {
+        @Override
+        protected Integer doInBackground(Void... params) {
 
 
+            try {
 
-		     try {
+                String xmlfileNames = dbengine.fnGetXMLFile("3");
 
-		     String xmlfileNames = dbengine.fnGetXMLFile("3");
-
-		      int index=0;
-				 if(!xmlfileNames.equals("")) {
-					 String[] xmlfileArray = xmlfileNames.split(Pattern.quote("^"));
-					 for (int i = 0; i < xmlfileArray.length; i++) {
-						 System.out.println("index" + index);
-						 xmlFileName = xmlfileArray[i];
+                int index = 0;
+                if (!xmlfileNames.equals("")) {
+                    String[] xmlfileArray = xmlfileNames.split(Pattern.quote("^"));
+                    for (int i = 0; i < xmlfileArray.length; i++) {
+                        System.out.println("index" + index);
+                        xmlFileName = xmlfileArray[i];
 
 
 //
-						 //String newzipfile = Environment.getExternalStorageDirectory() + "/RSPLSFAXml/" + xmlFileName + ".zip";
-						 //  xmlForWeb[0]=         Environment.getExternalStorageDirectory() + "/RSPLSFAXml/" + xmlFileName + ".xml";
+                        //String newzipfile = Environment.getExternalStorageDirectory() + "/RSPLSFAXml/" + xmlFileName + ".zip";
+                        //  xmlForWeb[0]=         Environment.getExternalStorageDirectory() + "/RSPLSFAXml/" + xmlFileName + ".xml";
 
-						 String newzipfile = Environment.getExternalStorageDirectory() + "/" + CommonInfo.OrderXMLFolder + "/" + xmlFileName + ".zip";
-						 xmlForWeb[0] = Environment.getExternalStorageDirectory() + "/" + CommonInfo.OrderXMLFolder + "/" + xmlFileName + ".xml";
-
-
-						 try {
-							 zip(xmlForWeb, newzipfile);
-						 } catch (Exception e1) {
-							 // TODO Auto-generated catch block
-							 e1.printStackTrace();
-						 }
-
-						 HttpURLConnection conn = null;
-						 DataOutputStream dos = null;
-						 String lineEnd = "\r\n";
-						 String twoHyphens = "--";
-						 String boundary = "*****";
-						 int bytesRead, bytesAvailable, bufferSize;
-						 byte[] buffer;
-						 int maxBufferSize = 1 * 1024 * 1024;
-
-						 File file2send = new File(newzipfile);
-
-						 // It is for Testing Purpose
-						 //String urlString = "http://115.124.126.184/ReadXML_PragaSFAForTest/default.aspx?CLIENTFILENAME=" + zipFileName;
-
-						 // It is for Live Purpose
-						 // String urlString = "http://115.124.126.184/ReadXML_PragaSFA/default.aspx?CLIENTFILENAME=" + zipFileName;
-
-						String filetype="0";
-						 String urlString="0";
-
-						// urlString = CommonInfo.OrderSyncPath.trim() + "?CLIENTFILENAME=" + xmlFileName + ".xml";
-
-						filetype=dbengine.getfiletype(xmlFileName);
-						 if(filetype.equals("1"))
-						 {
-							urlString = CommonInfo.OrderSyncPath.trim() + "?CLIENTFILENAME=" + xmlFileName + ".xml";
-						 }
-						 else if(filetype.equals("2"))
-						 {
-							 urlString = CommonInfo.OrderSyncPathDistributorMap.trim() + "?CLIENTFILENAME=" + xmlFileName + ".xml";
-						 }
-						 else if(filetype.equals("3"))
-						 {
-							 urlString = CommonInfo.OrderSyncPathSO.trim()+"?CLIENTFILENAME=" + xmlFileName+".xml";
-						 }
-						 else
-						 {
-							urlString = CommonInfo.OrderSyncPath.trim() + "?CLIENTFILENAME=" + xmlFileName + ".xml";
-						 }
+                        String newzipfile = Environment.getExternalStorageDirectory() + "/" + CommonInfo.OrderXMLFolder + "/" + xmlFileName + ".zip";
+                        xmlForWeb[0] = Environment.getExternalStorageDirectory() + "/" + CommonInfo.OrderXMLFolder + "/" + xmlFileName + ".xml";
 
 
-						 try {
+                        try {
+                            zip(xmlForWeb, newzipfile);
+                        } catch (Exception e1) {
+                            // TODO Auto-generated catch block
+                            e1.printStackTrace();
+                        }
 
-							 // open a URL connection to the Servlet
-							 FileInputStream fileInputStream = new FileInputStream(file2send);
-							 URL url = new URL(urlString);
+                        HttpURLConnection conn = null;
+                        DataOutputStream dos = null;
+                        String lineEnd = "\r\n";
+                        String twoHyphens = "--";
+                        String boundary = "*****";
+                        int bytesRead, bytesAvailable, bufferSize;
+                        byte[] buffer;
+                        int maxBufferSize = 1 * 1024 * 1024;
 
-							 // Open a HTTP  connection to  the URL
-							 conn = (HttpURLConnection) url.openConnection();
-							 conn.setDoInput(true); // Allow Inputs
-							 conn.setDoOutput(true); // Allow Outputs
-							 conn.setUseCaches(false); // Don't use a Cached Copy
-							 conn.setRequestMethod("POST");
-							 conn.setRequestProperty("Connection", "Keep-Alive");
-							 conn.setRequestProperty("ENCTYPE", "multipart/form-data");
-							 conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-							 conn.setRequestProperty("zipFileName", xmlFileName);
+                        File file2send = new File(newzipfile);
 
-							 dos = new DataOutputStream(conn.getOutputStream());
+                        // It is for Testing Purpose
+                        //String urlString = "http://115.124.126.184/ReadXML_PragaSFAForTest/default.aspx?CLIENTFILENAME=" + zipFileName;
 
-							 dos.writeBytes(twoHyphens + boundary + lineEnd);
-							 dos.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""
-									 + xmlFileName + "\"" + lineEnd);
+                        // It is for Live Purpose
+                        // String urlString = "http://115.124.126.184/ReadXML_PragaSFA/default.aspx?CLIENTFILENAME=" + zipFileName;
 
-							 dos.writeBytes(lineEnd);
+                        String filetype = "0";
+                        String urlString = "0";
 
-							 // create a buffer of  maximum size
-							 bytesAvailable = fileInputStream.available();
+                        // urlString = CommonInfo.OrderSyncPath.trim() + "?CLIENTFILENAME=" + xmlFileName + ".xml";
 
-							 bufferSize = Math.min(bytesAvailable, maxBufferSize);
-							 buffer = new byte[bufferSize];
+                        filetype = dbengine.getfiletype(xmlFileName);
+                        if (filetype.equals("1")) {
+                            //urlString = CommonInfo.OrderSyncPath.trim() + "?CLIENTFILENAME=" + xmlFileName + ".xml";
+                            urlString = CommonInfo.COMMON_SYNC_PATH_URL.trim() + CommonInfo.ClientFileNameOrderSync + "&CLIENTFILENAME=" + xmlFileName + ".xml";
+                        } else if (filetype.equals("2")) {
+                            //urlString = CommonInfo.OrderSyncPathDistributorMap.trim() + "?CLIENTFILENAME=" + xmlFileName + ".xml";
+                            urlString = CommonInfo.COMMON_SYNC_PATH_URL.trim() + CommonInfo.ClientFileNameOrderSyncPathDistributorMap + "&CLIENTFILENAME=" + xmlFileName + ".xml";
+                        } else if (filetype.equals("3")) {
+                            //urlString = CommonInfo.OrderSyncPathSO.trim()+"?CLIENTFILENAME=" + xmlFileName+".xml";
+                            urlString = CommonInfo.COMMON_SYNC_PATH_URL.trim() + CommonInfo.ClientFileNameOrderSyncPathSO + "&CLIENTFILENAME=" + xmlFileName + ".xml";
+                        } else {
+                            //						urlString = CommonInfo.OrderSyncPath.trim() + "?CLIENTFILENAME=" + xmlFileName + ".xml";
+                            urlString = CommonInfo.COMMON_SYNC_PATH_URL.trim() + CommonInfo.ClientFileNameOrderSync + "&CLIENTFILENAME=" + xmlFileName + ".xml";
+                        }
 
-							 // read file and write it into form...
-							 bytesRead = fileInputStream.read(buffer, 0, bufferSize);
 
-							 while (bytesRead > 0) {
+                        try {
 
-								 dos.write(buffer, 0, bufferSize);
-								 bytesAvailable = fileInputStream.available();
-								 bufferSize = Math.min(bytesAvailable, maxBufferSize);
-								 bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+                            // open a URL connection to the Servlet
+                            FileInputStream fileInputStream = new FileInputStream(file2send);
+                            URL url = new URL(urlString);
 
-							 }
+                            // Open a HTTP  connection to  the URL
+                            conn = (HttpURLConnection) url.openConnection();
+                            conn.setDoInput(true); // Allow Inputs
+                            conn.setDoOutput(true); // Allow Outputs
+                            conn.setUseCaches(false); // Don't use a Cached Copy
+                            conn.setRequestMethod("POST");
+                            conn.setRequestProperty("Connection", "Keep-Alive");
+                            conn.setRequestProperty("ENCTYPE", "multipart/form-data");
+                            conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+                            conn.setRequestProperty("zipFileName", xmlFileName);
 
-							 // send multipart form data necesssary after file data...
-							 dos.writeBytes(lineEnd);
-							 dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+                            dos = new DataOutputStream(conn.getOutputStream());
 
-							 // Responses from the server (code and message)
-							 serverResponseCode = conn.getResponseCode();
-							 String serverResponseMessage = conn.getResponseMessage();
+                            dos.writeBytes(twoHyphens + boundary + lineEnd);
+                            dos.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""
+                                    + xmlFileName + "\"" + lineEnd);
 
-							 Log.i("uploadFile", "HTTP Response is : "
-									 + serverResponseMessage + ": " + serverResponseCode);
+                            dos.writeBytes(lineEnd);
 
-							 if (serverResponseCode == 200) {
+                            // create a buffer of  maximum size
+                            bytesAvailable = fileInputStream.available();
 
-								 dbengine.upDateTblXmlFile(xmlFileName);
-								 dbengine.deleteXmlTable("4");
+                            bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                            buffer = new byte[bufferSize];
+
+                            // read file and write it into form...
+                            bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+                            while (bytesRead > 0) {
+
+                                dos.write(buffer, 0, bufferSize);
+                                bytesAvailable = fileInputStream.available();
+                                bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+                            }
+
+                            // send multipart form data necesssary after file data...
+                            dos.writeBytes(lineEnd);
+                            dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+
+                            // Responses from the server (code and message)
+                            serverResponseCode = conn.getResponseCode();
+                            String serverResponseMessage = conn.getResponseMessage();
+
+                            Log.i("uploadFile", "HTTP Response is : "
+                                    + serverResponseMessage + ": " + serverResponseCode);
+
+                            if (serverResponseCode == 200) {
+
+                                dbengine.upDateTblXmlFile(xmlFileName);
+                                dbengine.deleteXmlTable("4");
 		                     /*dbengine.upDatetbl_allAnswermstr("3");
 		                     dbengine.upDatetbl_DynamcDataAnswer("3");*/
 
 
-								 deleteViewdXml(CommonInfo.OrderXMLFolder + "/" + xmlFileName + ".xml");
-								 deleteViewdXml(CommonInfo.OrderXMLFolder + "/" + xmlFileName + ".zip");
-								 System.out.println("ShivamDELETE" + xmlFileName);
-								 runOnUiThread(new Runnable() {
-									 public void run() {
+                                deleteViewdXml(CommonInfo.OrderXMLFolder + "/" + xmlFileName + ".xml");
+                                deleteViewdXml(CommonInfo.OrderXMLFolder + "/" + xmlFileName + ".zip");
+                                System.out.println("ShivamDELETE" + xmlFileName);
+                                runOnUiThread(new Runnable() {
+                                    public void run() {
 
 
-										 try {
+                                        try {
 
 
-										 } catch (Exception e) {
-											 // TODO Auto-generated catch block
-											 e.printStackTrace();
-										 }
+                                        } catch (Exception e) {
+                                            // TODO Auto-generated catch block
+                                            e.printStackTrace();
+                                        }
 
 
-									 }
-								 });
-							 }
+                                    }
+                                });
+                            }
 
-							 //close the streams //
-							 fileInputStream.close();
-							 dos.flush();
-							 dos.close();
-							 index++;
-						 } catch (MalformedURLException ex) {
+                            //close the streams //
+                            fileInputStream.close();
+                            dos.flush();
+                            dos.close();
+                            index++;
+                        } catch (MalformedURLException ex) {
 
-							 pDialogGetStores.dismiss();
-							 ex.printStackTrace();
+                            pDialogGetStores.dismiss();
+                            ex.printStackTrace();
 
 	               /* runOnUiThread(new Runnable() {
 	                    public void run() {
@@ -2050,162 +1647,122 @@ public String BitMapToString(Bitmap bitmap)
 	                    }
 	                });*/
 
-							 // Log.e("Upload file to server", "error: " + ex.getMessage(), ex);
-						 } catch (Exception e) {
+                            // Log.e("Upload file to server", "error: " + ex.getMessage(), ex);
+                        } catch (Exception e) {
 
-							 pDialogGetStores.dismiss();
+                            pDialogGetStores.dismiss();
 
-						 }
+                        }
 
-						 // pDialogGetInvoiceForDay.dismiss();
-
-
-					 }
-				 }
-		     else
-				 {
-					 serverResponseCode=200;
-				 }
-			 }
-	     catch (Exception e) {
-
-	      e.printStackTrace();
-	     }
+                        // pDialogGetInvoiceForDay.dismiss();
 
 
+                    }
+                } else {
+                    serverResponseCode = 200;
+                }
+            } catch (Exception e) {
 
-	     return serverResponseCode;
-	     }
-
-		 @Override
-	        protected void onCancelled()
-		    {
-	            Log.i("SyncMaster", "Sync Cancelled");
-	        }
-
-		 @Override
-	        protected void onPostExecute(Integer result)
-		     {
-			 super.onPostExecute(result);
-			 if(!isFinishing())
-			    {
-
-			        	Log.i("SyncMaster", "Sync cycle completed");
+                e.printStackTrace();
+            }
 
 
-			        	  if(pDialogGetStores.isShowing())
-					      {
-					    	   pDialogGetStores.dismiss();
-						  }
+            return serverResponseCode;
+        }
 
-					if (timerForDataSubmission!=null)
-					{
-						timerForDataSubmission.cancel();
-						timerForDataSubmission = null;
-					}
-					if (myTimerTaskForDataSubmission != null) {
-						myTimerTaskForDataSubmission.cancel();
-						myTimerTaskForDataSubmission=null;
-					}
-			        	if(result!=200)
-			        	{
+        @Override
+        protected void onCancelled() {
+            Log.i("SyncMaster", "Sync Cancelled");
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            super.onPostExecute(result);
+            if (!isFinishing()) {
+
+                Log.i("SyncMaster", "Sync cycle completed");
 
 
+                if (pDialogGetStores.isShowing()) {
+                    pDialogGetStores.dismiss();
+                }
+
+                if (timerForDataSubmission != null) {
+                    timerForDataSubmission.cancel();
+                    timerForDataSubmission = null;
+                }
+                if (myTimerTaskForDataSubmission != null) {
+                    myTimerTaskForDataSubmission.cancel();
+                    myTimerTaskForDataSubmission = null;
+                }
+                if (result != 200) {
 
 
+                    if (timer != null) {
+                        timer.cancel();
+                        timer = null;
+                    }
+                    if (timer2 != null) {
+                        timer2.cancel();
+                        timer2 = null;
+                    }
 
 
+                    if (whereTo.contentEquals("11")) {
+                        showSyncError();
+                    } else if (whereTo.contentEquals("DayStart")) {
+                        showSyncError();
+                    } else {
 
-							if (timer!=null)
-							{
-								timer.cancel();
-								timer = null;
-							}
-							if(timer2!=null)
-							{
-								timer2.cancel();
-								timer2 = null;
-							}
+                        Intent submitStoreIntent = new Intent(SyncMaster.this, LauncherActivity.class);
+                        startActivity(submitStoreIntent);
+                        finish();
+                    }
 
+                } else {
+                    if (pDialogGetStores.isShowing()) {
+                        pDialogGetStores.dismiss();
+                    }
 
-
-
-
-							if(whereTo.contentEquals("11"))
-								{
-			            			showSyncError();
-								}
-							else if(whereTo.contentEquals("DayStart"))
-							{
-								showSyncError();
-							}
-			            		else
-			            		{
-
-			            			Intent submitStoreIntent = new Intent(SyncMaster.this, LauncherActivity.class);
-									startActivity(submitStoreIntent);
-									finish();
-			            		}
-
-			        	}
-			        	else
-			        	{
-							if(pDialogGetStores.isShowing())
-							{
-								pDialogGetStores.dismiss();
-							}
-
-							if (timerForDataSubmission!=null)
-							{
-								timerForDataSubmission.cancel();
-								timerForDataSubmission = null;
-							}
-							if (myTimerTaskForDataSubmission != null) {
-								myTimerTaskForDataSubmission.cancel();
-								myTimerTaskForDataSubmission=null;
-							}
+                    if (timerForDataSubmission != null) {
+                        timerForDataSubmission.cancel();
+                        timerForDataSubmission = null;
+                    }
+                    if (myTimerTaskForDataSubmission != null) {
+                        myTimerTaskForDataSubmission.cancel();
+                        myTimerTaskForDataSubmission = null;
+                    }
 
 
+                    if (timer != null) {
+                        timer.cancel();
+                        timer = null;
+                    }
+                    if (timer2 != null) {
+                        timer2.cancel();
+                        timer2 = null;
+                    }
 
 
-							if (timer!=null)
-							{
-								timer.cancel();
-								timer = null;
-							}
-							if(timer2!=null)
-							{
-								timer2.cancel();
-								timer2 = null;
-							}
+                    if (whereTo.contentEquals("11")) {
 
+                        Date pdaDate = new Date();
+                        SimpleDateFormat sdfPDaDate = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
+                        String getPDADate = sdfPDaDate.format(pdaDate).toString().trim();
+                        db.open();
+                        db.updateRecordsSyncd("4");        // update syncd' records
+                        db.close();
+                        db.open();
+                        String getServerDate = db.fnGetServerDate();
 
-
-
-
-			            		if(whereTo.contentEquals("11"))
-								{
-
-									Date pdaDate=new Date();
-									SimpleDateFormat	sdfPDaDate = new SimpleDateFormat("dd-MMM-yyyy",Locale.ENGLISH);
-									String getPDADate = sdfPDaDate.format(pdaDate).toString().trim();
-									db.open();
-									db.updateRecordsSyncd("4");		// update syncd' records
-									db.close();
-									db.open();
-									String getServerDate=db.fnGetServerDate();
-
-									db.reCreateDB();
-									db.close();
-									dbengine.fndeleteSbumittedStoreList(4);
-									if(!getPDADate.equals(""))
-									{
-										 if(StoreSelection.flgChangeRouteOrDayEnd==1)
-				            			  {
-				            				  db.deleteViewAddedStore();
-				            			  }
-										if(getServerDate.equals(getPDADate))
-										{
+                        db.reCreateDB();
+                        db.close();
+                        dbengine.fndeleteSbumittedStoreList(4);
+                        if (!getPDADate.equals("")) {
+                            if (StoreSelection.flgChangeRouteOrDayEnd == 1) {
+                                db.deleteViewAddedStore();
+                            }
+                            if (getServerDate.equals(getPDADate)) {
 
 											/*try
 							        		{
@@ -2222,495 +1779,431 @@ public String BitMapToString(Bitmap bitmap)
 											db.close();*/
 
 
-											Intent submitStoreIntent = new Intent(SyncMaster.this, AllButtonActivity.class);
-											startActivity(submitStoreIntent);
-											finish();
+                                Intent submitStoreIntent = new Intent(SyncMaster.this, AllButtonActivity.class);
+                                startActivity(submitStoreIntent);
+                                finish();
 
 
-										}
-										else
-										{
-											Intent submitStoreIntent = new Intent(SyncMaster.this, SplashScreen.class);
-											startActivity(submitStoreIntent);
-											finish();
-										}
-									}
+                            } else {
+                                Intent submitStoreIntent = new Intent(SyncMaster.this, SplashScreen.class);
+                                startActivity(submitStoreIntent);
+                                finish();
+                            }
+                        } else {
+                            showSyncSuccess();
+                        }
 
-									else
-									{
-										showSyncSuccess();
-									}
 
+                    } else {
+                        db.open();
+                        db.updateRecordsSyncd("6");        // update syncd' records
+                        db.close();
+                        showSyncSuccess();
 
 
-								}
-			            		else
-			            		{
-									db.open();
-									db.updateRecordsSyncd("6");		// update syncd' records
-									db.close();
-			            		    showSyncSuccess();
+                    }
+                }
 
 
-			            		}
-		            	}
+            }
+        }
 
 
+    }
 
+    class MyTimerTaskForDataSubmission extends TimerTask {
 
-			        	}}
+        @Override
+        public void run() {
 
+            SyncMaster.this.runOnUiThread(new Runnable() {
 
+                @Override
+                public void run() {
+                    if (timerForDataSubmission != null) {
+                        timerForDataSubmission.cancel();
+                        timerForDataSubmission = null;
+                    }
+                    if (task1 != null) {
+                        if (task1.getStatus() == AsyncTask.Status.RUNNING) {
+                            task1.cancel(true);
 
-	}
-	class MyTimerTaskForDataSubmission extends TimerTask
-	{
+                        }
+                    }
+                    if (task2 != null) {
+                        if (task2.getStatus() == AsyncTask.Status.RUNNING) {
+                            task2.cancel(true);
 
-		@Override
-		public void run()
-		{
+                        }
+                    }
 
-			SyncMaster.this.runOnUiThread(new Runnable() {
+                    if (pDialogGetStores.isShowing()) {
+                        pDialogGetStores.dismiss();
+                    }
 
-				@Override
-				public void run() {
-					if (timerForDataSubmission != null) {
-						timerForDataSubmission.cancel();
-						timerForDataSubmission = null;
-					}
-					if(task1!=null){
-						if(task1.getStatus()==AsyncTask.Status.RUNNING)
-						{
-							task1.cancel(true);
 
-						}
-					}
-					if(task2!=null) {
-						if (task2.getStatus() == AsyncTask.Status.RUNNING) {
-							task2.cancel(true);
+                    Intent submitStoreIntent = new Intent(SyncMaster.this, LauncherActivity.class);
+                    startActivity(submitStoreIntent);
+                    finish();
+                }
+            });
+        }
 
-						}
-					}
+    }
 
-					if(pDialogGetStores.isShowing())
-					{
-						pDialogGetStores.dismiss();
-					}
+    public void deleteViewdXml(String file_dj_path) {
+        File dir = Environment.getExternalStorageDirectory();
+        File fdelete = new File(dir, file_dj_path);
+        // File fdelete = new File(file_dj_path);
+        if (fdelete.exists()) {
+            if (fdelete.delete()) {
+                Log.e("-->", "file Deleted :" + file_dj_path);
+                callBroadCast();
+            } else {
+                Log.e("-->", "file not Deleted :" + file_dj_path);
+            }
+        }
 
 
-					Intent submitStoreIntent = new Intent(SyncMaster.this, LauncherActivity.class);
-					startActivity(submitStoreIntent);
-					finish();
-				}});
-		}
-
-	}
-	 public void deleteViewdXml(String file_dj_path)
-	   {
-	    File dir=   Environment.getExternalStorageDirectory();
-	       File fdelete=new File(dir,file_dj_path);
-	   // File fdelete = new File(file_dj_path);
-	          if (fdelete.exists()) {
-	              if (fdelete.delete()) {
-	                  Log.e("-->", "file Deleted :" + file_dj_path);
-	                  callBroadCast();
-	              } else {
-	                  Log.e("-->", "file not Deleted :" + file_dj_path);
-	              }
-	          }
-
-
-	   }
-
-
-	 public void callBroadCast() {
-         if (Build.VERSION.SDK_INT >= 14) {
-             Log.e("-->", " >= 14");
-             MediaScannerConnection.scanFile(this, new String[]{Environment.getExternalStorageDirectory().toString()}, null, new MediaScannerConnection.OnScanCompletedListener() {
-
-                 public void onScanCompleted(String path, Uri uri) {
-
-                 }
-             });
-         } else {
-             Log.e("-->", " < 14");
-             sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,
-                     Uri.parse("file://" + Environment.getExternalStorageDirectory())));
-         }
+    }
 
 
+    public void callBroadCast() {
+        if (Build.VERSION.SDK_INT >= 14) {
+            Log.e("-->", " >= 14");
+            MediaScannerConnection.scanFile(this, new String[]{Environment.getExternalStorageDirectory().toString()}, null, new MediaScannerConnection.OnScanCompletedListener() {
 
-     }
+                public void onScanCompleted(String path, Uri uri) {
 
+                }
+            });
+        } else {
+            Log.e("-->", " < 14");
+            sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,
+                    Uri.parse("file://" + Environment.getExternalStorageDirectory())));
+        }
 
 
-	 public static String[] checkNumberOfFiles(File dir)
-	  {
-		 int NoOfFiles=0;
-		 String [] Totalfiles = null;
+    }
 
-	        if (dir.isDirectory())
-	        {
-	            String[] children = dir.list();
-	            NoOfFiles=children.length;
-	            Totalfiles=new String[children.length];
 
-	            for (int i=0; i<children.length; i++)
-	            {
-	            	Totalfiles[i]=children[i];
-	            }
-	        }
-	        return Totalfiles;
-	    }
-
-	private class SyncVedioData extends AsyncTask<Void, Void, Void>
-	{
-		String[] fp2s;
-		String[] NoOfOutletID;
-
-		public SyncVedioData(SyncMaster activity)
-		{
-			pDialogGetStores = new ProgressDialog(activity);
-		}
-
-		@Override
-		protected void onPreExecute()
-		{
-			super.onPreExecute();
+    public static String[] checkNumberOfFiles(File dir) {
+        int NoOfFiles = 0;
+        String[] Totalfiles = null;
 
-			dbengine.open();
-			routeID=dbengine.GetActiveRouteID();
-			dbengine.close();
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            NoOfFiles = children.length;
+            Totalfiles = new String[children.length];
 
+            for (int i = 0; i < children.length; i++) {
+                Totalfiles[i] = children[i];
+            }
+        }
+        return Totalfiles;
+    }
 
-			pDialogGetStores.setTitle(getText(R.string.genTermPleaseWaitNew));
-			//  pDialogGetStores.setMessage("Uploading Data...");
-			if(StoreSelection.flgChangeRouteOrDayEnd==1)
-			{
-				pDialogGetStores.setMessage("Ending your day visit ...");
-			}else if(StoreSelection.flgChangeRouteOrDayEnd==2)
-			{
-				pDialogGetStores.setMessage("Changing the route....");
-			}else if(StoreSelection.flgChangeRouteOrDayEnd==3)
-			{
-				pDialogGetStores.setMessage("Submitting Quotation Details...");
-			}
-			else if(DayStartActivity.flgDaySartWorking==1)
-			{
-				pDialogGetStores.setMessage(getResources().getString(R.string.submittingDayStart));
-
-			}
-			else
-			{
-				pDialogGetStores.setMessage("Submitting Order Details...");
-			}
-			pDialogGetStores.setIndeterminate(false);
-			pDialogGetStores.setCancelable(false);
-			pDialogGetStores.setCanceledOnTouchOutside(false);
-			pDialogGetStores.show();
-
-
-			if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED))
-			{
-
-			}
-			else
-			{
-				// Locate the image folder in your SD Card
-				fileintial = new File(Environment.getExternalStorageDirectory()
-						+ File.separator + CommonInfo.VideoFolder);
-				// Create a new folder if no folder named SDImageTutorial exist
-				fileintial.mkdirs();
-			}
-
-
-			if (fileintial.isDirectory())
-			{
-				listFile = fileintial.listFiles();
-			}
-
-
-
-
-
-		}
-
-		@Override
-		protected Void doInBackground(Void... params)
-		{
-
-
-			// Sync POS Images
-
-			try
-			{
-
-				try
-				{
-					db.open();
-					NoOfOutletID = db.getAllStoreIDIntblStoreVedioDetail();
-					db.close();
-
-				} catch (Exception e)
-				{
-					// TODO Auto-generated catch block
-					db.close();
-					e.printStackTrace();
-				}
-				for(int chkCountstore=0; chkCountstore < NoOfOutletID.length;chkCountstore++)
-				{
-					db.open();
-					int NoOfImages = db.getExistingVedioNos(NoOfOutletID[chkCountstore].toString());
-					String[] NoOfImgsPath = db.getVedioPath(NoOfOutletID[chkCountstore].toString());
-					db.close();
-
-					fp2s = new String[2];
-
-					for(int syCOUNT = 0; syCOUNT < NoOfImages; syCOUNT++)
-					{
-						fp2s[0] = NoOfImgsPath[syCOUNT];
-						fp2s[1] = NoOfOutletID[chkCountstore];
-
-						// New Way
-
-						fnameIMG = fp2s[0];
-						UploadingImageName=fp2s[0];
-
-
-						String stID = fp2s[1];
-						String currentImageFileName=fnameIMG;
-
-						boolean isImageExist=false;
-						for (int i = 0; i < listFile.length; i++)
-						{
-							FilePathStrings = listFile[i].getAbsolutePath();
-							if(listFile[i].getName().equals(fnameIMG))
-							{
-								fnameIMG=listFile[i].getAbsolutePath();
-								isImageExist=true;
-								break;
-							}
-						}
-						if(isImageExist)
-						{
-							String upLoadServerUri =  CommonInfo.VedioSyncPath.trim()+"?CLIENTFILENAME="+ currentImageFileName;
-
-							int serverResponseCode = 0;
-							HttpClient httpclient = null;
-							HttpURLConnection conn = null;
-							DataOutputStream dos = null;
-							DataInputStream inStream = null;
-							String lineEnd = "\r\n";
-							String twoHyphens = "--";
-							String boundary = "*****";
-							int bytesRead, bytesAvailable, bufferSize;
-							byte[] buffer;
-							int maxBufferSize = 1024;
-							String responseFromServer = "";
-							String Title="MyVedio";
-
-
-							File sourceFile = new File(Environment.getExternalStorageDirectory() + "/" + CommonInfo.VideoFolder + "/" +currentImageFileName);
-							System.out.println("Ajay Video file I M in the upLoad2Server End"+sourceFile);
-							if (!sourceFile.isFile()) {
-								System.out.println("Ajay Video file I M in the upLoad2Server End"+"Source File Does not exist");
-								Log.e("Huzza", "Source File Does not exist");
-								//return 0;
-							}
-							try { // open a URL connection to the Servlet
-								FileInputStream fileInputStream = new FileInputStream(sourceFile);
-								System.out.println("Ajay Video file End_fileInputStream"+fileInputStream);
-
-
-
-								URL url = new URL(upLoadServerUri);
-								System.out.println("Ajay Video file End_fileInputStream_url"+url);
-								conn = (HttpURLConnection) url.openConnection(); // Open a HTTP  connection to  the URL
-								System.out.println("Ajay Video file End_fileInputStream_url_conn"+conn);
-								conn.setDoInput(true); // Allow Inputs
-								conn.setDoOutput(true); // Allow Outputs
-								conn.setUseCaches(false); // Don't use a Cached Copy
-								conn.setRequestMethod("POST");
-								// conn.setRequestMethod("GET");
-								conn.setRequestProperty("Connection", "Keep-Alive");
-								conn.setRequestProperty("ENCTYPE", "multipart/form-data");
-								conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-								conn.setRequestProperty("uploaded_file", currentImageFileName);
-								System.out.println("Ajay Video file after post "+currentImageFileName);
-								System.out.println("Ajay Video file 1111");
-								dos = new DataOutputStream(conn.getOutputStream());
-								System.out.println("Ajay Video file 222");
-								System.out.println("Ajay Video file  dos : "+dos);
-								dos.writeBytes(twoHyphens + boundary + lineEnd);
-								System.out.println("Ajay Video file FileName_Niti"+currentImageFileName);
-								dos.writeBytes("Content-Disposition: form-data; name=\"title\"" + lineEnd);
-								dos.writeBytes(lineEnd);
-								dos.writeBytes(Title);
-								dos.writeBytes(lineEnd);
-								dos.writeBytes(twoHyphens + boundary + lineEnd);
-								dos.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""+ currentImageFileName + "\"" + lineEnd);
-								dos.writeBytes(lineEnd);
-								System.out.println("Ajay Video file 333");
-								bytesAvailable = fileInputStream.available(); // create a buffer of  maximum size
-								// Log.i("Huzza", "Initial .available : " + bytesAvailable);
-								System.out.println("Ajay Video file  create a buffer of  maximum size : "+bytesAvailable);
-
-								bufferSize = Math.min(bytesAvailable, maxBufferSize);
-								buffer = new byte[bufferSize];
-
-								// read file and write it into form...
-								bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-								System.out.println("Ajay Video file read file and write it into form :"+bytesRead);
-								while (bytesRead > 0) {
-									dos.write(buffer, 0, bufferSize);
-									bytesAvailable = fileInputStream.available();
-									bufferSize = Math.min(bytesAvailable, maxBufferSize);
-									bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-								}
-
-								// send multipart form data necesssary after file data...
-								dos.writeBytes(lineEnd);
-								dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
-								fileInputStream.close();
-								// Responses from the server (code and message)
-								serverResponseCode = conn.getResponseCode();
-								String serverResponseMessage = conn.getResponseMessage();
-
-								System.out.println("Ajay Video file name for upload  at end serverResponseMessage :"+serverResponseMessage);
-								System.out.println("Ajay Video file name for upload at end serverResponseCode :"+serverResponseCode);
-								// Log.i("Upload file to server", "HTTP Response is : " + serverResponseMessage + ": " + serverResponseCode);
-
-								// close streams
-								//  Log.i("Upload file to server", fileName + " File is written");
-
-								dos.flush();
-								dos.close();
-
-
-
-								if(serverResponseCode==200)
-								{
-
-									System.out.println("Sunil Doing Testing Response after sending Image inside if" + serverResponseMessage);
-									db.updateVedioRecordsSyncdFortblFeedbackVedio(UploadingImageName.toString().trim());
-									// String file_dj_path = Environment.getExternalStorageDirectory() + "/RSPLSFAImages/"+UploadingImageName.toString().trim();
-									String file_dj_path = Environment.getExternalStorageDirectory() + "/" + CommonInfo.VideoFolder + "/" +currentImageFileName.toString().trim();
-
-									File fdelete = new File(file_dj_path);
-									if (fdelete.exists())
-									{
-										if (fdelete.delete())
-										{
-											//Log.e("-->", "file Deleted :" + file_dj_path);
-											callBroadCast();
-										}
-										else
-										{
-											//Log.e("-->", "file not Deleted :" + file_dj_path);
-										}
-									}
+    private class SyncVedioData extends AsyncTask<Void, Void, Void> {
+        String[] fp2s;
+        String[] NoOfOutletID;
+
+        public SyncVedioData(SyncMaster activity) {
+            pDialogGetStores = new ProgressDialog(activity);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            dbengine.open();
+            routeID = dbengine.GetActiveRouteID();
+            dbengine.close();
+
+
+            pDialogGetStores.setTitle(getText(R.string.genTermPleaseWaitNew));
+            //  pDialogGetStores.setMessage("Uploading Data...");
+            if (StoreSelection.flgChangeRouteOrDayEnd == 1) {
+                pDialogGetStores.setMessage("Ending your day visit ...");
+            } else if (StoreSelection.flgChangeRouteOrDayEnd == 2) {
+                pDialogGetStores.setMessage("Changing the route....");
+            } else if (StoreSelection.flgChangeRouteOrDayEnd == 3) {
+                pDialogGetStores.setMessage("Submitting Quotation Details...");
+            } else if (DayStartActivity.flgDaySartWorking == 1) {
+                pDialogGetStores.setMessage(getResources().getString(R.string.submittingDayStart));
+
+            } else {
+                pDialogGetStores.setMessage("Submitting Order Details...");
+            }
+            pDialogGetStores.setIndeterminate(false);
+            pDialogGetStores.setCancelable(false);
+            pDialogGetStores.setCanceledOnTouchOutside(false);
+            pDialogGetStores.show();
+
+
+            if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+
+            } else {
+                // Locate the image folder in your SD Card
+                fileintial = new File(Environment.getExternalStorageDirectory()
+                        + File.separator + CommonInfo.VideoFolder);
+                // Create a new folder if no folder named SDImageTutorial exist
+                fileintial.mkdirs();
+            }
+
+
+            if (fileintial.isDirectory()) {
+                listFile = fileintial.listFiles();
+            }
+
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+
+            // Sync POS Images
+
+            try {
+
+                try {
+                    db.open();
+                    NoOfOutletID = db.getAllStoreIDIntblStoreVedioDetail();
+                    db.close();
+
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    db.close();
+                    e.printStackTrace();
+                }
+                for (int chkCountstore = 0; chkCountstore < NoOfOutletID.length; chkCountstore++) {
+                    db.open();
+                    int NoOfImages = db.getExistingVedioNos(NoOfOutletID[chkCountstore].toString());
+                    String[] NoOfImgsPath = db.getVedioPath(NoOfOutletID[chkCountstore].toString());
+                    db.close();
+
+                    fp2s = new String[2];
+
+                    for (int syCOUNT = 0; syCOUNT < NoOfImages; syCOUNT++) {
+                        fp2s[0] = NoOfImgsPath[syCOUNT];
+                        fp2s[1] = NoOfOutletID[chkCountstore];
+
+                        // New Way
+
+                        fnameIMG = fp2s[0];
+                        UploadingImageName = fp2s[0];
+
+
+                        String stID = fp2s[1];
+                        String currentImageFileName = fnameIMG;
+
+                        boolean isImageExist = false;
+                        for (int i = 0; i < listFile.length; i++) {
+                            FilePathStrings = listFile[i].getAbsolutePath();
+                            if (listFile[i].getName().equals(fnameIMG)) {
+                                fnameIMG = listFile[i].getAbsolutePath();
+                                isImageExist = true;
+                                break;
+                            }
+                        }
+                        if (isImageExist) {
+//							String upLoadServerUri =  CommonInfo.VedioSyncPath.trim()+"?CLIENTFILENAME="+ currentImageFileName;
+                            String upLoadServerUri = CommonInfo.COMMON_SYNC_PATH_URL.trim() + CommonInfo.ClientFileNameVideoSyncPath + "&CLIENTFILENAME=" + currentImageFileName;
+
+                            int serverResponseCode = 0;
+                            HttpClient httpclient = null;
+                            HttpURLConnection conn = null;
+                            DataOutputStream dos = null;
+                            DataInputStream inStream = null;
+                            String lineEnd = "\r\n";
+                            String twoHyphens = "--";
+                            String boundary = "*****";
+                            int bytesRead, bytesAvailable, bufferSize;
+                            byte[] buffer;
+                            int maxBufferSize = 1024;
+                            String responseFromServer = "";
+                            String Title = "MyVedio";
+
+
+                            File sourceFile = new File(Environment.getExternalStorageDirectory() + "/" + CommonInfo.VideoFolder + "/" + currentImageFileName);
+                            System.out.println("Ajay Video file I M in the upLoad2Server End" + sourceFile);
+                            if (!sourceFile.isFile()) {
+                                System.out.println("Ajay Video file I M in the upLoad2Server End" + "Source File Does not exist");
+                                Log.e("Huzza", "Source File Does not exist");
+                                //return 0;
+                            }
+                            try { // open a URL connection to the Servlet
+                                FileInputStream fileInputStream = new FileInputStream(sourceFile);
+                                System.out.println("Ajay Video file End_fileInputStream" + fileInputStream);
+
+
+                                URL url = new URL(upLoadServerUri);
+                                System.out.println("Ajay Video file End_fileInputStream_url" + url);
+                                conn = (HttpURLConnection) url.openConnection(); // Open a HTTP  connection to  the URL
+                                System.out.println("Ajay Video file End_fileInputStream_url_conn" + conn);
+                                conn.setDoInput(true); // Allow Inputs
+                                conn.setDoOutput(true); // Allow Outputs
+                                conn.setUseCaches(false); // Don't use a Cached Copy
+                                conn.setRequestMethod("POST");
+                                // conn.setRequestMethod("GET");
+                                conn.setRequestProperty("Connection", "Keep-Alive");
+                                conn.setRequestProperty("ENCTYPE", "multipart/form-data");
+                                conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+                                conn.setRequestProperty("uploaded_file", currentImageFileName);
+                                System.out.println("Ajay Video file after post " + currentImageFileName);
+                                System.out.println("Ajay Video file 1111");
+                                dos = new DataOutputStream(conn.getOutputStream());
+                                System.out.println("Ajay Video file 222");
+                                System.out.println("Ajay Video file  dos : " + dos);
+                                dos.writeBytes(twoHyphens + boundary + lineEnd);
+                                System.out.println("Ajay Video file FileName_Niti" + currentImageFileName);
+                                dos.writeBytes("Content-Disposition: form-data; name=\"title\"" + lineEnd);
+                                dos.writeBytes(lineEnd);
+                                dos.writeBytes(Title);
+                                dos.writeBytes(lineEnd);
+                                dos.writeBytes(twoHyphens + boundary + lineEnd);
+                                dos.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\"" + currentImageFileName + "\"" + lineEnd);
+                                dos.writeBytes(lineEnd);
+                                System.out.println("Ajay Video file 333");
+                                bytesAvailable = fileInputStream.available(); // create a buffer of  maximum size
+                                // Log.i("Huzza", "Initial .available : " + bytesAvailable);
+                                System.out.println("Ajay Video file  create a buffer of  maximum size : " + bytesAvailable);
+
+                                bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                                buffer = new byte[bufferSize];
+
+                                // read file and write it into form...
+                                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+                                System.out.println("Ajay Video file read file and write it into form :" + bytesRead);
+                                while (bytesRead > 0) {
+                                    dos.write(buffer, 0, bufferSize);
+                                    bytesAvailable = fileInputStream.available();
+                                    bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                                    bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+                                }
+
+                                // send multipart form data necesssary after file data...
+                                dos.writeBytes(lineEnd);
+                                dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+                                fileInputStream.close();
+                                // Responses from the server (code and message)
+                                serverResponseCode = conn.getResponseCode();
+                                String serverResponseMessage = conn.getResponseMessage();
+
+                                System.out.println("Ajay Video file name for upload  at end serverResponseMessage :" + serverResponseMessage);
+                                System.out.println("Ajay Video file name for upload at end serverResponseCode :" + serverResponseCode);
+                                // Log.i("Upload file to server", "HTTP Response is : " + serverResponseMessage + ": " + serverResponseCode);
+
+                                // close streams
+                                //  Log.i("Upload file to server", fileName + " File is written");
+
+                                dos.flush();
+                                dos.close();
+
+
+                                if (serverResponseCode == 200) {
+
+                                    System.out.println("Sunil Doing Testing Response after sending Image inside if" + serverResponseMessage);
+                                    db.updateVedioRecordsSyncdFortblFeedbackVedio(UploadingImageName.toString().trim());
+                                    // String file_dj_path = Environment.getExternalStorageDirectory() + "/RSPLSFAImages/"+UploadingImageName.toString().trim();
+                                    String file_dj_path = Environment.getExternalStorageDirectory() + "/" + CommonInfo.VideoFolder + "/" + currentImageFileName.toString().trim();
+
+                                    File fdelete = new File(file_dj_path);
+                                    if (fdelete.exists()) {
+                                        if (fdelete.delete()) {
+                                            //Log.e("-->", "file Deleted :" + file_dj_path);
+                                            callBroadCast();
+                                        } else {
+                                            //Log.e("-->", "file not Deleted :" + file_dj_path);
+                                        }
+                                    }
 						            	/* File file = new File(UploadingImageName.toString().trim());
 							         	    file.delete();  */
-								}
-							} catch (MalformedURLException ex) {
-								ex.printStackTrace();
+                                }
+                            } catch (MalformedURLException ex) {
+                                ex.printStackTrace();
 
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-							//this block will give the response of upload link
-							try {
-								BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            //this block will give the response of upload link
+                            try {
+                                BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
-								String line;
-								while ((line = rd.readLine()) != null) {
-									System.out.println("Ajay Video file End_fileInputStream_url_dos_bytesRead_line"+line);
+                                String line;
+                                while ((line = rd.readLine()) != null) {
+                                    System.out.println("Ajay Video file End_fileInputStream_url_dos_bytesRead_line" + line);
 
-									//Log.i("Huzza", "RES Message: " + line);
-								}
-								rd.close();
-							} catch (IOException e)
-							{
-								//Log.e("Huzza", "error: " + ioex.getMessage(), ioex);
-								System.out.println("Ajay Video file error"+e.getMessage());
-							}
-						}
-
-
-					}
+                                    //Log.i("Huzza", "RES Message: " + line);
+                                }
+                                rd.close();
+                            } catch (IOException e) {
+                                //Log.e("Huzza", "error: " + ioex.getMessage(), ioex);
+                                System.out.println("Ajay Video file error" + e.getMessage());
+                            }
+                        }
 
 
-				}
-			}
-			catch(Exception e)
-			{
-				IMGsyOK = 1;
-
-			}
+                    }
 
 
+                }
+            } catch (Exception e) {
+                IMGsyOK = 1;
+
+            }
 
 
-			return null;
-		}
+            return null;
+        }
 
-		@Override
-		protected void onCancelled()
-		{
-			Log.i("SvcMgr", "Service Execution Cancelled");
-		}
+        @Override
+        protected void onCancelled() {
+            Log.i("SvcMgr", "Service Execution Cancelled");
+        }
 
-		@Override
-		protected void onPostExecute(Void result)
-		{
-			super.onPostExecute(result);
-			if(pDialogGetStores.isShowing())
-			{
-				pDialogGetStores.dismiss();
-			}
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            if (pDialogGetStores.isShowing()) {
+                pDialogGetStores.dismiss();
+            }
 
-			if(IMGsyOK == 1)
-			{
-				IMGsyOK = 0;
+            if (IMGsyOK == 1) {
+                IMGsyOK = 0;
 
-				if (myTimerTaskForDataSubmission != null) {
-					myTimerTaskForDataSubmission.cancel();
-					myTimerTaskForDataSubmission=null;
-				}
-				if (timerForDataSubmission!=null)
-				{
-					timerForDataSubmission.cancel();
-					timerForDataSubmission = null;
-				}
-				showSyncErrorStart();
-			}
-			else
-			{
-				db.open();
+                if (myTimerTaskForDataSubmission != null) {
+                    myTimerTaskForDataSubmission.cancel();
+                    myTimerTaskForDataSubmission = null;
+                }
+                if (timerForDataSubmission != null) {
+                    timerForDataSubmission.cancel();
+                    timerForDataSubmission = null;
+                }
+                showSyncErrorStart();
+            } else {
+                db.open();
 
-				db.updateImageRecordsSyncd();
-				db.close();
+                db.updateImageRecordsSyncd();
+                db.close();
 
-				//showSyncSuccess();
+                //showSyncSuccess();
 
-				//showSyncSuccessStart();
+                //showSyncSuccessStart();
 
 
-				try
-				{
-					task2 = new SyncXMLfileData(SyncMaster.this);
-					task2.execute();
-				}
-				catch (Exception e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+                try {
+                    task2 = new SyncXMLfileData(SyncMaster.this);
+                    task2.execute();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
 
-			}
+            }
 
-		}
-	}
+        }
+    }
 
 }
 

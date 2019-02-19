@@ -18200,8 +18200,8 @@ public class ServiceWorker
 		int chkTblStoreListContainsRow=1;
 		StringReader read;
 		InputSource inputstream;
-		final String SOAP_ACTION = "http://tempuri.org/fnGetLTFoodsSODSRRoutesTempByAbhinav";
-		final String METHOD_NAME = "fnGetLTFoodsSODSRRoutesTempByAbhinav";
+		final String SOAP_ACTION = "http://tempuri.org/fnGetLTFoodsSODSRRoutes";
+		final String METHOD_NAME = "fnGetLTFoodsSODSRRoutes";
 		final String NAMESPACE = "http://tempuri.org/";
 		final String URL = UrlForWebService;
 		//Create request

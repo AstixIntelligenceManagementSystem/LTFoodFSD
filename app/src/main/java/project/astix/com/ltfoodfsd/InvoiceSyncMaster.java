@@ -654,11 +654,12 @@ public class InvoiceSyncMaster extends BaseActivity
 		   // String urlString = "http://115.124.126.184/ReadXMLForParagSFA_Invoicing/Default.aspx?CLIENTFILENAME=" + zipFileName;
 			
 		     
-		       String urlString = CommonInfo.InvoiceSyncPath+"?CLIENTFILENAME=" + zipFileName;
-				
-		       
-		    
-		        HttpParams httpParams = new BasicHttpParams();
+//		       String urlString = CommonInfo.InvoiceSyncPath+"?CLIENTFILENAME=" + zipFileName;
+				String urlString = CommonInfo.COMMON_SYNC_PATH_URL.trim() + CommonInfo.ClientFileNameInvoiceSyncPath + "&CLIENTFILENAME=" + zipFileName;
+
+
+
+				HttpParams httpParams = new BasicHttpParams();
                 int some_reasonable_timeout = (int) (30 * DateUtils.SECOND_IN_MILLIS);
                 
                // HttpConnectionParams.setConnectionTimeout(httpParams, some_reasonable_timeout);

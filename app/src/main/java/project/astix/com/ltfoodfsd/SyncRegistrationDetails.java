@@ -918,9 +918,8 @@ public class SyncRegistrationDetails extends Activity
 
 
 
-                        String urlString = CommonInfo.OrderSyncPath.trim()+"?CLIENTFILENAME=" + xmlFileName+".zip";
-
-
+                        //String urlString = CommonInfo.OrderSyncPath.trim()+"?CLIENTFILENAME=" + xmlFileName+".zip";
+                        String urlString = CommonInfo.COMMON_SYNC_PATH_URL.trim() + CommonInfo.ClientFileNameOrderSync + "&CLIENTFILENAME=" + xmlFileName+".zip";
 
                         try
                         {
@@ -1492,8 +1491,8 @@ public class SyncRegistrationDetails extends Activity
                             HttpParams httpParams = new BasicHttpParams();
                             HttpConnectionParams.setSoTimeout(httpParams, 0);
                             HttpClient httpclient = new DefaultHttpClient(httpParams);
-                            HttpPost httppost = new HttpPost(CommonInfo.ImageSyncPath.trim());
-
+//                            HttpPost httppost = new HttpPost(CommonInfo.ImageSyncPath.trim());
+                            HttpPost httppost = new HttpPost(CommonInfo.COMMON_SYNC_PATH_URL.trim() + CommonInfo.ClientFileNameImageSyncPath );
 
                             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
                             HttpResponse response = httpclient.execute(httppost);
@@ -1502,7 +1501,7 @@ public class SyncRegistrationDetails extends Activity
                             System.out.println("Sunil Doing Testing Response after sending Image" + the_string_response);
 
                             //  if(serverResponseCode == 200)
-                            if(the_string_response.equals("Abhinav"))
+                            if(the_string_response.equalsIgnoreCase("success"))
                             {
 
 

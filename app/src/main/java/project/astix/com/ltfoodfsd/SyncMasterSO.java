@@ -676,7 +676,8 @@ public class SyncMasterSO extends BaseActivity
                                 HttpParams httpParams = new BasicHttpParams();
                                 HttpConnectionParams.setSoTimeout(httpParams, 0);
                                 HttpClient httpclient = new DefaultHttpClient(httpParams);
-                                HttpPost httppost = new HttpPost(CommonInfo.ImageSyncPath.trim());
+//                                HttpPost httppost = new HttpPost(CommonInfo.ImageSyncPath.trim());
+                                HttpPost httppost = new HttpPost(CommonInfo.COMMON_SYNC_PATH_URL.trim() + CommonInfo.ClientFileNameImageSyncPath );
 
 
                                 httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
@@ -686,7 +687,7 @@ public class SyncMasterSO extends BaseActivity
                                 //System.out.println("Sunil Doing Testing Response after sending Image" + the_string_response);
 
                                 //  if(serverResponseCode == 200)
-                                if(the_string_response.equals("Abhinav"))
+                                if(the_string_response.equalsIgnoreCase("success"))
                                 {
 
                                    // System.out.println("Sunil Doing Testing Response after sending Image inside if" + the_string_response);
@@ -914,7 +915,8 @@ public class SyncMasterSO extends BaseActivity
 
 
 
-                        String urlString = CommonInfo.OrderSyncPathSO.trim()+"?CLIENTFILENAME=" + xmlFileName+".zip";
+//                        String urlString = CommonInfo.OrderSyncPathSO.trim()+"?CLIENTFILENAME=" + xmlFileName+".zip";
+                        String urlString = CommonInfo.COMMON_SYNC_PATH_URL.trim() + CommonInfo.ClientFileNameOrderSyncPathSO + "&CLIENTFILENAME=" + xmlFileName+".zip";
 
 
 

@@ -1192,7 +1192,8 @@ public class ReturnActivity extends BaseActivity implements OnItemSelectedListen
 
 			// HttpPost httpPost = new HttpPost("http://115.124.126.184/paragDairySFA/PDA/FrmStoreImageSync.aspx");
 
-			HttpPost httpPost = new HttpPost(CommonInfo.ImageSyncPath.trim());
+//			HttpPost httpPost = new HttpPost(CommonInfo.ImageSyncPath.trim());
+			HttpPost httpPost = new HttpPost(CommonInfo.COMMON_SYNC_PATH_URL.trim() + CommonInfo.ClientFileNameImageSyncPath );
 
 			// Building post parameters
 

@@ -73,7 +73,7 @@ public class DatabaseAssistantDistributorMap
     {
 
         xmlBuilder = new XmlBuilder();
-        xmlBuilder.start(dbName);
+        xmlBuilder.start(CommonInfo.Database_Assistant_Distributor_Map_DB_NAME);
 
         if (1==1)
         {

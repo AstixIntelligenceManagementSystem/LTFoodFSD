@@ -57,7 +57,7 @@ public class StoreAndSKUWiseFragmentTwoTab<Context> extends Fragment
         TelephonyManager tManager = (TelephonyManager) mContext.getSystemService(mContext.TELEPHONY_SERVICE);
 		imei = tManager.getDeviceId();
 		
-		if(CommonInfo.imei.trim().equals(null) || CommonInfo.imei.trim().equals(""))
+		if(CommonInfo.imei == null || CommonInfo.imei.trim().equals(""))
 		{
 			imei = tManager.getDeviceId();
 			CommonInfo.imei=imei;

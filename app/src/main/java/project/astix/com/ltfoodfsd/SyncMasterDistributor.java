@@ -741,8 +741,8 @@ public class SyncMasterDistributor extends BaseActivity
 
 
 
-                        String urlString = CommonInfo.OrderSyncPathDistributorMap.trim()+"?CLIENTFILENAME=" + xmlFileName+".zip";
-
+                        //String urlString = CommonInfo.OrderSyncPathDistributorMap.trim()+"?CLIENTFILENAME=" + xmlFileName+".zip";
+                        String urlString = CommonInfo.COMMON_SYNC_PATH_URL.trim() + CommonInfo.ClientFileNameOrderSyncPathDistributorMap + "&CLIENTFILENAME=" + xmlFileName+".zip";
 
 
                         try

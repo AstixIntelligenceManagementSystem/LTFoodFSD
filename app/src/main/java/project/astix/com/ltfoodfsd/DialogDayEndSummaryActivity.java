@@ -52,93 +52,84 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
-public class DialogDayEndSummaryActivity extends BaseActivity
-{
-   // DBAdapterLtFoods dbengineSo = new DBAdapterLtFoods(this);
-    public int chkFlgForErrorToCloseApp=0;
+public class DialogDayEndSummaryActivity extends BaseActivity {
+    // DBAdapterLtFoods dbengineSo = new DBAdapterLtFoods(this);
+    public int chkFlgForErrorToCloseApp = 0;
     ServiceWorker newservice = new ServiceWorker();
 
     public ProgressDialog pDialogGetStores;
-    public boolean serviceException=false;
+    public boolean serviceException = false;
     SharedPreferences sharedPref;
-    LinkedHashMap<String, String> hmapdsrIdAndDescr_details=new LinkedHashMap<String, String>();
+    LinkedHashMap<String, String> hmapdsrIdAndDescr_details = new LinkedHashMap<String, String>();
 
-    LinkedHashMap<String, String> hmapHealthRelationship_details=new LinkedHashMap<String, String>();
+    LinkedHashMap<String, String> hmapHealthRelationship_details = new LinkedHashMap<String, String>();
 
     String[] drsNames;
-    public String	SelectedDSRValue="";
+    public String SelectedDSRValue = "";
     Dialog dialog;
     ImageView img_side_popUp;
     TableLayout tbl_inflate;
-    LinkedHashMap<String,String> hmapSummaryData =new LinkedHashMap<>();
+    LinkedHashMap<String, String> hmapSummaryData = new LinkedHashMap<>();
 
-    LinkedHashMap<String, LinkedHashMap<String, String>> hmapSummaryDataNew=new LinkedHashMap<String, LinkedHashMap<String, String>>();
+    LinkedHashMap<String, LinkedHashMap<String, String>> hmapSummaryDataNew = new LinkedHashMap<String, LinkedHashMap<String, String>>();
 
-    String date_value="";
-    String imei="";
+    String date_value = "";
+    String imei = "";
     String rID;
-    String pickerDate="";
+    String pickerDate = "";
     TextView actualCalls;
 
-    public String back="0";
+    public String back = "0";
 
     DBAdapterKenya dbengine = new DBAdapterKenya(this);
     public TableLayout tl2;
     public int bck = 0;
 
-    public String Noti_text="Null";
-    public int MsgServerID=0;
+    public String Noti_text = "Null";
+    public int MsgServerID = 0;
 
-    Locale locale  = new Locale("en", "UK");
+    Locale locale = new Locale("en", "UK");
     String pattern = "###.##";
-    DecimalFormat decimalFormat = (DecimalFormat)NumberFormat.getNumberInstance(locale);
+    DecimalFormat decimalFormat = (DecimalFormat) NumberFormat.getNumberInstance(locale);
     public String fDate;
     public String[] AllDataContainer;
 
 
-    int SalesmanNodeId,SalesmanNodeType,flgDataScope=0;
+    int SalesmanNodeId, SalesmanNodeType, flgDataScope = 0;
 
     Button btn_done;
     ImageView backbutton;
 
 
-    private void getHealthRelationship()
-    {
+    private void getHealthRelationship() {
 
-        TextView indictr_green=(TextView)findViewById(R.id.indictr_green);
-        TextView indictr_amber=(TextView)findViewById(R.id.indictr_amber);
-        TextView indictr_red=(TextView)findViewById(R.id.indictr_red);
-        hmapHealthRelationship_details=dbengine.fetch_tblHealthRelationship_List();
+        TextView indictr_green = (TextView) findViewById(R.id.indictr_green);
+        TextView indictr_amber = (TextView) findViewById(R.id.indictr_amber);
+        TextView indictr_red = (TextView) findViewById(R.id.indictr_red);
+        hmapHealthRelationship_details = dbengine.fetch_tblHealthRelationship_List();
 
-        int index=0;
-        if(hmapHealthRelationship_details!=null)
-        {
+        int index = 0;
+        if (hmapHealthRelationship_details != null) {
 
 
-           String[] drsNames=new String[hmapHealthRelationship_details.size()];
+            String[] drsNames = new String[hmapHealthRelationship_details.size()];
             LinkedHashMap<String, String> map = new LinkedHashMap<String, String>(hmapHealthRelationship_details);
             Set set2 = map.entrySet();
             Iterator iterator = set2.iterator();
-            while(iterator.hasNext())
-            {
-                Map.Entry me2 = (Map.Entry)iterator.next();
-                String val=me2.getValue().toString().trim();
+            while (iterator.hasNext()) {
+                Map.Entry me2 = (Map.Entry) iterator.next();
+                String val = me2.getValue().toString().trim();
                 String me2Key = val.split(Pattern.quote("_"))[0];
                 String me2Val = val.split(Pattern.quote("_"))[1];
 
-                if(me2Val.trim().equals("Green"))
-                {
+                if (me2Val.trim().equals("Green")) {
                     indictr_green.setText(me2Key.trim());
-                }
-                else if(me2Val.trim().equals("Amber"))
-                {
+                } else if (me2Val.trim().equals("Amber")) {
                     indictr_amber.setText(me2Key.trim());
-                }
-                else if(me2Val.trim().equals("Red"))
-                {
+                } else if (me2Val.trim().equals("Red")) {
                     indictr_red.setText(me2Key.trim());
                 }
-               // drsNames[index]=me2.getKey().toString();
+                // drsNames[index]=me2.getKey().toString();
                 //index=index+1;
             }
         }
@@ -147,24 +138,22 @@ public class DialogDayEndSummaryActivity extends BaseActivity
     }
 
 
-    private void getDSRDetail() throws IOException
-    {
+    private void getDSRDetail() throws IOException {
 
-        int check=dbengine.countDataIntblNoVisitReasonMaster();
+        int check = dbengine.countDataIntblNoVisitReasonMaster();
 
-        hmapdsrIdAndDescr_details=dbengine.fetch_DSRCoverage_List();
+        hmapdsrIdAndDescr_details = dbengine.fetch_DSRCoverage_List();
 
-        int index=0;
-        if(hmapdsrIdAndDescr_details!=null)
-        {
-            drsNames=new String[hmapdsrIdAndDescr_details.size()];
+        int index = 0;
+        if (hmapdsrIdAndDescr_details != null) {
+            drsNames = new String[hmapdsrIdAndDescr_details.size()];
             LinkedHashMap<String, String> map = new LinkedHashMap<String, String>(hmapdsrIdAndDescr_details);
             Set set2 = map.entrySet();
             Iterator iterator = set2.iterator();
-            while(iterator.hasNext()) {
-                Map.Entry me2 = (Map.Entry)iterator.next();
-                drsNames[index]=me2.getKey().toString();
-                index=index+1;
+            while (iterator.hasNext()) {
+                Map.Entry me2 = (Map.Entry) iterator.next();
+                drsNames[index] = me2.getKey().toString();
+                index = index + 1;
             }
         }
 
@@ -172,28 +161,23 @@ public class DialogDayEndSummaryActivity extends BaseActivity
     }
 
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
         dbengine.open();
-        String Noti_textWithMsgServerID=dbengine.fetchNoti_textFromtblNotificationMstr();
+        String Noti_textWithMsgServerID = dbengine.fetchNoti_textFromtblNotificationMstr();
         dbengine.close();
-        System.out.println("Sunil Tty Noti_textWithMsgServerID :"+Noti_textWithMsgServerID);
-        if(!Noti_textWithMsgServerID.equals("Null"))
-        {
+        System.out.println("Sunil Tty Noti_textWithMsgServerID :" + Noti_textWithMsgServerID);
+        if (!Noti_textWithMsgServerID.equals("Null")) {
             StringTokenizer token = new StringTokenizer(String.valueOf(Noti_textWithMsgServerID), "_");
 
-            MsgServerID= Integer.parseInt(token.nextToken().trim());
-            Noti_text= token.nextToken().trim();
+            MsgServerID = Integer.parseInt(token.nextToken().trim());
+            Noti_text = token.nextToken().trim();
 
             dbengine.close();
-            if(Noti_text.equals("") || Noti_text.equals("Null"))
-            {
+            if (Noti_text.equals("") || Noti_text.equals("Null")) {
 
-            }
-            else
-            {
+            } else {
                 AlertDialog.Builder alertDialogSaveOK = new AlertDialog.Builder(DialogDayEndSummaryActivity.this);
                 alertDialogSaveOK.setTitle("Notification");
 
@@ -205,11 +189,11 @@ public class DialogDayEndSummaryActivity extends BaseActivity
                                 long syncTIMESTAMP = System.currentTimeMillis();
                                 Date dateobj = new Date(syncTIMESTAMP);
                                 SimpleDateFormat df = new SimpleDateFormat(
-                                        "dd-MMM-yyyy HH:mm:ss",Locale.ENGLISH);
+                                        "dd-MMM-yyyy HH:mm:ss", Locale.ENGLISH);
                                 String Noti_ReadDateTime = df.format(dateobj);
                                 dbengine.open();
 
-                                dbengine.updatetblNotificationMstr(MsgServerID,Noti_text,0,Noti_ReadDateTime,3);
+                                dbengine.updatetblNotificationMstr(MsgServerID, Noti_text, 0, Noti_ReadDateTime, 3);
                                 dbengine.close();
                                 dialog.dismiss();
 
@@ -227,66 +211,56 @@ public class DialogDayEndSummaryActivity extends BaseActivity
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_day_summary);
 
-        btn_done= (Button) findViewById(R.id.btn_done);
+        btn_done = (Button) findViewById(R.id.btn_done);
         btn_done.setVisibility(View.VISIBLE);
 
-        backbutton= (ImageView) findViewById(R.id.backbutton);
+        backbutton = (ImageView) findViewById(R.id.backbutton);
         backbutton.setVisibility(View.GONE);
 
         getHealthRelationship();
 
         sharedPref = getSharedPreferences(CommonInfo.Preference, MODE_PRIVATE);
-        if(sharedPref.contains("CoverageAreaNodeID"))
-        {
-            if(sharedPref.getInt("CoverageAreaNodeID",0)!=0)
-            {
-                CommonInfo.CoverageAreaNodeID=sharedPref.getInt("CoverageAreaNodeID",0);
-                CommonInfo.CoverageAreaNodeType=sharedPref.getInt("CoverageAreaNodeType",0);
+        if (sharedPref.contains("CoverageAreaNodeID")) {
+            if (sharedPref.getInt("CoverageAreaNodeID", 0) != 0) {
+                CommonInfo.CoverageAreaNodeID = sharedPref.getInt("CoverageAreaNodeID", 0);
+                CommonInfo.CoverageAreaNodeType = sharedPref.getInt("CoverageAreaNodeType", 0);
             }
         }
-        if(sharedPref.contains("SalesmanNodeId"))
-        {
-            if(sharedPref.getInt("SalesmanNodeId",0)!=0)
-            {
-                CommonInfo.SalesmanNodeId=sharedPref.getInt("SalesmanNodeId",0);
-                CommonInfo.SalesmanNodeType=sharedPref.getInt("SalesmanNodeType",0);
+        if (sharedPref.contains("SalesmanNodeId")) {
+            if (sharedPref.getInt("SalesmanNodeId", 0) != 0) {
+                CommonInfo.SalesmanNodeId = sharedPref.getInt("SalesmanNodeId", 0);
+                CommonInfo.SalesmanNodeType = sharedPref.getInt("SalesmanNodeType", 0);
             }
         }
-        if(sharedPref.contains("flgDataScope"))
-        {
-            if(sharedPref.getInt("flgDataScope",0)!=0)
-            {
-                CommonInfo.flgDataScope=sharedPref.getInt("flgDataScope",0);
+        if (sharedPref.contains("flgDataScope")) {
+            if (sharedPref.getInt("flgDataScope", 0) != 0) {
+                CommonInfo.flgDataScope = sharedPref.getInt("flgDataScope", 0);
 
             }
         }
-        if(sharedPref.contains("flgDSRSO"))
-        {
-            if(sharedPref.getInt("flgDSRSO",0)!=0)
-            {
-                CommonInfo.FlgDSRSO=sharedPref.getInt("flgDSRSO",0);
+        if (sharedPref.contains("flgDSRSO")) {
+            if (sharedPref.getInt("flgDSRSO", 0) != 0) {
+                CommonInfo.FlgDSRSO = sharedPref.getInt("flgDSRSO", 0);
 
             }
         }
 
-        tbl_inflate= (TableLayout) findViewById(R.id.tbl_inflate);
+        tbl_inflate = (TableLayout) findViewById(R.id.tbl_inflate);
         Intent extras = getIntent();
 
         bck = extras.getIntExtra("bck", 0);
 
 
-        if(extras !=null)
-        {
-            date_value=extras.getStringExtra("userDate");
-            pickerDate= extras.getStringExtra("pickerDate");
-            imei=extras.getStringExtra("imei");
-            rID=extras.getStringExtra("rID");
-            back=extras.getStringExtra("back");
+        if (extras != null) {
+            date_value = extras.getStringExtra("userDate");
+            pickerDate = extras.getStringExtra("pickerDate");
+            imei = extras.getStringExtra("imei");
+            rID = extras.getStringExtra("rID");
+            back = extras.getStringExtra("back");
 
         }
 
@@ -295,44 +269,32 @@ public class DialogDayEndSummaryActivity extends BaseActivity
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-        SalesmanNodeId=CommonInfo.SalesmanNodeId;
-        SalesmanNodeType=CommonInfo.SalesmanNodeType;
-        flgDataScope=CommonInfo.flgDataScope;
+        SalesmanNodeId = CommonInfo.SalesmanNodeId;
+        SalesmanNodeType = CommonInfo.SalesmanNodeType;
+        flgDataScope = CommonInfo.flgDataScope;
 
 
-        TextView  dsrName=(TextView)findViewById(R.id.dsrName);
-        if(flgDataScope==1)
-        {
+        TextView dsrName = (TextView) findViewById(R.id.dsrName);
+        if (flgDataScope == 1) {
             dsrName.setText("My Report");
-        }
-        else  if(flgDataScope==2)
-        {
+        } else if (flgDataScope == 2) {
             try {
                 String CoverageArea = dbengine.fetch_DSRCoverage_Name(CommonInfo.SalesmanNodeId, CommonInfo.SalesmanNodeType);
                 dsrName.setText(CoverageArea);
-            }
-            catch(Exception e)
-            {
+            } catch (Exception e) {
 
             }
-        }
-        else if(flgDataScope==3)
-        {
+        } else if (flgDataScope == 3) {
             dsrName.setText("Full Territory");
-        }
-        else if(flgDataScope==4)
-        {try {
-            String DistributorName = dbengine.getDistributorName(CommonInfo.SalesmanNodeId, CommonInfo.SalesmanNodeType);
-            dsrName.setText(DistributorName);
-        }
-        catch(Exception e)
-        {
+        } else if (flgDataScope == 4) {
+            try {
+                String DistributorName = dbengine.getDistributorName(CommonInfo.SalesmanNodeId, CommonInfo.SalesmanNodeType);
+                dsrName.setText(DistributorName);
+            } catch (Exception e) {
 
-        }
-           // dsrName.setText("Full Territory");
-        }
-        else
-        {
+            }
+            // dsrName.setText("Full Territory");
+        } else {
             dsrName.setText("Report");
         }
 
@@ -340,44 +302,34 @@ public class DialogDayEndSummaryActivity extends BaseActivity
         TelephonyManager tManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         imei = tManager.getDeviceId();
 
-        if(CommonInfo.imei.trim().equals(null) || CommonInfo.imei.trim().equals(""))
-        {
+        if (CommonInfo.imei == null || CommonInfo.imei.trim().equals("")) {
             imei = tManager.getDeviceId();
-            CommonInfo.imei=imei;
-        }
-        else
-        {
-            imei=CommonInfo.imei.trim();
+            CommonInfo.imei = imei;
+        } else {
+            imei = CommonInfo.imei.trim();
         }
 
-        Date date1=new Date();
-        SimpleDateFormat	sdf = new SimpleDateFormat("dd-MMM-yyyy",Locale.ENGLISH);
+        Date date1 = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
         fDate = sdf.format(date1).toString().trim();
 
 
-        TextView txtSalessumuryDate=(TextView)findViewById(R.id.txtSalessumuryDate);
-        txtSalessumuryDate.setText("Summary as on :"+fDate);
-
+        TextView txtSalessumuryDate = (TextView) findViewById(R.id.txtSalessumuryDate);
+        txtSalessumuryDate.setText("Summary as on :" + fDate);
 
 
         setUpVariable();
 
-        if(isOnline())
-        {
+        if (isOnline()) {
 
-            try
-            {
+            try {
                 GetSummaryForDay task = new GetSummaryForDay(DialogDayEndSummaryActivity.this);
                 task.execute();
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 // TODO Autouuid-generated catch block
                 e.printStackTrace();
             }
-        }
-        else
-        {
+        } else {
             Toast.makeText(DialogDayEndSummaryActivity.this, "Your device has no Data Connection. \n Please ensure Internet is accessible to Continue.", Toast.LENGTH_SHORT).show();
         }
 
@@ -385,7 +337,7 @@ public class DialogDayEndSummaryActivity extends BaseActivity
             @Override
             public void onClick(View v) {
 
-                AllButtonActivity.isDayEndClicked=true;
+                AllButtonActivity.isDayEndClicked = true;
                 finish();
             }
         });
@@ -393,79 +345,68 @@ public class DialogDayEndSummaryActivity extends BaseActivity
 
     }
 
-    public boolean isOnline()
-    {
+    public boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnected())
-        {
+        if (netInfo != null && netInfo.isConnected()) {
             return true;
         }
         return false;
     }
-    public void getDataFromDatabase()
-    {
+
+    public void getDataFromDatabase() {
         //String[] tblRowCount=dbengine.fetchTblRowSummary();
 
-        hmapSummaryDataNew=dbengine.fetchTblRowSummary();
+        hmapSummaryDataNew = dbengine.fetchTblRowSummary();
 
         //System.out.println("CountNew " +tblRowCount.length);
         //LinkedHashMap<String, LinkedHashMap<String, String>> hmapSummaryDataNew=new LinkedHashMap<String, LinkedHashMap<String, String>>();
 
-        int a=1;
-        for (Map.Entry<String, LinkedHashMap<String, String>> entry : hmapSummaryDataNew.entrySet())
-        {
+        int a = 1;
+        for (Map.Entry<String, LinkedHashMap<String, String>> entry : hmapSummaryDataNew.entrySet()) {
             String key = entry.getKey();
             LinkedHashMap<String, String> ab = entry.getValue();
 
-            if(a==0)
-            {
+            if (a == 0) {
                 LinearLayout addSpace = new LinearLayout(DialogDayEndSummaryActivity.this);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT, 20);
                 addSpace.setLayoutParams(lp);
                 tbl_inflate.addView(addSpace);
             }
-            a=0;
+            a = 0;
 
-            for (Map.Entry<String, String> entry1 : ab.entrySet())
-            {
+            for (Map.Entry<String, String> entry1 : ab.entrySet()) {
 
                 String key1 = entry1.getKey();
 
                 String value = entry1.getValue();
 
 
-                String TodaysSummary=value.split(Pattern.quote("^"))[0];
-                String MTDSummary=value.split(Pattern.quote("^"))[1];
-                String ColorCode=value.split(Pattern.quote("^"))[2];
-                String MeasureID=value.split(Pattern.quote("^"))[3];
+                String TodaysSummary = value.split(Pattern.quote("^"))[0];
+                String MTDSummary = value.split(Pattern.quote("^"))[1];
+                String ColorCode = value.split(Pattern.quote("^"))[2];
+                String MeasureID = value.split(Pattern.quote("^"))[3];
 
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View view = inflater.inflate(R.layout.summary_row_inflate, null);
 
 
+                TextView measure_val = (TextView) view.findViewById(R.id.measure_val);
 
-                TextView measure_val=(TextView) view.findViewById(R.id.measure_val);
-
-                TextView txtValueAchievedToday=(TextView) view.findViewById(R.id.txtValueAchievedToday);
+                TextView txtValueAchievedToday = (TextView) view.findViewById(R.id.txtValueAchievedToday);
                 /*final CharSequence text = txtValueAchievedToday.getText();
                 final SpannableString spannableString = new SpannableString( text );
                 spannableString.setSpan(new URLSpan(""), 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 txtValueAchievedToday.setText(spannableString, TextView.BufferType.SPANNABLE);*/
 
 
-
-
-
-                TextView txtValueAchievedMTD=(TextView) view.findViewById(R.id.txtValueAchievedMTD);
+                TextView txtValueAchievedMTD = (TextView) view.findViewById(R.id.txtValueAchievedMTD);
 
                 measure_val.setText(key1);
-                measure_val.setTag(MeasureID+"_"+"0"+"_"+key1);
-                measure_val.setOnClickListener(new OnClickListener()
-                {
+                measure_val.setTag(MeasureID + "_" + "0" + "_" + key1);
+                measure_val.setOnClickListener(new OnClickListener() {
                     @Override
-                    public void onClick(View view)
-                    {
+                    public void onClick(View view) {
                         /*String getTagVal=view.getTag().toString();
                         Intent intent=new Intent(DetailReportSummaryActivityForAll.this,DetailReportSummaryActivityForAllCategoryWise.class);
                         intent.putExtra("getTagVal", getTagVal);
@@ -481,14 +422,12 @@ public class DialogDayEndSummaryActivity extends BaseActivity
                 content.setSpan(new ForegroundColorSpan(Color.BLUE), 0, content.length(), 0);
                 txtValueAchievedToday.setText(content);
 
-                txtValueAchievedToday.setTag(MeasureID+"_"+"1"+"_"+key1);
-                txtValueAchievedToday.setOnClickListener(new OnClickListener()
-                {
+                txtValueAchievedToday.setTag(MeasureID + "_" + "1" + "_" + key1);
+                txtValueAchievedToday.setOnClickListener(new OnClickListener() {
                     @Override
-                    public void onClick(View view)
-                    {
-                        String getTagVal=view.getTag().toString();
-                        Intent intent=new Intent(DialogDayEndSummaryActivity.this,DetailReportSummaryActivityForAllCategoryWise.class);
+                    public void onClick(View view) {
+                        String getTagVal = view.getTag().toString();
+                        Intent intent = new Intent(DialogDayEndSummaryActivity.this, DetailReportSummaryActivityForAllCategoryWise.class);
                         intent.putExtra("getTagVal", getTagVal);
                         startActivity(intent);
                     }
@@ -501,14 +440,12 @@ public class DialogDayEndSummaryActivity extends BaseActivity
                 content1.setSpan(new ForegroundColorSpan(Color.BLUE), 0, content1.length(), 0);
                 txtValueAchievedMTD.setText(content1);
 
-                txtValueAchievedMTD.setTag(MeasureID+"_"+"2"+"_"+key1);
-                txtValueAchievedMTD.setOnClickListener(new OnClickListener()
-                {
+                txtValueAchievedMTD.setTag(MeasureID + "_" + "2" + "_" + key1);
+                txtValueAchievedMTD.setOnClickListener(new OnClickListener() {
                     @Override
-                    public void onClick(View view)
-                    {
-                        String getTagVal=view.getTag().toString();
-                        Intent intent=new Intent(DialogDayEndSummaryActivity.this,DetailReportSummaryActivityForAllCategoryWise.class);
+                    public void onClick(View view) {
+                        String getTagVal = view.getTag().toString();
+                        Intent intent = new Intent(DialogDayEndSummaryActivity.this, DetailReportSummaryActivityForAllCategoryWise.class);
                         intent.putExtra("getTagVal", getTagVal);
 
                         startActivity(intent);
@@ -525,31 +462,21 @@ public class DialogDayEndSummaryActivity extends BaseActivity
             }
 
 
-
         }
-
-
-
-
-
-
 
 
     }
 
 
-
-    private class GetSummaryForDay extends AsyncTask<Void, Void, Void>
-    {
+    private class GetSummaryForDay extends AsyncTask<Void, Void, Void> {
         ProgressDialog pDialogGetStores;//=new ProgressDialog(DetailReport_Activity.this);
-        public GetSummaryForDay(DialogDayEndSummaryActivity activity)
-        {
+
+        public GetSummaryForDay(DialogDayEndSummaryActivity activity) {
             pDialogGetStores = new ProgressDialog(activity);
         }
 
         @Override
-        protected void onPreExecute()
-        {
+        protected void onPreExecute() {
             super.onPreExecute();
 
             dbengine.open();
@@ -565,22 +492,16 @@ public class DialogDayEndSummaryActivity extends BaseActivity
         }
 
         @Override
-        protected Void doInBackground(Void... args)
-        {
+        protected Void doInBackground(Void... args) {
             ServiceWorker newservice = new ServiceWorker();
 
-            try
-            {
-               // newservice = newservice.getfnCallspPDAGetDayAndMTDSummary(getApplicationContext(), fDate , imei,SalesmanNodeId,SalesmanNodeType,flgDataScope);
-                newservice = newservice.fnGetDynamicSummaryData(getApplicationContext(), fDate , imei,SalesmanNodeId,SalesmanNodeType,flgDataScope);
+            try {
+                // newservice = newservice.getfnCallspPDAGetDayAndMTDSummary(getApplicationContext(), fDate , imei,SalesmanNodeId,SalesmanNodeType,flgDataScope);
+                newservice = newservice.fnGetDynamicSummaryData(getApplicationContext(), fDate, imei, SalesmanNodeId, SalesmanNodeType, flgDataScope);
 
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 Log.i("SvcMgr", "Service Execution Failed!", e);
-            }
-            finally
-            {
+            } finally {
                 Log.i("SvcMgr", "Service Execution Completed...");
             }
             return null;
@@ -588,14 +509,12 @@ public class DialogDayEndSummaryActivity extends BaseActivity
 
 
         @Override
-        protected void onPostExecute(Void result)
-        {
+        protected void onPostExecute(Void result) {
             super.onPostExecute(result);
 
             Log.i("SvcMgr", "Service Execution cycle completed");
 
-            if(pDialogGetStores.isShowing())
-            {
+            if (pDialogGetStores.isShowing()) {
                 pDialogGetStores.dismiss();
             }
             dbengine.open();
@@ -611,24 +530,19 @@ public class DialogDayEndSummaryActivity extends BaseActivity
         }
     }
 
-    public void setUpVariable()
-    {
-        img_side_popUp=(ImageView) findViewById(R.id.img_side_popUp);
-        img_side_popUp.setOnClickListener(new OnClickListener()
-        {
+    public void setUpVariable() {
+        img_side_popUp = (ImageView) findViewById(R.id.img_side_popUp);
+        img_side_popUp.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 open_pop_up();
             }
         });
 
         Button btn_Target_Achieved_Report = (Button) findViewById(R.id.btn_Target_Achieved_Report);
-        btn_Target_Achieved_Report.setOnClickListener(new OnClickListener()
-        {
+        btn_Target_Achieved_Report.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 // TODO Auto-generated method stub
                 Intent intent = new Intent(DialogDayEndSummaryActivity.this, TargetVsAchievedActivityForAll.class);
                 intent.putExtra("imei", imei);
@@ -643,7 +557,7 @@ public class DialogDayEndSummaryActivity extends BaseActivity
         });
 
 
-        ImageView but_back=(ImageView)findViewById(R.id.backbutton);
+        ImageView but_back = (ImageView) findViewById(R.id.backbutton);
         but_back.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -662,11 +576,9 @@ public class DialogDayEndSummaryActivity extends BaseActivity
         });
 
         Button btn_sku_wise = (Button) findViewById(R.id.btn_sku_wise);
-        btn_sku_wise.setOnClickListener(new OnClickListener()
-        {
+        btn_sku_wise.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 // TODO Auto-generated method stub
                 Intent intent = new Intent(DialogDayEndSummaryActivity.this, SKUWiseSummaryReport_ByTabForAll.class);
                 intent.putExtra("imei", imei);
@@ -680,11 +592,9 @@ public class DialogDayEndSummaryActivity extends BaseActivity
         });
 
         Button btn_store_wise = (Button) findViewById(R.id.btn_store_wise);
-        btn_store_wise.setOnClickListener(new OnClickListener()
-        {
+        btn_store_wise.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 // TODO Auto-generated method stub
                 Intent intent = new Intent(DialogDayEndSummaryActivity.this, StoreWiseSummaryReport_ByTabForAll.class);
                 intent.putExtra("imei", imei);
@@ -698,11 +608,9 @@ public class DialogDayEndSummaryActivity extends BaseActivity
         });
 
         Button btn_str_sku_wise = (Button) findViewById(R.id.btn_str_sku_wise);
-        btn_str_sku_wise.setOnClickListener(new OnClickListener()
-        {
+        btn_str_sku_wise.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 // TODO Auto-generated method stub
                 Intent intent = new Intent(DialogDayEndSummaryActivity.this, StoreAndSKUWiseSummaryReport_ByTabForAll.class);
                 intent.putExtra("imei", imei);
@@ -716,11 +624,9 @@ public class DialogDayEndSummaryActivity extends BaseActivity
         });
 
         Button btn_mtd_sku_wise = (Button) findViewById(R.id.btn_mtd_sku_wise);
-        btn_mtd_sku_wise.setOnClickListener(new OnClickListener()
-        {
+        btn_mtd_sku_wise.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 // TODO Auto-generated method stub
                 Intent intent = new Intent(DialogDayEndSummaryActivity.this, SKUWiseSummaryReportMTDForAll.class);
                 intent.putExtra("imei", imei);
@@ -734,11 +640,9 @@ public class DialogDayEndSummaryActivity extends BaseActivity
         });
 
         Button btn_mtd_store_wise = (Button) findViewById(R.id.btn_mtd_store_wise);
-        btn_mtd_store_wise.setOnClickListener(new OnClickListener()
-        {
+        btn_mtd_store_wise.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 // TODO Auto-generated method stub
                 Intent intent = new Intent(DialogDayEndSummaryActivity.this, StoreWiseSummaryReportMTDForAll.class);
                 intent.putExtra("imei", imei);
@@ -752,11 +656,9 @@ public class DialogDayEndSummaryActivity extends BaseActivity
         });
 
         Button btn_mtd_str_sku_wise = (Button) findViewById(R.id.btn_mtd_str_sku_wise);
-        btn_mtd_str_sku_wise.setOnClickListener(new OnClickListener()
-        {
+        btn_mtd_str_sku_wise.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 // TODO Auto-generated method stub
                 Intent intent = new Intent(DialogDayEndSummaryActivity.this, StoreAndSKUWiseSummaryReportMTDForAll.class);
                 intent.putExtra("imei", imei);
@@ -771,8 +673,7 @@ public class DialogDayEndSummaryActivity extends BaseActivity
 
     }
 
-    protected void open_pop_up()
-    {
+    protected void open_pop_up() {
         dialog = new Dialog(DialogDayEndSummaryActivity.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.selection_header_custom);
@@ -780,36 +681,33 @@ public class DialogDayEndSummaryActivity extends BaseActivity
         dialog.getWindow().getAttributes().windowAnimations = R.style.side_dialog_animation;
         WindowManager.LayoutParams parms = dialog.getWindow().getAttributes();
         parms.gravity = Gravity.TOP | Gravity.LEFT;
-        parms.height=parms.MATCH_PARENT;
+        parms.height = parms.MATCH_PARENT;
         parms.dimAmount = (float) 0.5;
 
 
-        final   Button btnOutstandingtask = (Button) dialog.findViewById(R.id.btnOutstandingtask);
+        final Button btnOutstandingtask = (Button) dialog.findViewById(R.id.btnOutstandingtask);
         btnOutstandingtask.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
-                Intent intent=new Intent(DialogDayEndSummaryActivity.this,ViewOutStandingTask.class);
+            public void onClick(View view) {
+                Intent intent = new Intent(DialogDayEndSummaryActivity.this, ViewOutStandingTask.class);
                 startActivity(intent);
                 finish();
             }
         });
-        final   Button btnVisitPlan = (Button) dialog.findViewById(R.id.btnVisitPlan);
+        final Button btnVisitPlan = (Button) dialog.findViewById(R.id.btnVisitPlan);
         btnVisitPlan.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
-                Intent intent=new Intent(DialogDayEndSummaryActivity.this,ViewVisitPlan.class);
+            public void onClick(View view) {
+                Intent intent = new Intent(DialogDayEndSummaryActivity.this, ViewVisitPlan.class);
                 startActivity(intent);
                 finish();
             }
         });
-        final   Button btnAppointment = (Button) dialog.findViewById(R.id.btnAppointment);
+        final Button btnAppointment = (Button) dialog.findViewById(R.id.btnAppointment);
         btnAppointment.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
-                Intent intent=new Intent(DialogDayEndSummaryActivity.this,ViewAppointment.class);
+            public void onClick(View view) {
+                Intent intent = new Intent(DialogDayEndSummaryActivity.this, ViewAppointment.class);
                 startActivity(intent);
                 finish();
             }
@@ -818,8 +716,7 @@ public class DialogDayEndSummaryActivity extends BaseActivity
         final Button btnDSRTrack = (Button) dialog.findViewById(R.id.btnDSRTrack);
         btnDSRTrack.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 /*Intent intent=new Intent(DetailReportSummaryActivityForAll.this,WebViewDSRTrackerActivity.class);
                 startActivity(intent);*/
                 openDSRTrackerAlert();
@@ -828,76 +725,67 @@ public class DialogDayEndSummaryActivity extends BaseActivity
 
 
         final Button btnExecution = (Button) dialog.findViewById(R.id.btnExecution);
-        btnExecution.setOnClickListener(new OnClickListener()
-        {
+        btnExecution.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 GetInvoiceForDay task = new GetInvoiceForDay(DialogDayEndSummaryActivity.this);
                 task.execute();
             }
         });
 
-        final   Button butHome = (Button) dialog.findViewById(R.id.butHome);
+        final Button butHome = (Button) dialog.findViewById(R.id.butHome);
         butHome.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
-                Intent intent=new Intent(DialogDayEndSummaryActivity.this,AllButtonActivity.class);
+            public void onClick(View view) {
+                Intent intent = new Intent(DialogDayEndSummaryActivity.this, AllButtonActivity.class);
                 startActivity(intent);
                 finish();
             }
         });
 
-        final   Button butn_Change_dsr = (Button) dialog.findViewById(R.id.butn_Change_dsr);
+        final Button butn_Change_dsr = (Button) dialog.findViewById(R.id.butn_Change_dsr);
         butn_Change_dsr.setVisibility(View.GONE);
 
-        final   Button btnDistributorMap = (Button) dialog.findViewById(R.id.btnDistributorMap);
+        final Button btnDistributorMap = (Button) dialog.findViewById(R.id.btnDistributorMap);
         btnDistributorMap.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
-                Intent intent=new Intent(DialogDayEndSummaryActivity.this,DistributorMapActivity.class);
+            public void onClick(View view) {
+                Intent intent = new Intent(DialogDayEndSummaryActivity.this, DistributorMapActivity.class);
                 startActivity(intent);
                 finish();
             }
         });
 
-        final   Button btnDistributorStock = (Button) dialog.findViewById(R.id.btnDistributorStock);
+        final Button btnDistributorStock = (Button) dialog.findViewById(R.id.btnDistributorStock);
         btnDistributorStock.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
-                int CstmrNodeId=0,CstomrNodeType= 0;
+            public void onClick(View view) {
+                int CstmrNodeId = 0, CstomrNodeType = 0;
 
                 //changes
-                if(imei==null)
-                {
-                    imei=CommonInfo.imei;
+                if (imei == null) {
+                    imei = CommonInfo.imei;
                 }
-                if(fDate==null)
-                {
+                if (fDate == null) {
                     Date date1 = new Date();
                     SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
                     fDate = sdf.format(date1).toString().trim();
                 }
-                Intent i=new Intent(DialogDayEndSummaryActivity.this,DistributorEntryActivity.class);
+                Intent i = new Intent(DialogDayEndSummaryActivity.this, DistributorEntryActivity.class);
                 i.putExtra("imei", imei);
                 i.putExtra("CstmrNodeId", CstmrNodeId);
                 i.putExtra("CstomrNodeType", CstomrNodeType);
                 i.putExtra("fDate", fDate);
                 startActivity(i);
-               // finish();
+                // finish();
             }
         });
 
 
-        final   Button butMarketVisit = (Button) dialog.findViewById(R.id.butMarketVisit);
-        butMarketVisit.setOnClickListener(new OnClickListener()
-        {
+        final Button butMarketVisit = (Button) dialog.findViewById(R.id.butMarketVisit);
+        butMarketVisit.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                /* Intent intent = new Intent(DetailReportSummaryActivityForAll.this, AllButtonActivity.class);
                 startActivity(intent);
                 finish();*/
@@ -905,8 +793,7 @@ public class DialogDayEndSummaryActivity extends BaseActivity
                 Date date1 = new Date();
                 SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
                 fDate = sdf.format(date1).toString().trim();
-                if (checkDataNotSync == 1)
-                {
+                if (checkDataNotSync == 1) {
                     dbengine.open();
                     String rID = dbengine.GetActiveRouteID();
                     dbengine.close();
@@ -929,14 +816,12 @@ public class DialogDayEndSummaryActivity extends BaseActivity
                     startActivity(storeIntent);
                     finish();
 
-                }
-                else
-                {
+                } else {
                    /* Intent i=new Intent(DetailReportSummaryActivityForAll.this,AllButtonActivity.class);
                     startActivity(i);
                     finish();*/
 
-                   // openMarketVisitAlert();
+                    // openMarketVisitAlert();
 
                     new GetStoresForDay(DialogDayEndSummaryActivity.this).execute();
                 }
@@ -944,19 +829,15 @@ public class DialogDayEndSummaryActivity extends BaseActivity
         });
 
 
-
-
-        final   Button butn_store_validation = (Button) dialog.findViewById(R.id.butn_store_validation);
-        butn_store_validation.setOnClickListener(new OnClickListener()
-        {
+        final Button butn_store_validation = (Button) dialog.findViewById(R.id.butn_store_validation);
+        butn_store_validation.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                /* Intent intent = new Intent(DetailReportSummaryActivityForAll.this, StorelistActivity.class);
                 startActivity(intent);
                 finish();*/
 
-                GetStoreAllData getStoreAllDataAsync= new GetStoreAllData(DialogDayEndSummaryActivity.this);
+                GetStoreAllData getStoreAllDataAsync = new GetStoreAllData(DialogDayEndSummaryActivity.this);
                 getStoreAllDataAsync.execute();
 
             }
@@ -1008,16 +889,15 @@ public class DialogDayEndSummaryActivity extends BaseActivity
                 // TODO Auto-generated method stub
 
 
-
                 btnVersion.setBackgroundColor(Color.GREEN);
                 dialog.dismiss();
             }
         });
 
         dbengine.open();
-        String ApplicationVersion=dbengine.AppVersionID;
+        String ApplicationVersion = dbengine.AppVersionID;
         dbengine.close();
-        btnVersion.setText("Version No-V"+ApplicationVersion);
+        btnVersion.setText("Version No-V" + ApplicationVersion);
 
         // Version No-V12
 
@@ -1025,42 +905,27 @@ public class DialogDayEndSummaryActivity extends BaseActivity
         but_SalesSummray.setVisibility(View.GONE);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
     }
 
-    void openMarketVisitAlert()
-    {
-        final android.support.v7.app.AlertDialog.Builder alert=new android.support.v7.app.AlertDialog.Builder(DialogDayEndSummaryActivity.this);
-        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    void openMarketVisitAlert() {
+        final android.support.v7.app.AlertDialog.Builder alert = new android.support.v7.app.AlertDialog.Builder(DialogDayEndSummaryActivity.this);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.market_visit_alert, null);
         alert.setView(view);
 
         alert.setCancelable(false);
 
-        final RadioButton rb_myVisit= (RadioButton) view.findViewById(R.id.rb_myVisit);
-        final RadioButton rb_dsrVisit= (RadioButton) view.findViewById(R.id.rb_dsrVisit);
-        final RadioButton rb_jointWorking= (RadioButton) view.findViewById(R.id.rb_jointWorking);
-        final Spinner spinner_dsrVisit= (Spinner) view.findViewById(R.id.spinner_dsrVisit);
-        final Spinner spinner_jointWorking= (Spinner) view.findViewById(R.id.spinner_jointWorking);
-        Button btn_proceed= (Button) view.findViewById(R.id.btn_proceed);
-        Button btn_cancel= (Button) view.findViewById(R.id.btn_cancel);
+        final RadioButton rb_myVisit = (RadioButton) view.findViewById(R.id.rb_myVisit);
+        final RadioButton rb_dsrVisit = (RadioButton) view.findViewById(R.id.rb_dsrVisit);
+        final RadioButton rb_jointWorking = (RadioButton) view.findViewById(R.id.rb_jointWorking);
+        final Spinner spinner_dsrVisit = (Spinner) view.findViewById(R.id.spinner_dsrVisit);
+        final Spinner spinner_jointWorking = (Spinner) view.findViewById(R.id.spinner_jointWorking);
+        Button btn_proceed = (Button) view.findViewById(R.id.btn_proceed);
+        Button btn_cancel = (Button) view.findViewById(R.id.btn_cancel);
 
-        final android.support.v7.app.AlertDialog dialog=alert.create();
+        final android.support.v7.app.AlertDialog dialog = alert.create();
         dialog.show();
 
         btn_cancel.setOnClickListener(new OnClickListener() {
@@ -1072,60 +937,50 @@ public class DialogDayEndSummaryActivity extends BaseActivity
 
         btn_proceed.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 dialog.dismiss();
-                if(rb_myVisit.isChecked())
-                {
+                if (rb_myVisit.isChecked()) {
                     /*String SONodeIdAndNodeType= dbengine.fnGetPersonNodeIDAndPersonNodeTypeForSO();
 
                     CommonInfo.PersonNodeID=Integer.parseInt(SONodeIdAndNodeType.split(Pattern.quote("^"))[0]);
                     CommonInfo.PersonNodeType=Integer.parseInt(SONodeIdAndNodeType.split(Pattern.quote("^"))[1]);*/
 
 
-                    String SONodeIdAndNodeType= dbengine.fnGetPersonNodeIDAndPersonNodeTypeForSO();
+                    String SONodeIdAndNodeType = dbengine.fnGetPersonNodeIDAndPersonNodeTypeForSO();
 
-                    int tempSalesmanNodeId=Integer.parseInt(SONodeIdAndNodeType.split(Pattern.quote("^"))[0]);
-                    int tempSalesmanNodeType=Integer.parseInt(SONodeIdAndNodeType.split(Pattern.quote("^"))[1]);
-                    shardPrefForSalesman(tempSalesmanNodeId,tempSalesmanNodeType);
+                    int tempSalesmanNodeId = Integer.parseInt(SONodeIdAndNodeType.split(Pattern.quote("^"))[0]);
+                    int tempSalesmanNodeType = Integer.parseInt(SONodeIdAndNodeType.split(Pattern.quote("^"))[1]);
+                    shardPrefForSalesman(tempSalesmanNodeId, tempSalesmanNodeType);
                     flgDataScopeSharedPref(1);
 
-                    shardPrefForCoverageArea(0,0);
+                    shardPrefForCoverageArea(0, 0);
                     flgDSRSOSharedPref(1);
-                    Intent i=new Intent(DialogDayEndSummaryActivity.this,LauncherActivity.class);
+                    Intent i = new Intent(DialogDayEndSummaryActivity.this, LauncherActivity.class);
                     startActivity(i);
                     finish();
-                }
-                else if(rb_dsrVisit.isChecked())
-                {
-                    if(!SelectedDSRValue.equals("") && !SelectedDSRValue.equals("Select DSM") && !SelectedDSRValue.equals("No DSM") )
-                    {
+                } else if (rb_dsrVisit.isChecked()) {
+                    if (!SelectedDSRValue.equals("") && !SelectedDSRValue.equals("Select DSM") && !SelectedDSRValue.equals("No DSM")) {
 
-                        String DSRNodeIdAndNodeType= dbengine.fnGetDSRNodeIdAndNodeType(SelectedDSRValue);
-                        int tempCoverageAreaNodeID=Integer.parseInt(DSRNodeIdAndNodeType.split(Pattern.quote("^"))[0]);
-                        int tempCoverageAreaNodeType=Integer.parseInt(DSRNodeIdAndNodeType.split(Pattern.quote("^"))[1]);
-                        shardPrefForCoverageArea(tempCoverageAreaNodeID,tempCoverageAreaNodeType);
+                        String DSRNodeIdAndNodeType = dbengine.fnGetDSRNodeIdAndNodeType(SelectedDSRValue);
+                        int tempCoverageAreaNodeID = Integer.parseInt(DSRNodeIdAndNodeType.split(Pattern.quote("^"))[0]);
+                        int tempCoverageAreaNodeType = Integer.parseInt(DSRNodeIdAndNodeType.split(Pattern.quote("^"))[1]);
+                        shardPrefForCoverageArea(tempCoverageAreaNodeID, tempCoverageAreaNodeType);
                         flgDSRSOSharedPref(2);
 
 
-                        String DSRPersonNodeIdAndNodeType= dbengine.fnGetDSRPersonNodeIdAndNodeType(SelectedDSRValue);
-                        int tempSalesmanNodeId=Integer.parseInt(DSRPersonNodeIdAndNodeType.split(Pattern.quote("^"))[0]);
-                        int tempSalesmanNodeType=Integer.parseInt(DSRPersonNodeIdAndNodeType.split(Pattern.quote("^"))[1]);
-                        shardPrefForSalesman(tempSalesmanNodeId,tempSalesmanNodeType);
+                        String DSRPersonNodeIdAndNodeType = dbengine.fnGetDSRPersonNodeIdAndNodeType(SelectedDSRValue);
+                        int tempSalesmanNodeId = Integer.parseInt(DSRPersonNodeIdAndNodeType.split(Pattern.quote("^"))[0]);
+                        int tempSalesmanNodeType = Integer.parseInt(DSRPersonNodeIdAndNodeType.split(Pattern.quote("^"))[1]);
+                        shardPrefForSalesman(tempSalesmanNodeId, tempSalesmanNodeType);
                         flgDataScopeSharedPref(2);
                         Intent i = new Intent(DialogDayEndSummaryActivity.this, LauncherActivity.class);
                         startActivity(i);
                         finish();
-                    }
-                    else
-                    {
+                    } else {
                         showAlertForEveryOne("Please select DSM to Proceeds.");
                     }
-                }
-                else if(rb_jointWorking.isChecked())
-                {
-                    if(!SelectedDSRValue.equals("") && !SelectedDSRValue.equals("Select DSM") && !SelectedDSRValue.equals("No DSM") )
-                    {
+                } else if (rb_jointWorking.isChecked()) {
+                    if (!SelectedDSRValue.equals("") && !SelectedDSRValue.equals("Select DSM") && !SelectedDSRValue.equals("No DSM")) {
                         // Find GPS
                        /* String DSRNodeIdAndNodeType= dbengine.fnGetDSRNodeIdAndNodeType(SelectedDSRValue);
                         CommonInfo.CoverageAreaNodeID=Integer.parseInt(DSRNodeIdAndNodeType.split(Pattern.quote("^"))[0]);
@@ -1140,14 +995,10 @@ public class DialogDayEndSummaryActivity extends BaseActivity
                         Intent i = new Intent(AllButtonActivity.this, LauncherActivity.class);
                         startActivity(i);
                         finish();*/
-                    }
-                    else
-                    {
+                    } else {
                         showAlertForEveryOne("Please select DSM to Proceeds.");
                     }
-                }
-                else
-                {
+                } else {
                     showAlertForEveryOne("Please select atleast one option to Proceeds.");
                 }
             }
@@ -1155,10 +1006,8 @@ public class DialogDayEndSummaryActivity extends BaseActivity
 
         rb_myVisit.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if(rb_myVisit.isChecked())
-                {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (rb_myVisit.isChecked()) {
                     rb_dsrVisit.setChecked(false);
                     rb_jointWorking.setChecked(false);
                     spinner_dsrVisit.setVisibility(View.GONE);
@@ -1168,31 +1017,26 @@ public class DialogDayEndSummaryActivity extends BaseActivity
 
         rb_dsrVisit.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if(rb_dsrVisit.isChecked())
-                {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (rb_dsrVisit.isChecked()) {
                     rb_myVisit.setChecked(false);
                     rb_jointWorking.setChecked(false);
-                    ArrayAdapter adapterCategory=new ArrayAdapter(DialogDayEndSummaryActivity.this, android.R.layout.simple_spinner_item,drsNames);
+                    ArrayAdapter adapterCategory = new ArrayAdapter(DialogDayEndSummaryActivity.this, android.R.layout.simple_spinner_item, drsNames);
                     adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinner_dsrVisit.setAdapter(adapterCategory);
                     spinner_dsrVisit.setVisibility(View.VISIBLE);
 
-                    spinner_dsrVisit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-                    {
+                    spinner_dsrVisit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
                         @Override
-                        public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3)
-                        {
+                        public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                             // TODO Auto-generated method stub
                             SelectedDSRValue = spinner_dsrVisit.getSelectedItem().toString();
 
                         }
 
                         @Override
-                        public void onNothingSelected(AdapterView<?> arg0)
-                        {
+                        public void onNothingSelected(AdapterView<?> arg0) {
                             // TODO Auto-generated method stub
 
                         }
@@ -1204,31 +1048,26 @@ public class DialogDayEndSummaryActivity extends BaseActivity
 
         rb_jointWorking.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if(rb_jointWorking.isChecked())
-                {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (rb_jointWorking.isChecked()) {
                     rb_myVisit.setChecked(false);
                     rb_dsrVisit.setChecked(false);
-                    ArrayAdapter adapterCategory=new ArrayAdapter(DialogDayEndSummaryActivity.this, android.R.layout.simple_spinner_item,drsNames);
+                    ArrayAdapter adapterCategory = new ArrayAdapter(DialogDayEndSummaryActivity.this, android.R.layout.simple_spinner_item, drsNames);
                     adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinner_jointWorking.setAdapter(adapterCategory);
                     spinner_jointWorking.setVisibility(View.VISIBLE);
 
-                    spinner_jointWorking.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-                    {
+                    spinner_jointWorking.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
                         @Override
-                        public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3)
-                        {
+                        public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                             // TODO Auto-generated method stub
                             SelectedDSRValue = spinner_jointWorking.getSelectedItem().toString();
 
                         }
 
                         @Override
-                        public void onNothingSelected(AdapterView<?> arg0)
-                        {
+                        public void onNothingSelected(AdapterView<?> arg0) {
                             // TODO Auto-generated method stub
 
                         }
@@ -1241,18 +1080,15 @@ public class DialogDayEndSummaryActivity extends BaseActivity
         dialog.show();
     }
 
-    public void showAlertForEveryOne(String msg)
-    {
+    public void showAlertForEveryOne(String msg) {
         //AlertDialog.Builder alertDialogNoConn = new AlertDialog.Builder(new ContextThemeWrapper(LauncherActivity.this, R.style.Dialog));
         android.support.v7.app.AlertDialog.Builder alertDialogNoConn = new android.support.v7.app.AlertDialog.Builder(DialogDayEndSummaryActivity.this);
 
         alertDialogNoConn.setTitle(R.string.AlertDialogHeaderMsg);
         alertDialogNoConn.setMessage(msg);
         alertDialogNoConn.setCancelable(false);
-        alertDialogNoConn.setNeutralButton(R.string.AlertDialogOkButton,new DialogInterface.OnClickListener()
-        {
-            public void onClick(DialogInterface dialog, int which)
-            {
+        alertDialogNoConn.setNeutralButton(R.string.AlertDialogOkButton, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 //finish();
             }
@@ -1262,23 +1098,20 @@ public class DialogDayEndSummaryActivity extends BaseActivity
         alert.show();
     }
 
-    private class GetInvoiceForDay extends AsyncTask<Void, Void, Void>
-    {
+    private class GetInvoiceForDay extends AsyncTask<Void, Void, Void> {
         ServiceWorker newservice = new ServiceWorker();
-        String rID="0";
-        int chkFlgForErrorToCloseApp=0;
+        String rID = "0";
+        int chkFlgForErrorToCloseApp = 0;
 
         ProgressDialog pDialogGetInvoiceForDay;
 
-        public GetInvoiceForDay(DialogDayEndSummaryActivity activity)
-        {
+        public GetInvoiceForDay(DialogDayEndSummaryActivity activity) {
             pDialogGetInvoiceForDay = new ProgressDialog(activity);
         }
 
 
         @Override
-        protected void onPreExecute()
-        {
+        protected void onPreExecute() {
             super.onPreExecute();
 
 
@@ -1293,71 +1126,55 @@ public class DialogDayEndSummaryActivity extends BaseActivity
         }
 
         @Override
-        protected Void doInBackground(Void... params)
-        {
+        protected Void doInBackground(Void... params) {
 
             try {
 
-                HashMap<String,String> hmapInvoiceOrderIDandStatus=new HashMap<String, String>();
-                hmapInvoiceOrderIDandStatus=dbengine.fetchHmapInvoiceOrderIDandStatus();
+                HashMap<String, String> hmapInvoiceOrderIDandStatus = new HashMap<String, String>();
+                hmapInvoiceOrderIDandStatus = dbengine.fetchHmapInvoiceOrderIDandStatus();
 
-                for(int mm = 1; mm < 5  ; mm++)
-                {
-                    if(mm==1)
-                    {
-                        newservice = newservice.callInvoiceButtonStoreMstr(getApplicationContext(), fDate, imei, rID,hmapInvoiceOrderIDandStatus);
+                for (int mm = 1; mm < 5; mm++) {
+                    if (mm == 1) {
+                        newservice = newservice.callInvoiceButtonStoreMstr(getApplicationContext(), fDate, imei, rID, hmapInvoiceOrderIDandStatus);
 
-                        if(!newservice.director.toString().trim().equals("1"))
-                        {
-                            if(chkFlgForErrorToCloseApp==0)
-                            {
-                                chkFlgForErrorToCloseApp=1;
+                        if (!newservice.director.toString().trim().equals("1")) {
+                            if (chkFlgForErrorToCloseApp == 0) {
+                                chkFlgForErrorToCloseApp = 1;
                             }
 
                         }
 
                     }
-                    if(mm==2)
-                    {
+                    if (mm == 2) {
                         newservice = newservice.callInvoiceButtonProductMstr(getApplicationContext(), fDate, imei, rID);
 
-                        if(!newservice.director.toString().trim().equals("1"))
-                        {
-                            if(chkFlgForErrorToCloseApp==0)
-                            {
-                                chkFlgForErrorToCloseApp=1;
+                        if (!newservice.director.toString().trim().equals("1")) {
+                            if (chkFlgForErrorToCloseApp == 0) {
+                                chkFlgForErrorToCloseApp = 1;
                             }
 
                         }
 
                     }
-                    if(mm==3)
-                    {
-                        newservice = newservice.callInvoiceButtonStoreProductwiseOrder(getApplicationContext(), fDate, imei, rID,hmapInvoiceOrderIDandStatus);
+                    if (mm == 3) {
+                        newservice = newservice.callInvoiceButtonStoreProductwiseOrder(getApplicationContext(), fDate, imei, rID, hmapInvoiceOrderIDandStatus);
                     }
-                    if(mm==4)
-                    {
+                    if (mm == 4) {
                         dbengine.open();
-                        int check1=dbengine.counttblCatagoryMstr();
+                        int check1 = dbengine.counttblCatagoryMstr();
                         dbengine.close();
-                        if(check1==0)
-                        {
+                        if (check1 == 0) {
                             newservice = newservice.getCategory(getApplicationContext(), imei);
                         }
                     }
 
 
-
                 }
 
 
-            } catch (Exception e)
-            {
+            } catch (Exception e) {
                 Log.i("SvcMgr", "Service Execution Failed!", e);
-            }
-
-            finally
-            {
+            } finally {
                 Log.i("SvcMgr", "Service Execution Completed...");
             }
 
@@ -1365,24 +1182,21 @@ public class DialogDayEndSummaryActivity extends BaseActivity
         }
 
         @Override
-        protected void onCancelled()
-        {
+        protected void onCancelled() {
             Log.i("SvcMgr", "Service Execution Cancelled");
         }
 
         @Override
-        protected void onPostExecute(Void result)
-        {
+        protected void onPostExecute(Void result) {
             super.onPostExecute(result);
 
 
-            if(pDialogGetInvoiceForDay.isShowing())
-            {
+            if (pDialogGetInvoiceForDay.isShowing()) {
                 pDialogGetInvoiceForDay.dismiss();
             }
 
             Date currDate = new Date();
-            SimpleDateFormat currDateFormat = new SimpleDateFormat("dd-MMM-yyyy",Locale.ENGLISH);
+            SimpleDateFormat currDateFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
 
             String currSysDate = currDateFormat.format(currDate).toString();
 
@@ -1392,26 +1206,21 @@ public class DialogDayEndSummaryActivity extends BaseActivity
             storeIntent.putExtra("pickerDate", fDate);
 
 
-            if(chkFlgForErrorToCloseApp==0)
-            {
-                chkFlgForErrorToCloseApp=0;
+            if (chkFlgForErrorToCloseApp == 0) {
+                chkFlgForErrorToCloseApp = 0;
                 startActivity(storeIntent);
                 finish();
-            }
-            else
-            {
+            } else {
                 android.support.v7.app.AlertDialog.Builder alertDialogNoConn = new android.support.v7.app.AlertDialog.Builder(DialogDayEndSummaryActivity.this);
                 alertDialogNoConn.setTitle("Information");
                 alertDialogNoConn.setMessage("There is no Invoice Pending");
                 alertDialogNoConn.setCancelable(false);
                 alertDialogNoConn.setNeutralButton(R.string.AlertDialogOkButton,
-                        new DialogInterface.OnClickListener()
-                        {
-                            public void onClick(DialogInterface dialog, int which)
-                            {
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                                 // but_Invoice.setEnabled(true);
-                                chkFlgForErrorToCloseApp=0;
+                                chkFlgForErrorToCloseApp = 0;
                             }
                         });
                 alertDialogNoConn.setIcon(R.drawable.info_ico);
@@ -1422,9 +1231,8 @@ public class DialogDayEndSummaryActivity extends BaseActivity
             }
         }
     }
-    public void shardPrefForCoverageArea(int coverageAreaNodeID,int coverageAreaNodeType) {
 
-
+    public void shardPrefForCoverageArea(int coverageAreaNodeID, int coverageAreaNodeType) {
 
 
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -1438,9 +1246,7 @@ public class DialogDayEndSummaryActivity extends BaseActivity
     }
 
 
-    public void shardPrefForSalesman(int salesmanNodeId,int salesmanNodeType) {
-
-
+    public void shardPrefForSalesman(int salesmanNodeId, int salesmanNodeType) {
 
 
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -1453,8 +1259,7 @@ public class DialogDayEndSummaryActivity extends BaseActivity
 
     }
 
-    public void flgDataScopeSharedPref(int _flgDataScope)
-    {
+    public void flgDataScopeSharedPref(int _flgDataScope) {
         SharedPreferences.Editor editor = sharedPref.edit();
 
 
@@ -1463,8 +1268,8 @@ public class DialogDayEndSummaryActivity extends BaseActivity
 
 
     }
-    public void flgDSRSOSharedPref(int _flgDSRSO)
-    {
+
+    public void flgDSRSOSharedPref(int _flgDSRSO) {
         SharedPreferences.Editor editor = sharedPref.edit();
 
 
@@ -1474,23 +1279,22 @@ public class DialogDayEndSummaryActivity extends BaseActivity
 
     }
 
-    void openDSRTrackerAlert()
-    {
-        final android.support.v7.app.AlertDialog.Builder alert=new android.support.v7.app.AlertDialog.Builder(DialogDayEndSummaryActivity.this);
-        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    void openDSRTrackerAlert() {
+        final android.support.v7.app.AlertDialog.Builder alert = new android.support.v7.app.AlertDialog.Builder(DialogDayEndSummaryActivity.this);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.dsr_tracker_alert, null);
         alert.setView(view);
 
         alert.setCancelable(false);
 
-        final RadioButton rb_dataReport= (RadioButton) view.findViewById(R.id.rb_dataReport);
-        final RadioButton rb_onMap= (RadioButton) view.findViewById(R.id.rb_onMap);
+        final RadioButton rb_dataReport = (RadioButton) view.findViewById(R.id.rb_dataReport);
+        final RadioButton rb_onMap = (RadioButton) view.findViewById(R.id.rb_onMap);
 
 
-        Button btn_proceed= (Button) view.findViewById(R.id.btn_proceed);
-        Button btn_cancel= (Button) view.findViewById(R.id.btn_cancel);
+        Button btn_proceed = (Button) view.findViewById(R.id.btn_proceed);
+        Button btn_cancel = (Button) view.findViewById(R.id.btn_cancel);
 
-        final android.support.v7.app.AlertDialog dialog=alert.create();
+        final android.support.v7.app.AlertDialog dialog = alert.create();
         dialog.show();
 
         btn_cancel.setOnClickListener(new OnClickListener() {
@@ -1502,24 +1306,17 @@ public class DialogDayEndSummaryActivity extends BaseActivity
 
         btn_proceed.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 dialog.dismiss();
-                if(rb_dataReport.isChecked())
-                {
-                    Intent i=new Intent(DialogDayEndSummaryActivity.this,WebViewDSRDataReportActivity.class);
+                if (rb_dataReport.isChecked()) {
+                    Intent i = new Intent(DialogDayEndSummaryActivity.this, WebViewDSRDataReportActivity.class);
                     startActivity(i);
 
-                }
-                else if(rb_onMap.isChecked())
-                {
+                } else if (rb_onMap.isChecked()) {
                     Intent i = new Intent(DialogDayEndSummaryActivity.this, WebViewDSRTrackerActivity.class);
                     startActivity(i);
 
-                }
-
-                else
-                {
+                } else {
                     showAlertForEveryOne("Please select atleast one option to Proceeds.");
                 }
             }
@@ -1527,10 +1324,8 @@ public class DialogDayEndSummaryActivity extends BaseActivity
 
         rb_dataReport.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if(rb_dataReport.isChecked())
-                {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (rb_dataReport.isChecked()) {
                     rb_onMap.setChecked(false);
 
                 }
@@ -1539,10 +1334,8 @@ public class DialogDayEndSummaryActivity extends BaseActivity
 
         rb_onMap.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if(rb_onMap.isChecked())
-                {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (rb_onMap.isChecked()) {
                     rb_dataReport.setChecked(false);
 
                 }
@@ -1550,30 +1343,26 @@ public class DialogDayEndSummaryActivity extends BaseActivity
         });
 
 
-
         dialog.show();
     }
 
 
-    private class GetStoresForDay extends AsyncTask<Void, Void, Void>
-    {
+    private class GetStoresForDay extends AsyncTask<Void, Void, Void> {
 
 
-        public GetStoresForDay(DialogDayEndSummaryActivity activity)
-        {
+        public GetStoresForDay(DialogDayEndSummaryActivity activity) {
             pDialogGetStores = new ProgressDialog(activity);
         }
+
         @Override
-        protected void onPreExecute()
-        {
+        protected void onPreExecute() {
             super.onPreExecute();
 
 
             dbengine.open();
             rID = dbengine.GetActiveRouteID();
-            String getPDADate=dbengine.fnGetPdaDate();
-            String getServerDate=dbengine.fnGetServerDate();
-
+            String getPDADate = dbengine.fnGetPdaDate();
+            String getServerDate = dbengine.fnGetServerDate();
 
 
             dbengine.close();
@@ -1581,10 +1370,9 @@ public class DialogDayEndSummaryActivity extends BaseActivity
             //System.out.println("Checking  Oncreate Date PDA GetStoresForDay:"+getPDADate);
             //System.out.println("Checking  Oncreate Date Server GetStoresForDay :"+getServerDate);
 
-            if(!getPDADate.equals(""))  // || !getPDADate.equals("NA") || !getPDADate.equals("Null") || !getPDADate.equals("NULL")
+            if (!getPDADate.equals(""))  // || !getPDADate.equals("NA") || !getPDADate.equals("Null") || !getPDADate.equals("NULL")
             {
-                if(!getServerDate.equals(getPDADate))
-                {
+                if (!getServerDate.equals(getPDADate)) {
 
                     showAlertBox("Your Phone  Date is not Up to date.Please Correct the Date.");
                    /* dbengine.open();
@@ -1594,10 +1382,6 @@ public class DialogDayEndSummaryActivity extends BaseActivity
                     return;
                 }
             }
-
-
-
-
 
 
             dbengine.open();
@@ -1615,19 +1399,17 @@ public class DialogDayEndSummaryActivity extends BaseActivity
     		}*/
 
 
-
-
             long syncTIMESTAMP = System.currentTimeMillis();
             Date dateobj = new Date(syncTIMESTAMP);
-            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss",Locale.ENGLISH);
+            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss", Locale.ENGLISH);
             String startTS = df.format(dateobj);
 
-            int DayEndFlg=0;
-            int ChangeRouteFlg=0;
+            int DayEndFlg = 0;
+            int ChangeRouteFlg = 0;
 
-            int DatabaseVersion=dbengine.DATABASE_VERSION;
-            String AppVersionID=dbengine.AppVersionID;
-            dbengine.insertTblDayStartEndDetails(imei,startTS,rID,DayEndFlg,ChangeRouteFlg,fDate,AppVersionID);//DatabaseVersion;//getVersionNumber
+            int DatabaseVersion = dbengine.DATABASE_VERSION;
+            String AppVersionID = dbengine.AppVersionID;
+            dbengine.insertTblDayStartEndDetails(imei, startTS, rID, DayEndFlg, ChangeRouteFlg, fDate, AppVersionID);//DatabaseVersion;//getVersionNumber
             dbengine.close();
 
 
@@ -1640,77 +1422,63 @@ public class DialogDayEndSummaryActivity extends BaseActivity
         }
 
         @Override
-        protected Void doInBackground(Void... args)
-        {
+        protected Void doInBackground(Void... args) {
             ServiceWorker newservice = new ServiceWorker();
 
-            try
-            {
-                for(int mm = 1; mm < 41 ; mm++)
-                {
+            try {
+                for (int mm = 1; mm < 41; mm++) {
 
-                    if(mm==1)
-                    {
+                    if (mm == 1) {
 
                         newservice = newservice.getallStores(getApplicationContext(), fDate, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=1)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 1) {
+                            serviceException = true;
                             break;
                         }
                     }
-                    if(mm==2)
-                    {
+                    if (mm == 2) {
 
                         newservice = newservice.getallProduct(getApplicationContext(), fDate, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=2)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 2) {
+                            serviceException = true;
                             break;
                         }
                     }
-                    if(mm==3)
-                    {
+                    if (mm == 3) {
 
                         newservice = newservice.getCategory(getApplicationContext(), imei);
-                        if(newservice.flagExecutedServiceSuccesfully!=3)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 3) {
+                            serviceException = true;
                             break;
                         }
 
                     }
-                    if(mm==4)
-                    {
+                    if (mm == 4) {
 
                         Date currDateNew = new Date();
-                        SimpleDateFormat currDateFormatNew = new SimpleDateFormat("dd-MMM-yyyy",Locale.ENGLISH);
+                        SimpleDateFormat currDateFormatNew = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
 
                         String currSysDateNew = currDateFormatNew.format(currDateNew).toString();
                         newservice = newservice.getAllNewSchemeStructure(getApplicationContext(), currSysDateNew, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=4)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 4) {
+                            serviceException = true;
                             break;
                         }
 
                     }
-                    if(mm==5)
-                    {
+                    if (mm == 5) {
 
                         Date currDateNew = new Date();
-                        SimpleDateFormat currDateFormatNew = new SimpleDateFormat("dd-MMM-yyyy",Locale.ENGLISH);
+                        SimpleDateFormat currDateFormatNew = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
 
                         String currSysDateNew = currDateFormatNew.format(currDateNew).toString();
                         newservice = newservice.getallPDASchAppListForSecondPage(getApplicationContext(), currSysDateNew, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=5)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 5) {
+                            serviceException = true;
                             break;
                         }
                     }
-                    if(mm==6)
-                    {
+                    if (mm == 6) {
 					/*Date currDateNew = new Date();
 					SimpleDateFormat currDateFormatNew = new SimpleDateFormat("dd-MMM-yyyy",Locale.ENGLISH);
 
@@ -1723,8 +1491,7 @@ public class DialogDayEndSummaryActivity extends BaseActivity
 					}*/
 
                     }
-                    if(mm==7)
-                    {
+                    if (mm == 7) {
 
 
 
@@ -1740,79 +1507,61 @@ public class DialogDayEndSummaryActivity extends BaseActivity
 					}*/
 
 
+                    }
+                    if (mm == 8) {
 
                     }
-                    if(mm==8)
-                    {
-
-                    }
-                    if(mm==9)
-                    {
+                    if (mm == 9) {
                         newservice = newservice.fnGetPDACollectionMaster(getApplicationContext(), fDate, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=40)
-                        {
-                            System.out.println("GRLTyre = "+mm);
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 40) {
+                            System.out.println("GRLTyre = " + mm);
+                            serviceException = true;
                             break;
                         }
                     }
-                    if(mm==10)
-                    {
+                    if (mm == 10) {
 
                     }
-                    if(mm==11)
-                    {
+                    if (mm == 11) {
 
                     }
-                    if(mm==12)
-                    {
+                    if (mm == 12) {
 
                     }
-                    if(mm==13)
-                    {
+                    if (mm == 13) {
 
                     }
-                    if(mm==14)
-                    {
+                    if (mm == 14) {
 
                     }
-                    if(mm==15)
-                    {
+                    if (mm == 15) {
 
                     }
-                    if(mm==16)
-                    {
+                    if (mm == 16) {
 
                     }
-                    if(mm==17)
-                    {
+                    if (mm == 17) {
 
                     }
-                    if(mm==18)
-                    {
+                    if (mm == 18) {
 
                     }
-                    if(mm==19)
-                    {
+                    if (mm == 19) {
 
                     }
-                    if(mm==20)
-                    {
+                    if (mm == 20) {
 
                     }
-                    if(mm==21)
-                    {
+                    if (mm == 21) {
                         newservice = newservice.GetPDAIsSchemeApplicable(getApplicationContext(), fDate, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=21)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 21) {
+                            serviceException = true;
                             break;
                         }
 
                     }
 
-                    if(mm==22)
-                    {
+                    if (mm == 22) {
 						/*newservice = newservice.getallPDAtblSyncSummuryDetails(getApplicationContext(), fDate, imei, rID);
 						if(newservice.flagExecutedServiceSuccesfully!=22)
 						{
@@ -1821,12 +1570,10 @@ public class DialogDayEndSummaryActivity extends BaseActivity
 						}
 						*/
                     }
-                    if(mm==23)
-                    {
+                    if (mm == 23) {
                         //newservice = newservice.getallPDAtblSyncSummuryForProductDetails(getApplicationContext(), fDate, imei, rID);
                     }
-                    if(mm==24)
-                    {
+                    if (mm == 24) {
 					/*newservice = newservice.GetSchemeCoupon(getApplicationContext(), fDate, imei, rID);
 					if(newservice.flagExecutedServiceSuccesfully!=24)
 					{
@@ -1834,8 +1581,7 @@ public class DialogDayEndSummaryActivity extends BaseActivity
 						break;
 					}*/
                     }
-                    if(mm==25)
-                    {
+                    if (mm == 25) {
 				/*	newservice = newservice.GetSchemeCouponSlab(getApplicationContext(), fDate, imei, rID);
 					if(newservice.flagExecutedServiceSuccesfully!=25)
 					{
@@ -1843,8 +1589,7 @@ public class DialogDayEndSummaryActivity extends BaseActivity
 						break;
 					}*/
                     }
-                    if(mm==26)
-                    {
+                    if (mm == 26) {
 				/*	newservice = newservice.GetDaySummaryNew(getApplicationContext(), fDate, imei, rID);
 					if(newservice.flagExecutedServiceSuccesfully!=26)
 					{
@@ -1852,17 +1597,16 @@ public class DialogDayEndSummaryActivity extends BaseActivity
 						break;
 					}*/
                     }
-                    if(mm==27)
-                    {/*
+                    if (mm == 27) {/*
 					newservice = newservice.GetOrderDetailsOnLastSalesSummary(getApplicationContext(), fDate, imei, rID);
 					if(newservice.flagExecutedServiceSuccesfully!=27)
 					{
 						serviceException="GetOrderDetailsOnLastSalesSummary";
 						break;
 					}
-					*/}
-                    if(mm==28)
-                    {
+					*/
+                    }
+                    if (mm == 28) {
 				/*	newservice = newservice.GetVisitDetailsOnLastSalesSummary(getApplicationContext(), fDate, imei, rID);
 					if(newservice.flagExecutedServiceSuccesfully!=28)
 					{
@@ -1870,77 +1614,61 @@ public class DialogDayEndSummaryActivity extends BaseActivity
 						break;
 					}*/
                     }
-                    if(mm==29)
-                    {
+                    if (mm == 29) {
                         newservice = newservice.GetLODDetailsOnLastSalesSummary(getApplicationContext(), fDate, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=29)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 29) {
+                            serviceException = true;
                             break;
                         }
                     }
 
-                    if(mm==31)
-                    {
+                    if (mm == 31) {
                         newservice = newservice.GetCallspForPDAGetLastVisitDate(getApplicationContext(), fDate, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=31)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 31) {
+                            serviceException = true;
                             break;
                         }
                     }
-                    if(mm==32)
-                    {
+                    if (mm == 32) {
                         newservice = newservice.GetCallspForPDAGetLastOrderDate(getApplicationContext(), fDate, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=32)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 32) {
+                            serviceException = true;
                             break;
                         }
                     }
-                    if(mm==33)
-                    {
+                    if (mm == 33) {
                         newservice = newservice.GetCallspForPDAGetLastVisitDetails(getApplicationContext(), fDate, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=33)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 33) {
+                            serviceException = true;
                             break;
                         }
                     }
-                    if(mm==34)
-                    {
+                    if (mm == 34) {
                         newservice = newservice.GetCallspForPDAGetLastOrderDetails(getApplicationContext(), fDate, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=34)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 34) {
+                            serviceException = true;
                             break;
                         }
                     }
-                    if(mm==35)
-                    {
+                    if (mm == 35) {
                         newservice = newservice.GetCallspForPDAGetLastOrderDetails_TotalValues(getApplicationContext(), fDate, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=35)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 35) {
+                            serviceException = true;
                             break;
                         }
                     }
-                    if(mm==36)
-                    {
+                    if (mm == 36) {
                         newservice = newservice.GetCallspForPDAGetExecutionSummary(getApplicationContext(), fDate, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=36)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 36) {
+                            serviceException = true;
                             break;
                         }
                     }
 
-                    if(mm==37)
-                    {
+                    if (mm == 37) {
                         newservice = newservice.getQuotationDataFromServer(getApplicationContext(), fDate, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=37)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 37) {
+                            serviceException = true;
                             break;
                         }
                     }
@@ -1951,23 +1679,19 @@ public class DialogDayEndSummaryActivity extends BaseActivity
 
 				}*/
 
-                    if(mm == 38)
-                    {
+                    if (mm == 38) {
                         newservice = newservice.getFSDOutletFeedbackData(getApplicationContext(), fDate, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=38)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 38) {
+                            serviceException = true;
                             break;
                         }
 
                     }
-                    if(mm == 39)
-                    {
+                    if (mm == 39) {
                         newservice = newservice.fnGetAccountLastSummary(getApplicationContext(), fDate, imei, rID);
 
                     }
-                    if(mm == 40)
-                    {
+                    if (mm == 40) {
                         newservice = newservice.fnGetFeedbckCompetitorData(getApplicationContext(), fDate, imei, rID);
 
                     }
@@ -1975,13 +1699,9 @@ public class DialogDayEndSummaryActivity extends BaseActivity
                 }
 
 
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 Log.i("SvcMgr", "Service Execution Failed!", e);
-            }
-            finally
-            {
+            } finally {
                 Log.i("SvcMgr", "Service Execution Completed...");
             }
             return null;
@@ -1989,49 +1709,38 @@ public class DialogDayEndSummaryActivity extends BaseActivity
 
 
         @Override
-        protected void onPostExecute(Void result)
-        {
+        protected void onPostExecute(Void result) {
             super.onPostExecute(result);
 
             Log.i("SvcMgr", "Service Execution cycle completed");
 
-            try
-            {
-                if(pDialogGetStores.isShowing())
-                {
+            try {
+                if (pDialogGetStores.isShowing()) {
                     pDialogGetStores.dismiss();
                 }
-            }
-            catch(Exception e)
-            {
+            } catch (Exception e) {
 
             }
-            if(serviceException)
-            {
-                try
-                {
+            if (serviceException) {
+                try {
                     // but_GetStore.setEnabled(true);
-                    showAlertException("Error.....","Error while Retrieving Data!\n Please Retry");
-                }
-                catch(Exception e)
-                {
+                    showAlertException("Error.....", "Error while Retrieving Data!\n Please Retry");
+                } catch (Exception e) {
 
                 }
                 dbengine.open();
-                serviceException=false;
+                serviceException = false;
                 dbengine.maintainPDADate();
                 dbengine.dropRoutesTBL();
                 dbengine.reCreateDB();
 
                 dbengine.close();
-            }
-            else
-            {
+            } else {
 
                 String currSysDate;
 
                 Date currDate = new Date();
-                SimpleDateFormat currDateFormat = new SimpleDateFormat("dd-MMM-yyyy",Locale.ENGLISH);
+                SimpleDateFormat currDateFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
 
                 currSysDate = currDateFormat.format(currDate).toString();
 
@@ -2050,16 +1759,13 @@ public class DialogDayEndSummaryActivity extends BaseActivity
         }
     }
 
-    public void showAlertBox(String msg)
-    {
+    public void showAlertBox(String msg) {
         AlertDialog.Builder alertDialogNoConn = new AlertDialog.Builder(DialogDayEndSummaryActivity.this);
         alertDialogNoConn.setTitle("Information");
         alertDialogNoConn.setMessage(msg);
 
-        alertDialogNoConn.setNeutralButton(R.string.txtOk,new DialogInterface.OnClickListener()
-        {
-            public void onClick(DialogInterface dialog, int which)
-            {
+        alertDialogNoConn.setNeutralButton(R.string.txtOk, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
 
 
@@ -2071,8 +1777,7 @@ public class DialogDayEndSummaryActivity extends BaseActivity
 
     }
 
-    public void showAlertException(String title,String msg)
-    {
+    public void showAlertException(String title, String msg) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(DialogDayEndSummaryActivity.this);
 
         // Setting Dialog Title
@@ -2084,7 +1789,7 @@ public class DialogDayEndSummaryActivity extends BaseActivity
         alertDialog.setCancelable(false);
         // Setting Positive "Yes" Button
         alertDialog.setPositiveButton("Retry", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog,int which) {
+            public void onClick(DialogInterface dialog, int which) {
 
                 new GetStoresForDay(DialogDayEndSummaryActivity.this).execute();
                 dialog.dismiss();
@@ -2106,14 +1811,12 @@ public class DialogDayEndSummaryActivity extends BaseActivity
 
     private class GetStoreAllData extends AsyncTask<Void, Void, Void> {
 
-        public GetStoreAllData(DialogDayEndSummaryActivity activity)
-        {
+        public GetStoreAllData(DialogDayEndSummaryActivity activity) {
             pDialogGetStores = new ProgressDialog(activity);
         }
 
         @Override
-        protected void onPreExecute()
-        {
+        protected void onPreExecute() {
             super.onPreExecute();
 
             pDialogGetStores.setTitle(getText(R.string.PleaseWaitMsg));
@@ -2123,6 +1826,7 @@ public class DialogDayEndSummaryActivity extends BaseActivity
             pDialogGetStores.setCanceledOnTouchOutside(false);
             pDialogGetStores.show();
         }
+
         @Override
         protected Void doInBackground(Void... params) {
             try {
@@ -2132,10 +1836,8 @@ public class DialogDayEndSummaryActivity extends BaseActivity
                 //newservice = newservice.getAvailableAndUpdatedVersionOfApp(getApplicationContext(), imei,fDate,DatabaseVersion,ApplicationID);
 
                 dbengine.fnInsertOrUpdate_tblAllServicesCalledSuccessfull(1);
-                for(int mm = 1; mm<5; mm++)
-                {
-                    if(mm==1)
-                    {
+                for (int mm = 1; mm < 5; mm++) {
+                    if (mm == 1) {
                         newservice = newservice.getSOSummary(getApplicationContext(), imei, fDate, DatabaseVersion, ApplicationID);
                         if (!newservice.director.toString().trim().equals("1")) {
                             if (chkFlgForErrorToCloseApp == 0) {
@@ -2145,8 +1847,7 @@ public class DialogDayEndSummaryActivity extends BaseActivity
 
                         }
                     }
-                    if(mm==2)
-                    {
+                    if (mm == 2) {
                         newservice = newservice.getStoreAllDetails(getApplicationContext(), imei, fDate, DatabaseVersion, ApplicationID);
                         if (!newservice.director.toString().trim().equals("1")) {
                             if (chkFlgForErrorToCloseApp == 0) {
@@ -2158,9 +1859,8 @@ public class DialogDayEndSummaryActivity extends BaseActivity
 
 
                     }
-                    if(mm==3)
-                    {
-                        newservice = newservice.callfnSingleCallAllWebServiceSO(getApplicationContext(),ApplicationID,imei);
+                    if (mm == 3) {
+                        newservice = newservice.callfnSingleCallAllWebServiceSO(getApplicationContext(), ApplicationID, imei);
                         if (!newservice.director.toString().trim().equals("1")) {
                             if (chkFlgForErrorToCloseApp == 0) {
                                 chkFlgForErrorToCloseApp = 1;
@@ -2170,8 +1870,7 @@ public class DialogDayEndSummaryActivity extends BaseActivity
                         }
 
                     }
-                    if(mm==4)
-                    {
+                    if (mm == 4) {
                         newservice = newservice.getQuotationDataFromServer(getApplicationContext(), fDate, imei, "0");
                         if (!newservice.director.toString().trim().equals("1")) {
                             if (chkFlgForErrorToCloseApp == 0) {
@@ -2186,10 +1885,6 @@ public class DialogDayEndSummaryActivity extends BaseActivity
                 }
 
 
-
-
-
-
             } catch (Exception e) {
             } finally {
             }
@@ -2201,35 +1896,28 @@ public class DialogDayEndSummaryActivity extends BaseActivity
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            try
-            {
-                if(pDialogGetStores.isShowing())
-                {
+            try {
+                if (pDialogGetStores.isShowing()) {
                     pDialogGetStores.dismiss();
                 }
-            }
-            catch(Exception e)
-            {
+            } catch (Exception e) {
 
             }
 
             if (chkFlgForErrorToCloseApp == 1)   // if Webservice showing exception or not excute complete properly
             {
                 chkFlgForErrorToCloseApp = 0;
-                SharedPreferences sharedPreferences=getSharedPreferences("MyPref", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = getSharedPreferences("MyPref", MODE_PRIVATE);
                 SharedPreferences.Editor ed;
-                if(sharedPreferences.contains("ServerDate"))
-                {
+                if (sharedPreferences.contains("ServerDate")) {
                     ed = sharedPreferences.edit();
                     ed.putString("ServerDate", "0");
                     ed.commit();
                 }
                 //clear sharedpreferences
                 intentPassToLauncherActivity("Internet connection is slow ,please try again.");//, "0", "0", "0"
-            }
-            else
-            {
-                Intent i=new Intent(DialogDayEndSummaryActivity.this,StorelistActivity.class);
+            } else {
+                Intent i = new Intent(DialogDayEndSummaryActivity.this, StorelistActivity.class);
                 startActivity(i);
                 finish();
 
@@ -2238,24 +1926,20 @@ public class DialogDayEndSummaryActivity extends BaseActivity
 
     }
 
-    public void intentPassToLauncherActivity(String errorMessageFlag)
-    {
-        if(errorMessageFlag.equals("0"))
-        {
-            Intent intent =new Intent(DialogDayEndSummaryActivity.this,StorelistActivity.class);
+    public void intentPassToLauncherActivity(String errorMessageFlag) {
+        if (errorMessageFlag.equals("0")) {
+            Intent intent = new Intent(DialogDayEndSummaryActivity.this, StorelistActivity.class);
             DialogDayEndSummaryActivity.this.startActivity(intent);
             finish();
-        }
-        else {
-            Intent intent =new Intent(DialogDayEndSummaryActivity.this,StorelistActivity.class);
+        } else {
+            Intent intent = new Intent(DialogDayEndSummaryActivity.this, StorelistActivity.class);
             DialogDayEndSummaryActivity.this.startActivity(intent);
             finish();
 
         }
     }
 
-    void openDayEndAlert()
-    {
+    void openDayEndAlert() {
 
     }
 

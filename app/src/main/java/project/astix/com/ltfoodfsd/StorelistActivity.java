@@ -27,8 +27,6 @@ import android.os.Environment;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.support.annotation.IdRes;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -36,7 +34,6 @@ import android.text.format.DateUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -111,43 +108,43 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 
-public class StorelistActivity extends BaseActivity implements LocationListener,GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener {
+public class StorelistActivity extends BaseActivity implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
 
-    public String rID="0";
+    public String rID = "0";
     SharedPreferences sharedPref;
-    public boolean serviceException=false;
-    LinkedHashMap<String, String> hmapdsrIdAndDescr_details=new LinkedHashMap<String, String>();
+    public boolean serviceException = false;
+    LinkedHashMap<String, String> hmapdsrIdAndDescr_details = new LinkedHashMap<String, String>();
     String[] drsNames;
-    public String	SelectedDSRValue="";
+    public String SelectedDSRValue = "";
 
     public ProgressDialog pDialogGetStores;
     ImageSync task;
     FullSyncDataNow task2;
     public Timer timerForDataSubmission;
-    public	MyTimerTaskForDataSubmission myTimerTaskForDataSubmission;
-    public int flgUploadOrRefreshButtonClicked=0;
+    public MyTimerTaskForDataSubmission myTimerTaskForDataSubmission;
+    public int flgUploadOrRefreshButtonClicked = 0;
 
-    public String AllProvidersLocation="";
+    public String AllProvidersLocation = "";
 
     DBAdapterKenya dbengine = new DBAdapterKenya(this);
-    public String FusedLocationLatitudeWithFirstAttempt="0";
-    public String FusedLocationLongitudeWithFirstAttempt="0";
+    public String FusedLocationLatitudeWithFirstAttempt = "0";
+    public String FusedLocationLongitudeWithFirstAttempt = "0";
 
-    public String FusedLocationAccuracyWithFirstAttempt="0";
-    LinkedHashMap<String, String> hmapCoverageRouteMap_details=new LinkedHashMap<String, String>();
-    public int flgAddButtonCliked=0;
-    LinkedHashMap<View, String> hmapStoreViewAndName=new LinkedHashMap<View,String>();
+    public String FusedLocationAccuracyWithFirstAttempt = "0";
+    LinkedHashMap<String, String> hmapCoverageRouteMap_details = new LinkedHashMap<String, String>();
+    public int flgAddButtonCliked = 0;
+    LinkedHashMap<View, String> hmapStoreViewAndName = new LinkedHashMap<View, String>();
     String[] CoverageAreaNames;
     String[] RouteNames;
-    LinkedHashMap<String, String> hmapCoverage_details=new LinkedHashMap<String, String>();
-    LinkedHashMap<String, String> hmapRoute_details=new LinkedHashMap<String, String>();
+    LinkedHashMap<String, String> hmapCoverage_details = new LinkedHashMap<String, String>();
+    LinkedHashMap<String, String> hmapRoute_details = new LinkedHashMap<String, String>();
 
     public EditText ed_search;
     ListView listCoverage;
     ArrayAdapter<String> adapterCoverageList;
-    public int RouteIDSelectedInSpinner=0;
-    public int CoverageIDSelectedInSpinner=0;
+    public int RouteIDSelectedInSpinner = 0;
+    public int CoverageIDSelectedInSpinner = 0;
     ListView listRoute;
     ArrayAdapter<String> adapterRouteList;
     AlertDialog alertRoute;
@@ -159,16 +156,16 @@ public class StorelistActivity extends BaseActivity implements LocationListener,
 
     TextView selectCoverageSpinner;
     RadioGroup rg_mode_of_visit;
-    RadioButton rb_offline,rb_online;
-    int modeOfVisit=0;
+    RadioButton rb_offline, rb_online;
+    int modeOfVisit = 0;
 
-    ImageView logoutIcon,menu_icon;
+    ImageView logoutIcon, menu_icon;
     InputStream inputStream;
     LinearLayout parentOfAllDynamicData;
     LinkedHashMap<String, String> hmapStoresFromDataBase;
-   // DBAdapterLtFoods dbEngineSO=new DBAdapterLtFoods(this);
-    Button EditBtn , AddStoreBtn,RefreshBtn;
-    String tagOfselectedStore="0"+"^"+"0";
+    // DBAdapterLtFoods dbEngineSO=new DBAdapterLtFoods(this);
+    Button EditBtn, AddStoreBtn, RefreshBtn;
+    String tagOfselectedStore = "0" + "^" + "0";
     public LocationManager locationManager;
 
     DatabaseAssistant DA = new DatabaseAssistant(StorelistActivity.this);
@@ -176,35 +173,36 @@ public class StorelistActivity extends BaseActivity implements LocationListener,
     public int syncFLAG = 0;
     public String[] xmlForWeb = new String[1];
 
-    public int chkFlgForErrorToCloseApp=0;
-    public   PowerManager pm;
-    public	 PowerManager.WakeLock wl;
+    public int chkFlgForErrorToCloseApp = 0;
+    public PowerManager pm;
+    public PowerManager.WakeLock wl;
 
     public SimpleDateFormat sdf;
     public ProgressDialog pDialog2STANDBY;
     public Location location;
-    public String FusedLocationLatitude="0";
-    public String FusedLocationLongitude="0";
-    public String FusedLocationProvider="";
-    public String FusedLocationAccuracy="0";
+    public String FusedLocationLatitude = "0";
+    public String FusedLocationLongitude = "0";
+    public String FusedLocationProvider = "";
+    public String FusedLocationAccuracy = "0";
 
-    public String GPSLocationLatitude="0";
-    public String GPSLocationLongitude="0";
-    public String GPSLocationProvider="";
-    public String GPSLocationAccuracy="0";
+    public String GPSLocationLatitude = "0";
+    public String GPSLocationLongitude = "0";
+    public String GPSLocationProvider = "";
+    public String GPSLocationAccuracy = "0";
 
-    public String NetworkLocationLatitude="0";
-    public String NetworkLocationLongitude="0";
-    public String NetworkLocationProvider="";
-    public String NetworkLocationAccuracy="0";
+    public String NetworkLocationLatitude = "0";
+    public String NetworkLocationLongitude = "0";
+    public String NetworkLocationProvider = "";
+    public String NetworkLocationAccuracy = "0";
 
     public AppLocationService appLocationService;
     public boolean isGPSEnabled = false;
-    public   boolean isNetworkEnabled = false;
+    public boolean isNetworkEnabled = false;
     public Button onlineBtn;
     public Button offlineBtn;
 
     public CoundownClass countDownTimer;
+    private boolean isCountdownRunning = false;
     private final long startTime = 15000;
     private final long interval = 200;
 
@@ -218,52 +216,49 @@ public class StorelistActivity extends BaseActivity implements LocationListener,
     LocationRequest mLocationRequest;
     String imei;
     public String fDate;
-    public String fnAccurateProvider="";
-    public String fnLati="0";
-    public String fnLongi="0";
-    public Double fnAccuracy=0.0;
+    public String fnAccurateProvider = "";
+    public String fnLati = "0";
+    public String fnLongi = "0";
+    public Double fnAccuracy = 0.0;
     String fusedData;
     Dialog dialog;
-
 
 
     public int CoverageID = 0;
     public int RouteID = 0;
 
     ServiceWorker newservice = new ServiceWorker();
-    LinkedHashMap<String, String> hmapOutletListForNear=new LinkedHashMap<String, String>();
+    LinkedHashMap<String, String> hmapOutletListForNear = new LinkedHashMap<String, String>();
 
-    LinkedHashMap<String, String> hmapOutletListForNearUpdated=new LinkedHashMap<String, String>();
+    LinkedHashMap<String, String> hmapOutletListForNearUpdated = new LinkedHashMap<String, String>();
 
     //report alert
     String[] Distribtr_list;
-    String DbrNodeId,DbrNodeType,DbrName;
-    ArrayList<String> DbrArray=new ArrayList<String>();
-    LinkedHashMap<String,String> hmapDistrbtrList=new LinkedHashMap<>();
-    public String SelectedDistrbtrName="";
+    String DbrNodeId, DbrNodeType, DbrName;
+    ArrayList<String> DbrArray = new ArrayList<String>();
+    LinkedHashMap<String, String> hmapDistrbtrList = new LinkedHashMap<>();
+    public String SelectedDistrbtrName = "";
 
 
     SharedPreferences sharedPreferences;
     AlertDialog alertDialogSettings;
 
-    private void getDSRDetail() throws IOException
-    {
+    private void getDSRDetail() throws IOException {
 
-        int check=dbengine.countDataIntblNoVisitReasonMaster();
+        int check = dbengine.countDataIntblNoVisitReasonMaster();
 
-        hmapdsrIdAndDescr_details=dbengine.fetch_DSRCoverage_List();
+        hmapdsrIdAndDescr_details = dbengine.fetch_DSRCoverage_List();
 
-        int index=0;
-        if(hmapdsrIdAndDescr_details!=null)
-        {
-            drsNames=new String[hmapdsrIdAndDescr_details.size()];
+        int index = 0;
+        if (hmapdsrIdAndDescr_details != null) {
+            drsNames = new String[hmapdsrIdAndDescr_details.size()];
             LinkedHashMap<String, String> map = new LinkedHashMap<String, String>(hmapdsrIdAndDescr_details);
             Set set2 = map.entrySet();
             Iterator iterator = set2.iterator();
-            while(iterator.hasNext()) {
-                Map.Entry me2 = (Map.Entry)iterator.next();
-                drsNames[index]=me2.getKey().toString();
-                index=index+1;
+            while (iterator.hasNext()) {
+                Map.Entry me2 = (Map.Entry) iterator.next();
+                drsNames[index] = me2.getKey().toString();
+                index = index + 1;
             }
         }
 
@@ -277,45 +272,37 @@ public class StorelistActivity extends BaseActivity implements LocationListener,
         setContentView(R.layout.storelist_activity);
 
         sharedPref = getSharedPreferences(CommonInfo.Preference, MODE_PRIVATE);
-        if(sharedPref.contains("CoverageAreaNodeID"))
-        {
-            if(sharedPref.getInt("CoverageAreaNodeID",0)!=0)
-            {
-                CommonInfo.CoverageAreaNodeID=sharedPref.getInt("CoverageAreaNodeID",0);
-                CommonInfo.CoverageAreaNodeType=sharedPref.getInt("CoverageAreaNodeType",0);
+        if (sharedPref.contains("CoverageAreaNodeID")) {
+            if (sharedPref.getInt("CoverageAreaNodeID", 0) != 0) {
+                CommonInfo.CoverageAreaNodeID = sharedPref.getInt("CoverageAreaNodeID", 0);
+                CommonInfo.CoverageAreaNodeType = sharedPref.getInt("CoverageAreaNodeType", 0);
             }
         }
-        if(sharedPref.contains("SalesmanNodeId"))
-        {
-            if(sharedPref.getInt("SalesmanNodeId",0)!=0)
-            {
-                CommonInfo.SalesmanNodeId=sharedPref.getInt("SalesmanNodeId",0);
-                CommonInfo.SalesmanNodeType=sharedPref.getInt("SalesmanNodeType",0);
+        if (sharedPref.contains("SalesmanNodeId")) {
+            if (sharedPref.getInt("SalesmanNodeId", 0) != 0) {
+                CommonInfo.SalesmanNodeId = sharedPref.getInt("SalesmanNodeId", 0);
+                CommonInfo.SalesmanNodeType = sharedPref.getInt("SalesmanNodeType", 0);
             }
         }
-        if(sharedPref.contains("flgDataScope"))
-        {
-            if(sharedPref.getInt("flgDataScope",0)!=0)
-            {
-                CommonInfo.flgDataScope=sharedPref.getInt("flgDataScope",0);
+        if (sharedPref.contains("flgDataScope")) {
+            if (sharedPref.getInt("flgDataScope", 0) != 0) {
+                CommonInfo.flgDataScope = sharedPref.getInt("flgDataScope", 0);
 
             }
         }
-        if(sharedPref.contains("flgDSRSO"))
-        {
-            if(sharedPref.getInt("flgDSRSO",0)!=0)
-            {
-                CommonInfo.FlgDSRSO=sharedPref.getInt("flgDSRSO",0);
+        if (sharedPref.contains("flgDSRSO")) {
+            if (sharedPref.getInt("flgDSRSO", 0) != 0) {
+                CommonInfo.FlgDSRSO = sharedPref.getInt("flgDSRSO", 0);
 
             }
         }
 
-        sharedPreferences=getSharedPreferences("MyPref", MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("MyPref", MODE_PRIVATE);
 
         getCoverageAndRouteListDetail();
         initializeAllView();
-        locationManager=(LocationManager) this.getSystemService(LOCATION_SERVICE);
-        Date date1=new Date();
+        locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+        Date date1 = new Date();
         sdf = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
         fDate = sdf.format(date1).toString().trim();
         //code in onResume
@@ -334,24 +321,21 @@ public class StorelistActivity extends BaseActivity implements LocationListener,
         addViewIntoTable();
 
 
-
     }
 
-    void getDistribtrList()
-    {
+    void getDistribtrList() {
         dbengine.open();
 
-        Distribtr_list=dbengine.getDistributorDataMstr();
+        Distribtr_list = dbengine.getDistributorDataMstr();
         dbengine.close();
-        for(int i=0;i<Distribtr_list.length;i++)
-        {
-            String value=Distribtr_list[i];
-            DbrNodeId=value.split(Pattern.quote("^"))[0];
-            DbrNodeType=value.split(Pattern.quote("^"))[1];
-            DbrName=value.split(Pattern.quote("^"))[2];
+        for (int i = 0; i < Distribtr_list.length; i++) {
+            String value = Distribtr_list[i];
+            DbrNodeId = value.split(Pattern.quote("^"))[0];
+            DbrNodeType = value.split(Pattern.quote("^"))[1];
+            DbrName = value.split(Pattern.quote("^"))[2];
             //flgReMap=Integer.parseInt(value.split(Pattern.quote("^"))[3]);
 
-            hmapDistrbtrList.put(DbrName,DbrNodeId+"^"+DbrNodeType);
+            hmapDistrbtrList.put(DbrName, DbrNodeId + "^" + DbrNodeType);
             DbrArray.add(DbrName);
         }
 
@@ -362,14 +346,10 @@ public class StorelistActivity extends BaseActivity implements LocationListener,
         super.onResume();
 
 
-
-        if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
-        {
+        if (CommonInfo.flgLTFoodsSOOnlineOffLine == 0) {
             rb_offline.setChecked(true);
 
-        }
-        else
-        {
+        } else {
             rb_online.setChecked(true);
 
         }
@@ -379,23 +359,20 @@ public class StorelistActivity extends BaseActivity implements LocationListener,
         String getServerDate = dbengine.fnGetServerDate();
         dbengine.close();
 
-        if(checkIfLocEnabled())
-        {
-            if(!sharedPreferences.contains("FirstRunNearByStore")) //for first time
+        if (checkIfLocEnabled()) {
+            if (!sharedPreferences.contains("FirstRunNearByStore")) //for first time
             {
                 ed = sharedPreferences.edit();
-                ed.putBoolean("FirstRunNearByStore",true);
-                ed.putString("LastRunNearByStoreDate",getServerDate);
+                ed.putBoolean("FirstRunNearByStore", true);
+                ed.putString("LastRunNearByStoreDate", getServerDate);
                 ed.commit();
 
                 callLocationFetching();
-            }
-            else
-            {
-                if(!sharedPreferences.getString("LastRunNearByStoreDate", "").equals(getServerDate)) //when date changes
+            } else {
+                if (!sharedPreferences.getString("LastRunNearByStoreDate", "").equals(getServerDate)) //when date changes
                 {
                     ed = sharedPreferences.edit();
-                    ed.putString("LastRunNearByStoreDate",getServerDate);
+                    ed.putString("LastRunNearByStoreDate", getServerDate);
                     ed.commit();
 
                     callLocationFetching();
@@ -404,104 +381,84 @@ public class StorelistActivity extends BaseActivity implements LocationListener,
         }
     }
 
-    Boolean checkIfLocEnabled()
-    {
-        boolean isEnabled=false;
+    Boolean checkIfLocEnabled() {
+        boolean isEnabled = false;
         boolean isGPSok = false;
-        boolean isNWok=false;
+        boolean isNWok = false;
         isGPSok = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         isNWok = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-        if(!isGPSok && !isNWok)
-        {
-            try
-            {
+        if (!isGPSok && !isNWok) {
+            try {
                 showSettingsAlert();
-            }
-            catch(Exception e)
-            {
+            } catch (Exception e) {
 
             }
             isGPSok = false;
-            isNWok=false;
-        }
-        else {
+            isNWok = false;
+        } else {
             isEnabled = true;
         }
-        return  isEnabled;
+        return isEnabled;
     }
 
     @Override
     protected void onStop() {
         super.onStop();
 
-        if(alertDialogSettings != null && alertDialogSettings.isShowing())
-        {
+        if (alertDialogSettings != null && alertDialogSettings.isShowing()) {
             alertDialogSettings.dismiss();
         }
     }
 
-    public void callLocationFetching()
-    {
-        if(pDialog2STANDBY!=null)
-        {
-            if(pDialog2STANDBY.isShowing())
-            {
-            }
-            else
-            {
+    public void callLocationFetching() {
+        if (pDialog2STANDBY != null) {
+            if (pDialog2STANDBY.isShowing()) {
+            } else {
                 locationRetrievingAndDistanceCalculating();
             }
-        }
-        else
-        {
+        } else {
             locationRetrievingAndDistanceCalculating();
         }
     }
 
-    public void getCoverageAndRouteListDetail()
-    {
+    public void getCoverageAndRouteListDetail() {
 
-        hmapCoverage_details=dbengine.fetch_CoverageArea_List(0);//0=Calling this function from StoreListActivity,1=Calling this function from Report Activity
-        hmapRoute_details=dbengine.fetch_Route_List(0);//0=Calling this function from StoreListActivity,1=Calling this function from Report Activity
-        hmapCoverageRouteMap_details=dbengine.fetch_CoverageRouteMap_List(0,0);
-        int index=0;
-        if(hmapCoverage_details!=null)
-        {
-            CoverageAreaNames=new String[hmapCoverage_details.size()];
+        hmapCoverage_details = dbengine.fetch_CoverageArea_List(0);//0=Calling this function from StoreListActivity,1=Calling this function from Report Activity
+        hmapRoute_details = dbengine.fetch_Route_List(0);//0=Calling this function from StoreListActivity,1=Calling this function from Report Activity
+        hmapCoverageRouteMap_details = dbengine.fetch_CoverageRouteMap_List(0, 0);
+        int index = 0;
+        if (hmapCoverage_details != null) {
+            CoverageAreaNames = new String[hmapCoverage_details.size()];
             LinkedHashMap<String, String> map = new LinkedHashMap<String, String>(hmapCoverage_details);
             Set set2 = map.entrySet();
             Iterator iterator = set2.iterator();
-            while(iterator.hasNext())
-            {
-                Map.Entry me2 = (Map.Entry)iterator.next();
-                CoverageAreaNames[index]=me2.getKey().toString();
-                index=index+1;
+            while (iterator.hasNext()) {
+                Map.Entry me2 = (Map.Entry) iterator.next();
+                CoverageAreaNames[index] = me2.getKey().toString();
+                index = index + 1;
             }
         }
 
-        index=0;
-        if(hmapRoute_details!=null)
-        {
-            RouteNames=new String[hmapRoute_details.size()];
+        index = 0;
+        if (hmapRoute_details != null) {
+            RouteNames = new String[hmapRoute_details.size()];
             LinkedHashMap<String, String> map = new LinkedHashMap<String, String>(hmapRoute_details);
             Set set2 = map.entrySet();
             Iterator iterator = set2.iterator();
-            while(iterator.hasNext())
-            {
-                Map.Entry me2 = (Map.Entry)iterator.next();
-                RouteNames[index]=me2.getKey().toString();
-                index=index+1;
+            while (iterator.hasNext()) {
+                Map.Entry me2 = (Map.Entry) iterator.next();
+                RouteNames[index] = me2.getKey().toString();
+                index = index + 1;
             }
         }
 
 
     }
 
-    public void  initializeAllView()
-    {
+    public void initializeAllView() {
 
-        ed_search=(EditText) findViewById(R.id.ed_search);
+        ed_search = (EditText) findViewById(R.id.ed_search);
 
 
        /* Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -518,20 +475,18 @@ public class StorelistActivity extends BaseActivity implements LocationListener,
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s.toString().trim().length()==0)
-                {
+                if (s.toString().trim().length() == 0) {
                     if (hmapStoreViewAndName != null) {
-                        if(hmapStoreViewAndName.size()>0) {
+                        if (hmapStoreViewAndName.size() > 0) {
                             for (Map.Entry<View, String> entry : hmapStoreViewAndName.entrySet()) {
                                 View storeRow = entry.getKey();
                                 storeRow.setVisibility(View.VISIBLE);
                             }
                         }
                     }
-                }
-                else {
+                } else {
                     if (hmapStoreViewAndName != null) {
-                        if(hmapStoreViewAndName.size()>0) {
+                        if (hmapStoreViewAndName.size() > 0) {
                             for (Map.Entry<View, String> entry : hmapStoreViewAndName.entrySet()) {
                                 View storeRow = entry.getKey();
                                 if (entry.getValue().toString().trim().toLowerCase().contains(s.toString().trim().toLowerCase())) {
@@ -553,88 +508,69 @@ public class StorelistActivity extends BaseActivity implements LocationListener,
 
 
         adapterCoverageList = new ArrayAdapter<String>(StorelistActivity.this, R.layout.list_item_dark, R.id.fso_name, CoverageAreaNames);
-        selectCoverageSpinner= (TextView) findViewById(R.id.selectCoverageSpinner);
+        selectCoverageSpinner = (TextView) findViewById(R.id.selectCoverageSpinner);
 
-        String StoreCategoryType=dbengine.getChannelGroupIdOptIdForAddingStore();
-        if(StoreCategoryType.equals("0-3-80"))
-        {
+        String StoreCategoryType = dbengine.getChannelGroupIdOptIdForAddingStore();
+        if (StoreCategoryType.equals("0-3-80")) {
             selectCoverageSpinner.setText("All Merchandiser/Coverage Area");
         }
 
         adapterRouteList = new ArrayAdapter<String>(StorelistActivity.this, R.layout.list_item_dark, R.id.fso_name, RouteNames);
-        selectRouteSpinner= (TextView) findViewById(R.id.selectRouteSpinner);
-        offlineBtn=(Button) findViewById(R.id.offlineBtn);
+        selectRouteSpinner = (TextView) findViewById(R.id.selectRouteSpinner);
+        offlineBtn = (Button) findViewById(R.id.offlineBtn);
 
-        onlineBtn=(Button) findViewById(R.id.onlineBtn);
+        onlineBtn = (Button) findViewById(R.id.onlineBtn);
 
         setBtnBackgroundOfLineOnline();
         //btn_background
         onlineBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                flgAddButtonCliked=0;
+                flgAddButtonCliked = 0;
                 hmapStoresFromDataBase.clear();
                 parentOfAllDynamicData.removeAllViews();
-                modeOfVisit=1;
+                modeOfVisit = 1;
 
-                CommonInfo.flgLTFoodsSOOnlineOffLine=1;
+                CommonInfo.flgLTFoodsSOOnlineOffLine = 1;
                 setBtnBackgroundOfLineOnline();
                 {
-                    if(pDialog2STANDBY!=null)
-                    {
-                        if(pDialog2STANDBY.isShowing())
-                        {
+                    if (pDialog2STANDBY != null) {
+                        if (pDialog2STANDBY.isShowing()) {
 
 
-                        }
-                        else
-                        {
+                        } else {
                             boolean isGPSok = false;
-                            boolean isNWok=false;
+                            boolean isNWok = false;
                             isGPSok = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
                             isNWok = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-                            if(!isGPSok && !isNWok)
-                            {
-                                try
-                                {
+                            if (!isGPSok && !isNWok) {
+                                try {
                                     showSettingsAlert();
-                                }
-                                catch(Exception e)
-                                {
+                                } catch (Exception e) {
 
                                 }
                                 isGPSok = false;
-                                isNWok=false;
-                            }
-                            else
-                            {
+                                isNWok = false;
+                            } else {
                                 locationRetrievingAndDistanceCalculating();
                             }
                         }
-                    }
-                    else
-                    {
+                    } else {
                         boolean isGPSok = false;
-                        boolean isNWok=false;
+                        boolean isNWok = false;
                         isGPSok = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
                         isNWok = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-                        if(!isGPSok && !isNWok)
-                        {
-                            try
-                            {
+                        if (!isGPSok && !isNWok) {
+                            try {
                                 showSettingsAlert();
-                            }
-                            catch(Exception e)
-                            {
+                            } catch (Exception e) {
 
                             }
                             isGPSok = false;
-                            isNWok=false;
-                        }
-                        else
-                        {
+                            isNWok = false;
+                        } else {
                             locationRetrievingAndDistanceCalculating();
                         }
 
@@ -645,11 +581,11 @@ public class StorelistActivity extends BaseActivity implements LocationListener,
         offlineBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                flgAddButtonCliked=0;
+                flgAddButtonCliked = 0;
                 hmapStoresFromDataBase.clear();
                 parentOfAllDynamicData.removeAllViews();
-                modeOfVisit=0;
-                CommonInfo.flgLTFoodsSOOnlineOffLine=0;
+                modeOfVisit = 0;
+                CommonInfo.flgLTFoodsSOOnlineOffLine = 0;
                 setBtnBackgroundOfLineOnline();
 
 
@@ -724,9 +660,9 @@ public class StorelistActivity extends BaseActivity implements LocationListener,
                 alertDialog = new AlertDialog.Builder(StorelistActivity.this);
                 LayoutInflater inflater = getLayoutInflater();
                 convertView = (View) inflater.inflate(R.layout.list_activity, null);
-                EditText inputSearch=	 (EditText) convertView.findViewById(R.id.inputSearch);
+                EditText inputSearch = (EditText) convertView.findViewById(R.id.inputSearch);
                 inputSearch.setVisibility(View.GONE);
-                listCoverage = (ListView)convertView. findViewById(R.id.list_view);
+                listCoverage = (ListView) convertView.findViewById(R.id.list_view);
 
                 listCoverage.setAdapter(adapterCoverageList);
                 alertDialog.setView(convertView);
@@ -734,37 +670,32 @@ public class StorelistActivity extends BaseActivity implements LocationListener,
                 listCoverage.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        String coverageNameInSpinner=listCoverage.getItemAtPosition(position).toString().trim();
-                        CoverageIDSelectedInSpinner=Integer.parseInt(hmapCoverage_details.get(coverageNameInSpinner));
+                        String coverageNameInSpinner = listCoverage.getItemAtPosition(position).toString().trim();
+                        CoverageIDSelectedInSpinner = Integer.parseInt(hmapCoverage_details.get(coverageNameInSpinner));
                         selectCoverageSpinner.setText(coverageNameInSpinner);
-                        RouteIDSelectedInSpinner=0;
+                        RouteIDSelectedInSpinner = 0;
                         //fsoIDSelectedInSpinner
 
                         hmapCoverageRouteMap_details.clear();
                         RouteNames = new String[0];
-                        if(CoverageIDSelectedInSpinner==0)
-                        {
+                        if (CoverageIDSelectedInSpinner == 0) {
 
-                            hmapCoverageRouteMap_details=dbengine.fetch_CoverageRouteMap_List(0,0);
+                            hmapCoverageRouteMap_details = dbengine.fetch_CoverageRouteMap_List(0, 0);
 
-                        }
-                        else
-                        {
-                            hmapCoverageRouteMap_details=dbengine.fetch_CoverageRouteMap_List(0,CoverageIDSelectedInSpinner);
+                        } else {
+                            hmapCoverageRouteMap_details = dbengine.fetch_CoverageRouteMap_List(0, CoverageIDSelectedInSpinner);
                         }
 
-                        int  index=0;
-                        if(hmapRoute_details!=null)
-                        {
-                            RouteNames=new String[hmapCoverageRouteMap_details.size()];
+                        int index = 0;
+                        if (hmapRoute_details != null) {
+                            RouteNames = new String[hmapCoverageRouteMap_details.size()];
                             LinkedHashMap<String, String> map = new LinkedHashMap<String, String>(hmapCoverageRouteMap_details);
                             Set set2 = map.entrySet();
                             Iterator iterator = set2.iterator();
-                            while(iterator.hasNext())
-                            {
-                                Map.Entry me2 = (Map.Entry)iterator.next();
-                                RouteNames[index]=me2.getKey().toString();
-                                index=index+1;
+                            while (iterator.hasNext()) {
+                                Map.Entry me2 = (Map.Entry) iterator.next();
+                                RouteNames[index] = me2.getKey().toString();
+                                index = index + 1;
                             }
                         }
                         adapterRouteList = new ArrayAdapter<String>(StorelistActivity.this, R.layout.list_item_dark, R.id.fso_name, RouteNames);
@@ -772,7 +703,7 @@ public class StorelistActivity extends BaseActivity implements LocationListener,
                         selectRouteSpinner.setText("Select Beat");
 
                         alertCoverage.dismiss();
-                        filterStoreList(CoverageIDSelectedInSpinner,RouteIDSelectedInSpinner);
+                        filterStoreList(CoverageIDSelectedInSpinner, RouteIDSelectedInSpinner);
 
                      /* String coverageNameInSpinner=listCoverage.getItemAtPosition(position).toString().trim();
                       CoverageIDSelectedInSpinner=Integer.parseInt(hmapCoverage_details.get(coverageNameInSpinner));
@@ -784,10 +715,9 @@ public class StorelistActivity extends BaseActivity implements LocationListener,
                       filterStoreList(CoverageIDSelectedInSpinner,RouteIDSelectedInSpinner);*/
                     }
                 });
-                alertCoverage=alertDialog.show();
+                alertCoverage = alertDialog.show();
             }
         });
-
 
 
         selectRouteSpinner.setOnClickListener(new View.OnClickListener() {
@@ -797,9 +727,9 @@ public class StorelistActivity extends BaseActivity implements LocationListener,
                 alertDialog = new AlertDialog.Builder(StorelistActivity.this);
                 LayoutInflater inflater = getLayoutInflater();
                 convertView = (View) inflater.inflate(R.layout.list_activity, null);
-                EditText inputSearch=	 (EditText) convertView.findViewById(R.id.inputSearch);
+                EditText inputSearch = (EditText) convertView.findViewById(R.id.inputSearch);
                 inputSearch.setVisibility(View.GONE);
-                listRoute = (ListView)convertView. findViewById(R.id.list_view);
+                listRoute = (ListView) convertView.findViewById(R.id.list_view);
 
                 listRoute.setAdapter(adapterRouteList);
                 alertDialog.setView(convertView);
@@ -814,25 +744,25 @@ public class StorelistActivity extends BaseActivity implements LocationListener,
                         //fsoIDSelectedInSpinner
 
                         alertRoute.dismiss();
-                        filterStoreList(CoverageIDSelectedInSpinner,RouteIDSelectedInSpinner);
+                        filterStoreList(CoverageIDSelectedInSpinner, RouteIDSelectedInSpinner);
                     }
                 });
-                alertRoute=alertDialog.show();
+                alertRoute = alertDialog.show();
             }
         });
-        menu_icon=(ImageView) findViewById(R.id.img_side_popUp);
+        menu_icon = (ImageView) findViewById(R.id.img_side_popUp);
         menu_icon.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                flgAddButtonCliked=0;
+                flgAddButtonCliked = 0;
                 OpenPopUpDialog();
             }
         });
 
-        rg_mode_of_visit=(RadioGroup) findViewById(R.id.rg_mode_of_visit);
-        rb_offline= (RadioButton) findViewById(R.id.rb_offline);
-        rb_online= (RadioButton) findViewById(R.id.rb_online);
+        rg_mode_of_visit = (RadioGroup) findViewById(R.id.rg_mode_of_visit);
+        rb_offline = (RadioButton) findViewById(R.id.rb_offline);
+        rb_online = (RadioButton) findViewById(R.id.rb_online);
         rg_mode_of_visit.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
@@ -906,11 +836,11 @@ public class StorelistActivity extends BaseActivity implements LocationListener,
               }*/
             }
         });
-        logoutIcon= (ImageView) findViewById(R.id.logoutIcon);
+        logoutIcon = (ImageView) findViewById(R.id.logoutIcon);
         logoutIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                flgAddButtonCliked=0;
+                flgAddButtonCliked = 0;
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(StorelistActivity.this);
                 alertDialog.setTitle("Information");
 
@@ -945,36 +875,34 @@ public class StorelistActivity extends BaseActivity implements LocationListener,
 
         if (CommonInfo.imei.equals("")) {
             CommonInfo.imei = imei;
-        }
-        else
-        {
-            imei=CommonInfo.imei;
+        } else {
+            imei = CommonInfo.imei;
         }
 
-        parentOfAllDynamicData=(LinearLayout) findViewById(R.id.parentOfAllDynamicData);
-        EditBtn= (Button) findViewById(R.id.EditBtn);
+        parentOfAllDynamicData = (LinearLayout) findViewById(R.id.parentOfAllDynamicData);
+        EditBtn = (Button) findViewById(R.id.EditBtn);
         //EditBtn is now not working for this project
         EditBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                flgAddButtonCliked=0;
-                boolean selectFlag=   checkStoreSelectededOrNot();
-                if(selectFlag){
+                flgAddButtonCliked = 0;
+                boolean selectFlag = checkStoreSelectededOrNot();
+                if (selectFlag) {
                     //Toast.makeText(getApplicationContext(),"selected",Toast.LENGTH_LONG).show();
-                    Intent intent=new Intent(StorelistActivity.this,AddNewStore_DynamicSectionWiseSO.class);
+                    Intent intent = new Intent(StorelistActivity.this, AddNewStore_DynamicSectionWiseSO.class);
 
                     String storeID = tagOfselectedStore.split(Pattern.quote("^"))[0];
-                    String   storeName = tagOfselectedStore.split(Pattern.quote("^"))[1];
+                    String storeName = tagOfselectedStore.split(Pattern.quote("^"))[1];
 
-                    int CoverageAreaID=Integer.parseInt(tagOfselectedStore.split(Pattern.quote("^"))[2]);
-                    int RouteNodeID=Integer.parseInt(tagOfselectedStore.split(Pattern.quote("^"))[3]);
-                    String StoreCategoryType=tagOfselectedStore.split(Pattern.quote("^"))[4];
-                    int StoreSectionCount=Integer.parseInt(tagOfselectedStore.split(Pattern.quote("^"))[5]);
+                    int CoverageAreaID = Integer.parseInt(tagOfselectedStore.split(Pattern.quote("^"))[2]);
+                    int RouteNodeID = Integer.parseInt(tagOfselectedStore.split(Pattern.quote("^"))[3]);
+                    String StoreCategoryType = tagOfselectedStore.split(Pattern.quote("^"))[4];
+                    int StoreSectionCount = Integer.parseInt(tagOfselectedStore.split(Pattern.quote("^"))[5]);
 
-                    intent.putExtra("FLAG_NEW_UPDATE","UPDATE");
+                    intent.putExtra("FLAG_NEW_UPDATE", "UPDATE");
 
 
-                    intent.putExtra("StoreID",storeID);
+                    intent.putExtra("StoreID", storeID);
                     intent.putExtra("StoreName", storeName);
                     intent.putExtra("CoverageAreaID", CoverageAreaID);
                     intent.putExtra("RouteNodeID", RouteNodeID);
@@ -982,118 +910,90 @@ public class StorelistActivity extends BaseActivity implements LocationListener,
                     intent.putExtra("StoreSectionCount", StoreSectionCount);
                     StorelistActivity.this.startActivity(intent);
                     finish();
-                }
-                else{
-                    Toast.makeText(getApplicationContext(),"Please select store ",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Please select store ", Toast.LENGTH_LONG).show();
 
                 }
             }
         });
-        RefreshBtn=(Button) findViewById(R.id.RefreshBtn);
+        RefreshBtn = (Button) findViewById(R.id.RefreshBtn);
         RefreshBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                flgAddButtonCliked=0;
+                flgAddButtonCliked = 0;
                 boolean isGPSok = false;
-                boolean isNWok=false;
+                boolean isNWok = false;
                 AddStoreBtn.setEnabled(false);
                 isGPSok = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
                 isNWok = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-                if(!isGPSok && !isNWok)
-                {
-                    try
-                    {
+                if (!isGPSok && !isNWok) {
+                    try {
                         showSettingsAlert();
-                    }
-                    catch(Exception e)
-                    {
+                    } catch (Exception e) {
 
                     }
                     isGPSok = false;
-                    isNWok=false;
-                }
-                else
-                {
+                    isNWok = false;
+                } else {
                     locationRetrievingAndDistanceCalculating();
                 }
             }
         });
-        AddStoreBtn= (Button) findViewById(R.id.AddStoreBtn);
+        AddStoreBtn = (Button) findViewById(R.id.AddStoreBtn);
         AddStoreBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                flgAddButtonCliked=1;
+                flgAddButtonCliked = 1;
                 RefreshBtn.setEnabled(false);
-                CommonInfo.flgLTFoodsSOOnlineOffLine=1;
+                CommonInfo.flgLTFoodsSOOnlineOffLine = 1;
 
-                CommonInfo.flgNewStoreORStoreValidation=1;
+                CommonInfo.flgNewStoreORStoreValidation = 1;
 
                 setBtnBackgroundOfLineOnline();
                 {
-                    int chkFlgValue=dbengine.fnCheckTableFlagValue("tblAllServicesCalledSuccessfull","flgAllServicesCalledOrNot");
-                    if(chkFlgValue==1)
-                    {
+                    int chkFlgValue = dbengine.fnCheckTableFlagValue("tblAllServicesCalledSuccessfull", "flgAllServicesCalledOrNot");
+                    if (chkFlgValue == 1) {
                         fnshowalertHalfDataRefreshed();
-                    }
-                    else
-                    {
-                        if(pDialog2STANDBY!=null)
-                        {
-                            if(pDialog2STANDBY.isShowing())
-                            {
+                    } else {
+                        if (pDialog2STANDBY != null) {
+                            if (pDialog2STANDBY.isShowing()) {
 
 
-                            }
-                            else
-                            {
+                            } else {
                                 boolean isGPSok = false;
-                                boolean isNWok=false;
+                                boolean isNWok = false;
                                 isGPSok = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
                                 isNWok = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-                                if(!isGPSok && !isNWok)
-                                {
-                                    try
-                                    {
+                                if (!isGPSok && !isNWok) {
+                                    try {
                                         showSettingsAlert();
-                                    }
-                                    catch(Exception e)
-                                    {
+                                    } catch (Exception e) {
 
                                     }
                                     isGPSok = false;
-                                    isNWok=false;
-                                }
-                                else
-                                {
+                                    isNWok = false;
+                                } else {
                                     locationRetrievingWhilwAddingNewOutlet();
                                 }
                             }
-                        }
-                        else
-                        {
+                        } else {
                             boolean isGPSok = false;
-                            boolean isNWok=false;
+                            boolean isNWok = false;
                             isGPSok = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
                             isNWok = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-                            if(!isGPSok && !isNWok)
-                            {
-                                try
-                                {
+                            if (!isGPSok && !isNWok) {
+                                try {
                                     showSettingsAlert();
-                                }
-                                catch(Exception e)
-                                {
+                                } catch (Exception e) {
 
                                 }
                                 isGPSok = false;
-                                isNWok=false;
-                            }
-                            else
-                            {
+                                isNWok = false;
+                            } else {
                                 locationRetrievingWhilwAddingNewOutlet();
                             }
 
@@ -1127,38 +1027,32 @@ public class StorelistActivity extends BaseActivity implements LocationListener,
         });
 
 
-
     }
 
-    public boolean checkStoreSelectededOrNot()
-    {
-        boolean selectedFlag=false;
-        tagOfselectedStore="0"+"^"+"0";
-        if(parentOfAllDynamicData!=null && parentOfAllDynamicData.getChildCount()>0){
-            for(int i=0;parentOfAllDynamicData.getChildCount()>i;i++)
-            {
-                LinearLayout parentOfRadiobtn= (LinearLayout) parentOfAllDynamicData.getChildAt(i);
-                RadioButton childRadiobtn= (RadioButton) parentOfRadiobtn.getChildAt(0);
-                if(childRadiobtn.isChecked()){
-                    selectedFlag=true;
-                    tagOfselectedStore= childRadiobtn.getTag().toString().trim();
+    public boolean checkStoreSelectededOrNot() {
+        boolean selectedFlag = false;
+        tagOfselectedStore = "0" + "^" + "0";
+        if (parentOfAllDynamicData != null && parentOfAllDynamicData.getChildCount() > 0) {
+            for (int i = 0; parentOfAllDynamicData.getChildCount() > i; i++) {
+                LinearLayout parentOfRadiobtn = (LinearLayout) parentOfAllDynamicData.getChildAt(i);
+                RadioButton childRadiobtn = (RadioButton) parentOfRadiobtn.getChildAt(0);
+                if (childRadiobtn.isChecked()) {
+                    selectedFlag = true;
+                    tagOfselectedStore = childRadiobtn.getTag().toString().trim();
                     break;
                 }
 
 
             }
 
-        }
-        else
-        {
-            selectedFlag=false;
+        } else {
+            selectedFlag = false;
         }
         return selectedFlag;
     }
 
-    public void  getDataFromDatabaseToHashmap()
-    {
-        hmapStoresFromDataBase =dbengine.fnGeStoreListAllForSO(CoverageID,RouteID);
+    public void getDataFromDatabaseToHashmap() {
+        hmapStoresFromDataBase = dbengine.fnGeStoreListAllForSO(CoverageID, RouteID);
 
       /*if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
       {
@@ -1237,8 +1131,8 @@ public class StorelistActivity extends BaseActivity implements LocationListener,
       hmapStoresFromDataBase.put("9", "Store Croma Gurgaon");
       hmapStoresFromDataBase.put("10","Store Croma Gurgaon");*/
     }
-    public void fnshowalertHalfDataRefreshed()
-    {
+
+    public void fnshowalertHalfDataRefreshed() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(StorelistActivity.this);
         alertDialog.setTitle("Information");
 
@@ -1250,7 +1144,7 @@ public class StorelistActivity extends BaseActivity implements LocationListener,
 
 
                 dialog.dismiss();
-                GetStoreAllData getStoreAllDataAsync= new GetStoreAllData(StorelistActivity.this);
+                GetStoreAllData getStoreAllDataAsync = new GetStoreAllData(StorelistActivity.this);
                 getStoreAllDataAsync.execute();
 
 
@@ -1267,186 +1161,167 @@ public class StorelistActivity extends BaseActivity implements LocationListener,
         alertDialog.show();
     }
 
-    public void addViewIntoTable()
-    {
+    public void addViewIntoTable() {
         hmapStoreViewAndName.clear();
-        for(Map.Entry<String, String> entry:hmapStoresFromDataBase.entrySet())
-        {
-            String storeID=entry.getKey().toString().trim();
+        for (Map.Entry<String, String> entry : hmapStoresFromDataBase.entrySet()) {
+            String storeID = entry.getKey().toString().trim();
             //StoreID,StoreName,DateAdded,CoverageAreaID,RouteNodeID,StoreCategoryType,StoreSectionCount,flgApproveOrRejectOrNoActionOrReVisit
             ////StoreName,DateAdded,CoverageAreaID,RouteNodeID,StoreCategoryType,StoreSectionCount,flgApproveOrRejectOrNoActionOrReVisit
-            String StoreDetails=entry.getValue().toString().trim();
+            String StoreDetails = entry.getValue().toString().trim();
             String StoreName = StoreDetails.split(Pattern.quote("^"))[0];
             String DateAdded = StoreDetails.split(Pattern.quote("^"))[1];
-            int CoverageAreaID=Integer.parseInt(StoreDetails.split(Pattern.quote("^"))[2]);
-            int RouteNodeID=Integer.parseInt(StoreDetails.split(Pattern.quote("^"))[3]);
-            String StoreCategoryType=StoreDetails.split(Pattern.quote("^"))[4];
-            int StoreSectionCount=Integer.parseInt(StoreDetails.split(Pattern.quote("^"))[5]);
-            int flgApproveOrRejectOrNoActionOrReVisit=Integer.parseInt(StoreDetails.split(Pattern.quote("^"))[6]);
-            int sStat=Integer.parseInt(StoreDetails.split(Pattern.quote("^"))[7]);
-            int flgOldNewStore=Integer.parseInt(StoreDetails.split(Pattern.quote("^"))[8]);
-            int flgReMap=Integer.parseInt(StoreDetails.split(Pattern.quote("^"))[9]);
+            int CoverageAreaID = Integer.parseInt(StoreDetails.split(Pattern.quote("^"))[2]);
+            int RouteNodeID = Integer.parseInt(StoreDetails.split(Pattern.quote("^"))[3]);
+            String StoreCategoryType = StoreDetails.split(Pattern.quote("^"))[4];
+            int StoreSectionCount = Integer.parseInt(StoreDetails.split(Pattern.quote("^"))[5]);
+            int flgApproveOrRejectOrNoActionOrReVisit = Integer.parseInt(StoreDetails.split(Pattern.quote("^"))[6]);
+            int sStat = Integer.parseInt(StoreDetails.split(Pattern.quote("^"))[7]);
+            int flgOldNewStore = Integer.parseInt(StoreDetails.split(Pattern.quote("^"))[8]);
+            int flgReMap = Integer.parseInt(StoreDetails.split(Pattern.quote("^"))[9]);
             /*String LatCode = StoreDetails.split(Pattern.quote("^"))[1];
             String LongCode = StoreDetails.split(Pattern.quote("^"))[2];
             */
 
-            View dynamic_container=getLayoutInflater().inflate(R.layout.store_single_row,null);
-            TextView storeTextview= (TextView) dynamic_container.findViewById(R.id.storeTextview);
+            View dynamic_container = getLayoutInflater().inflate(R.layout.store_single_row, null);
+            TextView storeTextview = (TextView) dynamic_container.findViewById(R.id.storeTextview);
 
 
-            storeTextview.setTag(storeID+"^"+StoreName+"^"+CoverageAreaID+"^"+RouteNodeID+"^"+StoreCategoryType+"^"+StoreSectionCount+"^"+flgOldNewStore);
+            storeTextview.setTag(storeID + "^" + StoreName + "^" + CoverageAreaID + "^" + RouteNodeID + "^" + StoreCategoryType + "^" + StoreSectionCount + "^" + flgOldNewStore);
             storeTextview.setText(StoreName);
-            dynamic_container.setTag(storeID+"^"+CoverageAreaID+"^"+RouteNodeID+"^"+StoreCategoryType);
+            dynamic_container.setTag(storeID + "^" + CoverageAreaID + "^" + RouteNodeID + "^" + StoreCategoryType);
             dynamic_container.setVisibility(View.VISIBLE);
 
-            hmapStoreViewAndName.put(dynamic_container,StoreName);
+            hmapStoreViewAndName.put(dynamic_container, StoreName);
 
-            if(flgApproveOrRejectOrNoActionOrReVisit==1)
-            {
+            if (flgApproveOrRejectOrNoActionOrReVisit == 1) {
                 storeTextview.setTextColor(getResources().getColor(R.color.green));
             }
-            if(flgApproveOrRejectOrNoActionOrReVisit==2)
-            {
+            if (flgApproveOrRejectOrNoActionOrReVisit == 2) {
                 storeTextview.setTextColor(getResources().getColor(R.color.red));
             }
-            if(flgApproveOrRejectOrNoActionOrReVisit==3)
-            {
+            if (flgApproveOrRejectOrNoActionOrReVisit == 3) {
                 storeTextview.setTextColor(getResources().getColor(R.color.blue));
             }
-            if(flgReMap==3)
-            {
+            if (flgReMap == 3) {
                 storeTextview.setTextColor(Color.parseColor("#EF6C00"));
             }
-            if(sStat==1)
-            {
-                if(flgOldNewStore==1)
-                {
-                    storeTextview.setText(StoreName +"  :(Newly Added)");
+            if (sStat == 1) {
+                if (flgOldNewStore == 1) {
+                    storeTextview.setText(StoreName + "  :(Newly Added)");
                 }
 
 
-                    storeTextview.setTextColor(getResources().getColor(R.color.mdtp_accent_color_dark));
+                storeTextview.setTextColor(getResources().getColor(R.color.mdtp_accent_color_dark));
 
             }
 
 
-            if(flgApproveOrRejectOrNoActionOrReVisit==0 && sStat==4)
-            {
+            if (flgApproveOrRejectOrNoActionOrReVisit == 0 && sStat == 4) {
                 storeTextview.setTextColor(getResources().getColor(R.color.green));
             }
-if(sStat!=4)
-{
-    if(flgReMap==3 && flgApproveOrRejectOrNoActionOrReVisit!=0)
-    {
-        storeTextview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                final TextView tvStores= (TextView) view;
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(StorelistActivity.this);
-                alertDialog.setTitle("Information");
+            if (sStat != 4) {
+                if (flgReMap == 3 && flgApproveOrRejectOrNoActionOrReVisit != 0) {
+                    storeTextview.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(final View view) {
+                            final TextView tvStores = (TextView) view;
+                            AlertDialog.Builder alertDialog = new AlertDialog.Builder(StorelistActivity.this);
+                            alertDialog.setTitle("Information");
 
-                alertDialog.setCancelable(false);
-                alertDialog.setMessage("Do you  want to edit store ");
-                alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        if(view.getTag().toString().split(Pattern.quote("^"))[6].equals("1"))
-                        {
-                            CommonInfo.flgNewStoreORStoreValidation=1;
-                        }
-                        else
-                        {
-                            CommonInfo.flgNewStoreORStoreValidation=2;
-                        }
+                            alertDialog.setCancelable(false);
+                            alertDialog.setMessage("Do you  want to edit store ");
+                            alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    if (view.getTag().toString().split(Pattern.quote("^"))[6].equals("1")) {
+                                        CommonInfo.flgNewStoreORStoreValidation = 1;
+                                    } else {
+                                        CommonInfo.flgNewStoreORStoreValidation = 2;
+                                    }
 
 
-                        int chkFlgValue=dbengine.fnCheckTableFlagValue("tblAllServicesCalledSuccessfull","flgAllServicesCalledOrNot");
-                        if(chkFlgValue==1)
-                        {
-                            dialog.dismiss();
-                            fnshowalertHalfDataRefreshed();
-                        }
-                        else
-                        {
-                            String tagFromStore=   tvStores.getTag().toString().trim();
-                            Intent intent=new Intent(StorelistActivity.this,AddNewStore_DynamicSectionWiseSO.class);
+                                    int chkFlgValue = dbengine.fnCheckTableFlagValue("tblAllServicesCalledSuccessfull", "flgAllServicesCalledOrNot");
+                                    if (chkFlgValue == 1) {
+                                        dialog.dismiss();
+                                        fnshowalertHalfDataRefreshed();
+                                    } else {
+                                        String tagFromStore = tvStores.getTag().toString().trim();
+                                        Intent intent = new Intent(StorelistActivity.this, AddNewStore_DynamicSectionWiseSO.class);
 
-                            //  storeTextview.setTag(storeID+"^"+StoreName+"^"+CoverageAreaID+"^"+RouteNodeID+"^"+StoreCategoryType+"^"+StoreSectionCount);
-                            String storeID = tagFromStore.split(Pattern.quote("^"))[0];
-                            String   storeName = tagFromStore.split(Pattern.quote("^"))[1];
+                                        //  storeTextview.setTag(storeID+"^"+StoreName+"^"+CoverageAreaID+"^"+RouteNodeID+"^"+StoreCategoryType+"^"+StoreSectionCount);
+                                        String storeID = tagFromStore.split(Pattern.quote("^"))[0];
+                                        String storeName = tagFromStore.split(Pattern.quote("^"))[1];
 
-                            int CoverageAreaID=Integer.parseInt(tagFromStore.split(Pattern.quote("^"))[2]);
-                            int RouteNodeID=Integer.parseInt(tagFromStore.split(Pattern.quote("^"))[3]);
-                            String StoreCategoryType=tagFromStore.split(Pattern.quote("^"))[4];
-                            int StoreSectionCount=Integer.parseInt(tagFromStore.split(Pattern.quote("^"))[5]);
+                                        int CoverageAreaID = Integer.parseInt(tagFromStore.split(Pattern.quote("^"))[2]);
+                                        int RouteNodeID = Integer.parseInt(tagFromStore.split(Pattern.quote("^"))[3]);
+                                        String StoreCategoryType = tagFromStore.split(Pattern.quote("^"))[4];
+                                        int StoreSectionCount = Integer.parseInt(tagFromStore.split(Pattern.quote("^"))[5]);
 
-                            intent.putExtra("FLAG_NEW_UPDATE","UPDATE");
+                                        intent.putExtra("FLAG_NEW_UPDATE", "UPDATE");
 
 
-                            intent.putExtra("StoreID",storeID);
-                            intent.putExtra("StoreName", storeName);
-                            intent.putExtra("CoverageAreaID", ""+CoverageAreaID);
-                            intent.putExtra("RouteNodeID", ""+RouteNodeID);
-                            intent.putExtra("StoreCategoryType", StoreCategoryType);
-                            intent.putExtra("StoreSectionCount", ""+StoreSectionCount);
-                            dialog.dismiss();
-                            StorelistActivity.this.startActivity(intent);
+                                        intent.putExtra("StoreID", storeID);
+                                        intent.putExtra("StoreName", storeName);
+                                        intent.putExtra("CoverageAreaID", "" + CoverageAreaID);
+                                        intent.putExtra("RouteNodeID", "" + RouteNodeID);
+                                        intent.putExtra("StoreCategoryType", StoreCategoryType);
+                                        intent.putExtra("StoreSectionCount", "" + StoreSectionCount);
+                                        dialog.dismiss();
+                                        StorelistActivity.this.startActivity(intent);
 
-                            finish();
+                                        finish();
 
-                        }
+                                    }
 
 
 //--------------------------------------------------------------------------------------------------------------
-                        //finishAffinity();
+                                    //finishAffinity();
 
-                    }
-                });
-                alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
+                                }
+                            });
+                            alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
 
-                    }
-                });
+                                }
+                            });
 
-                // Showing Alert Message
-                alertDialog.show();
+                            // Showing Alert Message
+                            alertDialog.show();
+                        }
+                    });
+                }
+
             }
-        });
-    }
-
-}
 
 
-            RadioButton radioButton= (RadioButton) dynamic_container.findViewById(R.id.radiobtn);
-            radioButton.setTag(storeID+"^"+StoreName);
+            RadioButton radioButton = (RadioButton) dynamic_container.findViewById(R.id.radiobtn);
+            radioButton.setTag(storeID + "^" + StoreName);
             radioButton.setText(StoreName);
             radioButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     unCheckRadioButton();
-                    RadioButton rb= (RadioButton) view;
+                    RadioButton rb = (RadioButton) view;
                     rb.setChecked(true);
                 }
             });
             parentOfAllDynamicData.addView(dynamic_container);
         }
     }
-    public void unCheckRadioButton()
-    {
-        for(int i=0;parentOfAllDynamicData.getChildCount()>i;i++)
-        {
-            LinearLayout dd= (LinearLayout) parentOfAllDynamicData.getChildAt(i);
-            RadioButton ff= (RadioButton) dd.getChildAt(0);
+
+    public void unCheckRadioButton() {
+        for (int i = 0; parentOfAllDynamicData.getChildCount() > i; i++) {
+            LinearLayout dd = (LinearLayout) parentOfAllDynamicData.getChildAt(i);
+            RadioButton ff = (RadioButton) dd.getChildAt(0);
             ff.setChecked(false);
-            int ss=parentOfAllDynamicData.getChildCount();
+            int ss = parentOfAllDynamicData.getChildCount();
 
         }
 
     }
 
-    public void showSettingsAlert()
-    {
+    public void showSettingsAlert() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setTitle("Information");
         alertDialog.setIcon(R.drawable.error_info_ico);
@@ -1454,13 +1329,13 @@ if(sStat!=4)
         alertDialog.setMessage("GPS is not enabled. \nPlease select all settings on the next page!");
 
         alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog,int which) {
+            public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivity(intent);
             }
         });
 
-        alertDialogSettings=alertDialog.create();
+        alertDialogSettings = alertDialog.create();
         alertDialogSettings.show();
     }
 
@@ -1469,6 +1344,7 @@ if(sStat!=4)
         startLocationUpdates();
 
     }
+
     protected void startLocationUpdates() {
         PendingResult<Status> pendingResult = LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
 
@@ -1488,19 +1364,20 @@ if(sStat!=4)
         updateUI();
 
     }
+
     private void updateUI() {
-        Location loc =mCurrentLocation;
+        Location loc = mCurrentLocation;
         if (null != mCurrentLocation) {
             String lat = String.valueOf(mCurrentLocation.getLatitude());
             String lng = String.valueOf(mCurrentLocation.getLongitude());
 
-            FusedLocationLatitude=lat;
-            FusedLocationLongitude=lng;
-            FusedLocationProvider=mCurrentLocation.getProvider();
-            FusedLocationAccuracy=""+mCurrentLocation.getAccuracy();
-            fusedData="At Time: " + mLastUpdateTime  +
-                    "Latitude: " + lat  +
-                    "Longitude: " + lng  +
+            FusedLocationLatitude = lat;
+            FusedLocationLongitude = lng;
+            FusedLocationProvider = mCurrentLocation.getProvider();
+            FusedLocationAccuracy = "" + mCurrentLocation.getAccuracy();
+            fusedData = "At Time: " + mLastUpdateTime +
+                    "Latitude: " + lat +
+                    "Longitude: " + lng +
                     "Accuracy: " + mCurrentLocation.getAccuracy() +
                     "Provider: " + mCurrentLocation.getProvider();
 
@@ -1515,19 +1392,21 @@ if(sStat!=4)
         locationManager.removeUpdates(appLocationService);
 
     }
+
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(INTERVAL);
         mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
+
     protected void stopLocationUpdates() {
         LocationServices.FusedLocationApi.removeLocationUpdates(
                 mGoogleApiClient, this);
 
     }
-    public void locationRetrievingAndDistanceCalculating()
-    {
+
+    public void locationRetrievingAndDistanceCalculating() {
         appLocationService = new AppLocationService();
 
         pm = (PowerManager) getSystemService(POWER_SERVICE);
@@ -1536,12 +1415,10 @@ if(sStat!=4)
                 | PowerManager.ON_AFTER_RELEASE, "INFO");
         wl.acquire();
 
-if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
-{
-    pDialog2STANDBY = ProgressDialog.show(StorelistActivity.this, getText(R.string.genTermPleaseWaitNew), getText(R.string.searchingcurrentposition), true);
-}
-        if(CommonInfo.flgLTFoodsSOOnlineOffLine==1)
-        {
+        if (CommonInfo.flgLTFoodsSOOnlineOffLine == 0) {
+            pDialog2STANDBY = ProgressDialog.show(StorelistActivity.this, getText(R.string.genTermPleaseWaitNew), getText(R.string.searchingcurrentposition), true);
+        }
+        if (CommonInfo.flgLTFoodsSOOnlineOffLine == 1) {
             pDialog2STANDBY = ProgressDialog.show(StorelistActivity.this, getText(R.string.genTermPleaseWaitNew), getText(R.string.searchingnearbystores), true);
         }
 
@@ -1570,9 +1447,7 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
     }
 
 
-
-    public void locationRetrievingWhilwAddingNewOutlet()
-    {
+    public void locationRetrievingWhilwAddingNewOutlet() {
         appLocationService = new AppLocationService();
 
         pm = (PowerManager) getSystemService(POWER_SERVICE);
@@ -1609,43 +1484,6 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     private boolean isGooglePlayServicesAvailable() {
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if (ConnectionResult.SUCCESS == status) {
@@ -1664,122 +1502,109 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
         }
 
         @Override
-        public void onFinish()
-        {
-            AllProvidersLocation="";
+        public void onTick(long millisUntilFinished) {
+            isCountdownRunning = true;
+        }
+
+        @Override
+        public void onFinish() {
+            AllProvidersLocation = "";
             isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-            String GpsLat="0";
-            String GpsLong="0";
-            String GpsAccuracy="0";
-            String GpsAddress="0";
-            if(isGPSEnabled)
-            {
+            String GpsLat = "0";
+            String GpsLong = "0";
+            String GpsAccuracy = "0";
+            String GpsAddress = "0";
+            if (isGPSEnabled) {
 
-                Location nwLocation=appLocationService.getLocation(locationManager,LocationManager.GPS_PROVIDER,location);
+                Location nwLocation = appLocationService.getLocation(locationManager, LocationManager.GPS_PROVIDER, location);
 
-                if(nwLocation!=null){
-                    double lattitude=nwLocation.getLatitude();
-                    double longitude=nwLocation.getLongitude();
-                    double accuracy= nwLocation.getAccuracy();
-                    GpsLat=""+lattitude;
-                    GpsLong=""+longitude;
-                    GpsAccuracy=""+accuracy;
+                if (nwLocation != null) {
+                    double lattitude = nwLocation.getLatitude();
+                    double longitude = nwLocation.getLongitude();
+                    double accuracy = nwLocation.getAccuracy();
+                    GpsLat = "" + lattitude;
+                    GpsLong = "" + longitude;
+                    GpsAccuracy = "" + accuracy;
 
-                    if(isOnline())
-                    {
-                        GpsAddress=getAddressOfProviders(GpsLat, GpsLong);
-                    }
-                    else
-                    {
-                        GpsAddress="NA";
+                    if (isOnline()) {
+                        GpsAddress = getAddressOfProviders(GpsLat, GpsLong);
+                    } else {
+                        GpsAddress = "NA";
                     }
 
-                    GPSLocationLatitude=""+lattitude;
-                    GPSLocationLongitude=""+longitude;
-                    GPSLocationProvider="GPS";
-                    GPSLocationAccuracy=""+accuracy;
-                    AllProvidersLocation="GPS=Lat:"+lattitude+"Long:"+longitude+"Acc:"+accuracy;
+                    GPSLocationLatitude = "" + lattitude;
+                    GPSLocationLongitude = "" + longitude;
+                    GPSLocationProvider = "GPS";
+                    GPSLocationAccuracy = "" + accuracy;
+                    AllProvidersLocation = "GPS=Lat:" + lattitude + "Long:" + longitude + "Acc:" + accuracy;
                 }
             }
 
-            Location gpsLocation=appLocationService.getLocation(locationManager,LocationManager.NETWORK_PROVIDER,location);
-            String NetwLat="0";
-            String NetwLong="0";
-            String NetwAccuracy="0";
-            String NetwAddress="0";
-            if(gpsLocation!=null){
-                double lattitude1=gpsLocation.getLatitude();
-                double longitude1=gpsLocation.getLongitude();
-                double accuracy1= gpsLocation.getAccuracy();
+            Location gpsLocation = appLocationService.getLocation(locationManager, LocationManager.NETWORK_PROVIDER, location);
+            String NetwLat = "0";
+            String NetwLong = "0";
+            String NetwAccuracy = "0";
+            String NetwAddress = "0";
+            if (gpsLocation != null) {
+                double lattitude1 = gpsLocation.getLatitude();
+                double longitude1 = gpsLocation.getLongitude();
+                double accuracy1 = gpsLocation.getAccuracy();
 
-                NetwLat=""+lattitude1;
-                NetwLong=""+longitude1;
-                NetwAccuracy=""+accuracy1;
+                NetwLat = "" + lattitude1;
+                NetwLong = "" + longitude1;
+                NetwAccuracy = "" + accuracy1;
 
-                if(isOnline())
-                {
-                    NetwAddress=getAddressOfProviders(NetwLat, NetwLong);
-                }
-                else
-                {
-                    NetwAddress="NA";
+                if (isOnline()) {
+                    NetwAddress = getAddressOfProviders(NetwLat, NetwLong);
+                } else {
+                    NetwAddress = "NA";
                 }
 
-                NetworkLocationLatitude=""+lattitude1;
-                NetworkLocationLongitude=""+longitude1;
-                NetworkLocationProvider="Network";
-                NetworkLocationAccuracy=""+accuracy1;
-                if(!AllProvidersLocation.equals(""))
-                {
-                    AllProvidersLocation=AllProvidersLocation+"$Network=Lat:"+lattitude1+"Long:"+longitude1+"Acc:"+accuracy1;
+                NetworkLocationLatitude = "" + lattitude1;
+                NetworkLocationLongitude = "" + longitude1;
+                NetworkLocationProvider = "Network";
+                NetworkLocationAccuracy = "" + accuracy1;
+                if (!AllProvidersLocation.equals("")) {
+                    AllProvidersLocation = AllProvidersLocation + "$Network=Lat:" + lattitude1 + "Long:" + longitude1 + "Acc:" + accuracy1;
+                } else {
+                    AllProvidersLocation = "Network=Lat:" + lattitude1 + "Long:" + longitude1 + "Acc:" + accuracy1;
                 }
-                else
-                {
-                    AllProvidersLocation="Network=Lat:"+lattitude1+"Long:"+longitude1+"Acc:"+accuracy1;
-                }
-                System.out.println("LOCATION(N/W)  LATTITUDE: " +lattitude1 + "LONGITUDE:" + longitude1+ "accuracy:" + accuracy1);
+                System.out.println("LOCATION(N/W)  LATTITUDE: " + lattitude1 + "LONGITUDE:" + longitude1 + "accuracy:" + accuracy1);
 
             }
 									 /* TextView accurcy=(TextView) findViewById(R.id.Acuracy);
 									  accurcy.setText("GPS:"+GPSLocationAccuracy+"\n"+"NETWORK"+NetworkLocationAccuracy+"\n"+"FUSED"+fusedData);*/
 
-            System.out.println("LOCATION Fused"+fusedData);
+            System.out.println("LOCATION Fused" + fusedData);
 
-            String FusedLat="0";
-            String FusedLong="0";
-            String FusedAccuracy="0";
-            String FusedAddress="0";
+            String FusedLat = "0";
+            String FusedLong = "0";
+            String FusedAccuracy = "0";
+            String FusedAddress = "0";
 
-            if(!FusedLocationProvider.equals(""))
-            {
-                fnAccurateProvider="Fused";
-                fnLati=FusedLocationLatitude;
-                fnLongi=FusedLocationLongitude;
-                fnAccuracy= Double.parseDouble(FusedLocationAccuracy);
+            if (!FusedLocationProvider.equals("")) {
+                fnAccurateProvider = "Fused";
+                fnLati = FusedLocationLatitude;
+                fnLongi = FusedLocationLongitude;
+                fnAccuracy = Double.parseDouble(FusedLocationAccuracy);
 
-                FusedLat=FusedLocationLatitude;
-                FusedLong=FusedLocationLongitude;
-                FusedAccuracy=FusedLocationAccuracy;
-                FusedLocationLatitudeWithFirstAttempt=FusedLocationLatitude;
-                FusedLocationLongitudeWithFirstAttempt=FusedLocationLongitude;
-                FusedLocationAccuracyWithFirstAttempt=FusedLocationAccuracy;
+                FusedLat = FusedLocationLatitude;
+                FusedLong = FusedLocationLongitude;
+                FusedAccuracy = FusedLocationAccuracy;
+                FusedLocationLatitudeWithFirstAttempt = FusedLocationLatitude;
+                FusedLocationLongitudeWithFirstAttempt = FusedLocationLongitude;
+                FusedLocationAccuracyWithFirstAttempt = FusedLocationAccuracy;
 
-                if(isOnline())
-                {
-                    FusedAddress=getAddressOfProviders(FusedLat, FusedLong);
-                }
-                else
-                {
-                    FusedAddress="NA";
+                if (isOnline()) {
+                    FusedAddress = getAddressOfProviders(FusedLat, FusedLong);
+                } else {
+                    FusedAddress = "NA";
                 }
 
-                if(!AllProvidersLocation.equals(""))
-                {
-                    AllProvidersLocation=AllProvidersLocation+"$Fused=Lat:"+FusedLocationLatitude+"Long:"+FusedLocationLongitude+"Acc:"+fnAccuracy;
-                }
-                else
-                {
-                    AllProvidersLocation="Fused=Lat:"+FusedLocationLatitude+"Long:"+FusedLocationLongitude+"Acc:"+fnAccuracy;
+                if (!AllProvidersLocation.equals("")) {
+                    AllProvidersLocation = AllProvidersLocation + "$Fused=Lat:" + FusedLocationLatitude + "Long:" + FusedLocationLongitude + "Acc:" + fnAccuracy;
+                } else {
+                    AllProvidersLocation = "Fused=Lat:" + FusedLocationLatitude + "Long:" + FusedLocationLongitude + "Acc:" + fnAccuracy;
                 }
             }
 
@@ -1789,107 +1614,88 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
             mGoogleApiClient.disconnect();*/
 
             try {
-                if(mGoogleApiClient!=null && mGoogleApiClient.isConnected())
-                {
+                if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
                     stopLocationUpdates();
                     mGoogleApiClient.disconnect();
                 }
-            }
-            catch (Exception e){
+            } catch (Exception e) {
 
             }
 
 
+            fnAccurateProvider = "";
+            fnLati = "0";
+            fnLongi = "0";
+            fnAccuracy = 0.0;
 
-            fnAccurateProvider="";
-            fnLati="0";
-            fnLongi="0";
-            fnAccuracy=0.0;
-
-            if(!FusedLocationProvider.equals(""))
-            {
-                fnAccurateProvider="Fused";
-                fnLati=FusedLocationLatitude;
-                fnLongi=FusedLocationLongitude;
-                fnAccuracy= Double.parseDouble(FusedLocationAccuracy);
+            if (!FusedLocationProvider.equals("")) {
+                fnAccurateProvider = "Fused";
+                fnLati = FusedLocationLatitude;
+                fnLongi = FusedLocationLongitude;
+                fnAccuracy = Double.parseDouble(FusedLocationAccuracy);
             }
 
-            if(!fnAccurateProvider.equals(""))
-            {
-                if(!GPSLocationProvider.equals(""))
-                {
-                    if(Double.parseDouble(GPSLocationAccuracy)<fnAccuracy)
-                    {
-                        fnAccurateProvider="Gps";
-                        fnLati=GPSLocationLatitude;
-                        fnLongi=GPSLocationLongitude;
-                        fnAccuracy= Double.parseDouble(GPSLocationAccuracy);
+            if (!fnAccurateProvider.equals("")) {
+                if (!GPSLocationProvider.equals("")) {
+                    if (Double.parseDouble(GPSLocationAccuracy) < fnAccuracy) {
+                        fnAccurateProvider = "Gps";
+                        fnLati = GPSLocationLatitude;
+                        fnLongi = GPSLocationLongitude;
+                        fnAccuracy = Double.parseDouble(GPSLocationAccuracy);
                     }
                 }
-            }
-            else
-            {
-                if(!GPSLocationProvider.equals(""))
-                {
-                    fnAccurateProvider="Gps";
-                    fnLati=GPSLocationLatitude;
-                    fnLongi=GPSLocationLongitude;
-                    fnAccuracy= Double.parseDouble(GPSLocationAccuracy);
+            } else {
+                if (!GPSLocationProvider.equals("")) {
+                    fnAccurateProvider = "Gps";
+                    fnLati = GPSLocationLatitude;
+                    fnLongi = GPSLocationLongitude;
+                    fnAccuracy = Double.parseDouble(GPSLocationAccuracy);
                 }
             }
 
-            if(!fnAccurateProvider.equals(""))
-            {
-                if(!NetworkLocationProvider.equals(""))
-                {
-                    if(Double.parseDouble(NetworkLocationAccuracy)<fnAccuracy)
-                    {
-                        fnAccurateProvider="Network";
-                        fnLati=NetworkLocationLatitude;
-                        fnLongi=NetworkLocationLongitude;
-                        fnAccuracy= Double.parseDouble(NetworkLocationAccuracy);
+            if (!fnAccurateProvider.equals("")) {
+                if (!NetworkLocationProvider.equals("")) {
+                    if (Double.parseDouble(NetworkLocationAccuracy) < fnAccuracy) {
+                        fnAccurateProvider = "Network";
+                        fnLati = NetworkLocationLatitude;
+                        fnLongi = NetworkLocationLongitude;
+                        fnAccuracy = Double.parseDouble(NetworkLocationAccuracy);
                     }
                 }
-            }
-            else
-            {
-                if(!NetworkLocationProvider.equals(""))
-                {
-                    fnAccurateProvider="Network";
-                    fnLati=NetworkLocationLatitude;
-                    fnLongi=NetworkLocationLongitude;
-                    fnAccuracy= Double.parseDouble(NetworkLocationAccuracy);
+            } else {
+                if (!NetworkLocationProvider.equals("")) {
+                    fnAccurateProvider = "Network";
+                    fnLati = NetworkLocationLatitude;
+                    fnLongi = NetworkLocationLongitude;
+                    fnAccuracy = Double.parseDouble(NetworkLocationAccuracy);
                 }
             }
             // fnAccurateProvider="";
-            if(fnAccurateProvider.equals(""))
-            {
+            if (fnAccurateProvider.equals("")) {
                 //because no location found so updating table with NA
                 dbengine.open();
                 dbengine.deleteLocationTable();
-                dbengine.saveTblLocationDetails("NA", "NA", "NA","NA","NA","NA","NA","NA", "NA", "NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA");
+                dbengine.saveTblLocationDetails("NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA");
                 dbengine.close();
-                if(pDialog2STANDBY!=null) {
+                if (pDialog2STANDBY != null) {
                     if (pDialog2STANDBY.isShowing()) {
-                        pDialog2STANDBY.dismiss();
+                        if (!isFinishing() && !isDestroyed()) {
+                            pDialog2STANDBY.dismiss();
+                        }
                     }
                 }
 
-                if(flgAddButtonCliked==0)
-                {
-                    int flagtoShowStorelistOrAddnewStore=dbengine.fncheckCountNearByStoreExistsOrNot(CommonInfo.DistanceRange);
+                if (flgAddButtonCliked == 0) {
+                    int flagtoShowStorelistOrAddnewStore = dbengine.fncheckCountNearByStoreExistsOrNot(CommonInfo.DistanceRange);
 
 
-                    if(flagtoShowStorelistOrAddnewStore==1)
-                    {
+                    if (flagtoShowStorelistOrAddnewStore == 1) {
                         getDataFromDatabaseToHashmap();
-                        if(parentOfAllDynamicData.getChildCount()>0){
+                        if (parentOfAllDynamicData.getChildCount() > 0) {
                             parentOfAllDynamicData.removeAllViews();
                             // dynamcDtaContnrScrollview.removeAllViews();
                             addViewIntoTable();
-                        }
-                        else
-                        {
+                        } else {
                             addViewIntoTable();
                         }
 
@@ -1909,45 +1715,37 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
                 //commenting below error message
                 // showAlertForEveryOne("Please try again, No Fused,GPS or Network found.");
-            }
-            else
-            {
-                String FullAddress="0";
-                if(isOnline())
-                {
-                    FullAddress=   getAddressForDynamic(fnLati, fnLongi);
-                }
-                else
-                {
-                    FullAddress="NA";
+            } else {
+                String FullAddress = "0";
+                if (isOnline()) {
+                    FullAddress = getAddressForDynamic(fnLati, fnLongi);
+                } else {
+                    FullAddress = "NA";
                 }
 
-                if(!GpsLat.equals("0") )
-                {
-                    fnCreateLastKnownGPSLoction(GpsLat,GpsLong,GpsAccuracy);
+                if (!GpsLat.equals("0")) {
+                    fnCreateLastKnownGPSLoction(GpsLat, GpsLong, GpsAccuracy);
                 }
                 //now Passing intent to other activity
-                String addr="NA";
-                String zipcode="NA";
-                String city="NA";
-                String state="NA";
+                String addr = "NA";
+                String zipcode = "NA";
+                String city = "NA";
+                String state = "NA";
 
 
-                if(!FullAddress.equals("NA"))
-                {
+                if (!FullAddress.equals("NA")) {
                     addr = FullAddress.split(Pattern.quote("^"))[0];
                     zipcode = FullAddress.split(Pattern.quote("^"))[1];
                     city = FullAddress.split(Pattern.quote("^"))[2];
                     state = FullAddress.split(Pattern.quote("^"))[3];
                 }
 
-                if(fnAccuracy>10000)
-                {
+                if (fnAccuracy > 10000) {
                     dbengine.open();
                     dbengine.deleteLocationTable();
-                    dbengine.saveTblLocationDetails(fnLati, fnLongi, String.valueOf(fnAccuracy), addr, city, zipcode, state,fnAccurateProvider,GpsLat,GpsLong,GpsAccuracy,NetwLat,NetwLong,NetwAccuracy,FusedLat,FusedLong,FusedAccuracy,AllProvidersLocation,GpsAddress,NetwAddress,FusedAddress,FusedLocationLatitudeWithFirstAttempt,FusedLocationLongitudeWithFirstAttempt,FusedLocationAccuracyWithFirstAttempt);
+                    dbengine.saveTblLocationDetails(fnLati, fnLongi, String.valueOf(fnAccuracy), addr, city, zipcode, state, fnAccurateProvider, GpsLat, GpsLong, GpsAccuracy, NetwLat, NetwLong, NetwAccuracy, FusedLat, FusedLong, FusedAccuracy, AllProvidersLocation, GpsAddress, NetwAddress, FusedAddress, FusedLocationLatitudeWithFirstAttempt, FusedLocationLongitudeWithFirstAttempt, FusedLocationAccuracyWithFirstAttempt);
                     dbengine.close();
-                    if(pDialog2STANDBY!=null) {
+                    if (pDialog2STANDBY != null) {
                         if (pDialog2STANDBY.isShowing()) {
                             pDialog2STANDBY.dismiss();
                         }
@@ -1963,35 +1761,28 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
                     //From, addr,zipcode,city,state,errorMessageFlag,username,totaltarget,todayTarget
 
 
-                }
-                else
-                {
+                } else {
                     dbengine.open();
                     dbengine.deleteLocationTable();
-                    dbengine.saveTblLocationDetails(fnLati, fnLongi, String.valueOf(fnAccuracy), addr, city, zipcode, state,fnAccurateProvider,GpsLat,GpsLong,GpsAccuracy,NetwLat,NetwLong,NetwAccuracy,FusedLat,FusedLong,FusedAccuracy,AllProvidersLocation,GpsAddress,NetwAddress,FusedAddress,FusedLocationLatitudeWithFirstAttempt,FusedLocationLongitudeWithFirstAttempt,FusedLocationAccuracyWithFirstAttempt);
+                    dbengine.saveTblLocationDetails(fnLati, fnLongi, String.valueOf(fnAccuracy), addr, city, zipcode, state, fnAccurateProvider, GpsLat, GpsLong, GpsAccuracy, NetwLat, NetwLong, NetwAccuracy, FusedLat, FusedLong, FusedAccuracy, AllProvidersLocation, GpsAddress, NetwAddress, FusedAddress, FusedLocationLatitudeWithFirstAttempt, FusedLocationLongitudeWithFirstAttempt, FusedLocationAccuracyWithFirstAttempt);
 
                     dbengine.close();
-                    if(flgAddButtonCliked==0)
-                    {
-                        hmapOutletListForNear=dbengine.fnGetALLOutletMstr();
-                        System.out.println("SHIVAM"+hmapOutletListForNear);
-                        if(hmapOutletListForNear!=null)
-                        {
+                    if (flgAddButtonCliked == 0) {
+                        hmapOutletListForNear = dbengine.fnGetALLOutletMstr();
+                        System.out.println("SHIVAM" + hmapOutletListForNear);
+                        if (hmapOutletListForNear != null) {
 
-                            for(Map.Entry<String, String> entry:hmapOutletListForNear.entrySet())
-                            {
-                                int DistanceBWPoint=1000;
-                                String outID=entry.getKey().toString().trim();
+                            for (Map.Entry<String, String> entry : hmapOutletListForNear.entrySet()) {
+                                int DistanceBWPoint = 1000;
+                                String outID = entry.getKey().toString().trim();
                                 //  String PrevAccuracy = entry.getValue().split(Pattern.quote("^"))[0];
                                 String PrevLatitude = entry.getValue().split(Pattern.quote("^"))[0];
                                 String PrevLongitude = entry.getValue().split(Pattern.quote("^"))[1];
 
                                 // if (!PrevAccuracy.equals("0"))
                                 // {
-                                if (!PrevLatitude.equals("0"))
-                                {
-                                    try
-                                    {
+                                if (!PrevLatitude.equals("0")) {
+                                    try {
                                         Location locationA = new Location("point A");
                                         locationA.setLatitude(Double.parseDouble(fnLati));
                                         locationA.setLongitude(Double.parseDouble(fnLongi));
@@ -2000,13 +1791,11 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
                                         locationB.setLatitude(Double.parseDouble(PrevLatitude));
                                         locationB.setLongitude(Double.parseDouble(PrevLongitude));
 
-                                        float distance = locationA.distanceTo(locationB) ;
-                                        DistanceBWPoint=(int)distance;
+                                        float distance = locationA.distanceTo(locationB);
+                                        DistanceBWPoint = (int) distance;
 
-                                        hmapOutletListForNearUpdated.put(outID, ""+DistanceBWPoint);
-                                    }
-                                    catch(Exception e)
-                                    {
+                                        hmapOutletListForNearUpdated.put(outID, "" + DistanceBWPoint);
+                                    } catch (Exception e) {
 
                                     }
                                 }
@@ -2014,66 +1803,60 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
                             }
                         }
 
-                        if(hmapOutletListForNearUpdated!=null)
-                        {
+                        if (hmapOutletListForNearUpdated != null) {
                             dbengine.open();
-                            for(Map.Entry<String, String> entry:hmapOutletListForNearUpdated.entrySet())
-                            {
-                                String outID=entry.getKey().toString().trim();
+                            for (Map.Entry<String, String> entry : hmapOutletListForNearUpdated.entrySet()) {
+                                String outID = entry.getKey().toString().trim();
                                 String DistanceNear = entry.getValue().trim();
                            /* if(outID.equals("853399-a1445e87daf4-NA"))
                             {
                                 System.out.println("Shvam Distance = "+DistanceNear);
                             }*/
-                                if(!DistanceNear.equals(""))
-                                {
+                                if (!DistanceNear.equals("")) {
                                     //853399-81752acdc662-NA
                                /* if(outID.equals("853399-a1445e87daf4-NA"))
                                 {
                                     System.out.println("Shvam Distance = "+DistanceNear);
                                 }*/
-                                    dbengine.UpdateStoreDistanceNear(outID,Integer.parseInt(DistanceNear));
+                                    dbengine.UpdateStoreDistanceNear(outID, Integer.parseInt(DistanceNear));
                                 }
                             }
                             dbengine.close();
                         }
                         //send to storeListpage page
                         //From, addr,zipcode,city,state,errorMessageFlag,username,totaltarget,todayTarget
-                        int flagtoShowStorelistOrAddnewStore=dbengine.fncheckCountNearByStoreExistsOrNot(CommonInfo.DistanceRange);
-                        if(flagtoShowStorelistOrAddnewStore==1)
-                        {
+                        int flagtoShowStorelistOrAddnewStore = dbengine.fncheckCountNearByStoreExistsOrNot(CommonInfo.DistanceRange);
+                        if (flagtoShowStorelistOrAddnewStore == 1) {
 
                             getDataFromDatabaseToHashmap();
-                            if(parentOfAllDynamicData.getChildCount()>0){
+                            if (parentOfAllDynamicData.getChildCount() > 0) {
                                 parentOfAllDynamicData.removeAllViews();
                                 // dynamcDtaContnrScrollview.removeAllViews();
                                 addViewIntoTable();
-                            }
-                            else
-                            {
+                            } else {
                                 addViewIntoTable();
                             }
-                            if(pDialog2STANDBY!=null) {
+                            if (pDialog2STANDBY != null) {
                                 if (pDialog2STANDBY.isShowing()) {
-                                    pDialog2STANDBY.dismiss();
+                                    if (!isFinishing() && !isDestroyed()) {
+                                        pDialog2STANDBY.dismiss();
+                                    }
                                 }
                             }
                        /* Intent intent =new Intent(LauncherActivity.this,StorelistActivity.class);
                         LauncherActivity.this.startActivity(intent);
                         finish();*/
 
-                        }
-                        else
-                        {
-                            if(pDialog2STANDBY!=null) {
+                        } else {
+                            if (pDialog2STANDBY != null) {
                                 if (pDialog2STANDBY.isShowing()) {
-                                    pDialog2STANDBY.dismiss();
+                                    if (!isFinishing() && !isDestroyed()) {
+                                        pDialog2STANDBY.dismiss();
+                                    }
                                 }
                             }
                         }
-                    }
-                    else
-                    {
+                    } else {
                         //send to AddnewStore directly
 
                        /* Intent intent=new Intent(StorelistActivity.this,AddNewStore_DynamicSectionWise.class);
@@ -2084,20 +1867,21 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
                         finish();*/
 
 
+                        String StoreCategoryType = dbengine.getChannelGroupIdOptIdForAddingStore();
+                        int StoreSectionCount = dbengine.getsectionCountWhileAddingStore();
+                        Intent intent = new Intent(StorelistActivity.this, AddNewStore_DynamicSectionWiseSO.class);
+                        intent.putExtra("FLAG_NEW_UPDATE", "NEW");
 
-                        String StoreCategoryType=dbengine.getChannelGroupIdOptIdForAddingStore();
-                        int StoreSectionCount=dbengine.getsectionCountWhileAddingStore();
-                        Intent intent=new Intent(StorelistActivity.this,AddNewStore_DynamicSectionWiseSO.class);
-                        intent.putExtra("FLAG_NEW_UPDATE","NEW");
 
-
-                        intent.putExtra("CoverageAreaID", ""+0);
-                        intent.putExtra("RouteNodeID", ""+0);
+                        intent.putExtra("CoverageAreaID", "" + 0);
+                        intent.putExtra("RouteNodeID", "" + 0);
                         intent.putExtra("StoreCategoryType", StoreCategoryType);
-                        intent.putExtra("StoreSectionCount", ""+StoreSectionCount);
-                        if(pDialog2STANDBY!=null) {
+                        intent.putExtra("StoreSectionCount", "" + StoreSectionCount);
+                        if (pDialog2STANDBY != null) {
                             if (pDialog2STANDBY.isShowing()) {
-                                pDialog2STANDBY.dismiss();
+                                if (!isFinishing() && !isDestroyed()) {
+                                    pDialog2STANDBY.dismiss();
+                                }
                             }
                         }
                         StorelistActivity.this.startActivity(intent);
@@ -2105,16 +1889,9 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
                     }
 
 
-
-
-
-
-
-
-
                 }
-               /* Intent intent =new Intent(LauncherActivity.this,StorelistActivity.class);
-               *//* intent.putExtra("FROM","SPLASH");
+                /* Intent intent =new Intent(LauncherActivity.this,StorelistActivity.class);
+                 *//* intent.putExtra("FROM","SPLASH");
                 intent.putExtra("errorMessageFlag",errorMessageFlag); // 0 if no error, if error, then error message passes
                 intent.putExtra("username",username);//if error then it will 0
                 intent.putExtra("totaltarget",totaltarget);////if error then it will 0
@@ -2122,18 +1899,18 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
                 LauncherActivity.this.startActivity(intent);
                 finish();
 */
-                GpsLat="0";
-                GpsLong="0";
-                GpsAccuracy="0";
-                GpsAddress="0";
-                NetwLat="0";
-                NetwLong="0";
-                NetwAccuracy="0";
-                NetwAddress="0";
-                FusedLat="0";
-                FusedLong="0";
-                FusedAccuracy="0";
-                FusedAddress="0";
+                GpsLat = "0";
+                GpsLong = "0";
+                GpsAccuracy = "0";
+                GpsAddress = "0";
+                NetwLat = "0";
+                NetwLong = "0";
+                NetwAccuracy = "0";
+                NetwAddress = "0";
+                FusedLat = "0";
+                FusedLong = "0";
+                FusedAccuracy = "0";
+                FusedAddress = "0";
 
                 //code here
             }
@@ -2141,136 +1918,127 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
             RefreshBtn.setEnabled(true);
             AddStoreBtn.setEnabled(true);
 
-
+            isCountdownRunning = false;
         }
+    }
 
-        @Override
-        public void onTick(long arg0) {
-            // TODO Auto-generated method stub
 
-        }}
-    public boolean isOnline()
-    {
+    public boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnected())
-        {
+        if (netInfo != null && netInfo.isConnected()) {
             return true;
         }
         return false;
     }
-    public String getAddressForDynamic(String latti,String longi){
+
+    public String getAddressForDynamic(String latti, String longi) {
 
 
-
-        Address address=null;
-        String addr="NA";
-        String zipcode="NA";
-        String city="NA";
-        String state="NA";
-        String fullAddress="";
-        StringBuilder FULLADDRESS3 =new StringBuilder();
+        Address address = null;
+        String addr = "NA";
+        String zipcode = "NA";
+        String city = "NA";
+        String state = "NA";
+        String fullAddress = "";
+        StringBuilder FULLADDRESS3 = new StringBuilder();
         try {
             Geocoder geocoder = new Geocoder(this, Locale.ENGLISH);
             List<Address> addresses = geocoder.getFromLocation(Double.parseDouble(latti), Double.parseDouble(longi), 1);
-            if (addresses != null && addresses.size() > 0){
-                if(addresses.get(0).getAddressLine(1)!=null){
-                   // addr=getAddressNewWay(addresses.get(0).getAddressLine(0),city,state,zipcode,countryname);
-                    addr=addresses.get(0).getAddressLine(1);
+            if (addresses != null && addresses.size() > 0) {
+                if (addresses.get(0).getAddressLine(1) != null) {
+                    // addr=getAddressNewWay(addresses.get(0).getAddressLine(0),city,state,zipcode,countryname);
+                    addr = addresses.get(0).getAddressLine(1);
                 }
 
 
-
-                if(addresses.get(0).getLocality()!=null){
-                    city=addresses.get(0).getLocality();
+                if (addresses.get(0).getLocality() != null) {
+                    city = addresses.get(0).getLocality();
                 }
 
-                if(addresses.get(0).getAdminArea()!=null){
-                    state=addresses.get(0).getAdminArea();
+                if (addresses.get(0).getAdminArea() != null) {
+                    state = addresses.get(0).getAdminArea();
                 }
 
 
-                for(int i=0 ;i<addresses.size();i++){
+                for (int i = 0; i < addresses.size(); i++) {
                     address = addresses.get(i);
-                    if(address.getPostalCode()!=null){
-                        zipcode=address.getPostalCode();
+                    if (address.getPostalCode() != null) {
+                        zipcode = address.getPostalCode();
                         break;
                     }
 
 
-
-
                 }
-                if(addresses.get(0).getAddressLine(0)!=null && addr.equals("NA")){
-                    String countryname="NA";
-                    if(addresses.get(0).getCountryName()!=null){
-                        countryname=addresses.get(0).getCountryName();
+                if (addresses.get(0).getAddressLine(0) != null && addr.equals("NA")) {
+                    String countryname = "NA";
+                    if (addresses.get(0).getCountryName() != null) {
+                        countryname = addresses.get(0).getCountryName();
                     }
 
-                    addr=  getAddressNewWay(addresses.get(0).getAddressLine(0),city,state,zipcode,countryname);
+                    addr = getAddressNewWay(addresses.get(0).getAddressLine(0), city, state, zipcode, countryname);
                 }
+            } else {
+                FULLADDRESS3.append("NA");
             }
-            else{FULLADDRESS3.append("NA");}
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }
-        finally{
-            return fullAddress=addr+"^"+zipcode+"^"+city+"^"+state;
+        } finally {
+            return fullAddress = addr + "^" + zipcode + "^" + city + "^" + state;
         }
     }
 
-    public String getAddressNewWay(String ZeroIndexAddress,String city,String State,String pincode,String country){
-        String editedAddress=ZeroIndexAddress;
-        if(editedAddress.contains(city)){
-            editedAddress= editedAddress.replace(city,"");
+    public String getAddressNewWay(String ZeroIndexAddress, String city, String State, String pincode, String country) {
+        String editedAddress = ZeroIndexAddress;
+        if (editedAddress.contains(city)) {
+            editedAddress = editedAddress.replace(city, "");
 
         }
-        if(editedAddress.contains(State)){
-            editedAddress=editedAddress.replace(State,"");
+        if (editedAddress.contains(State)) {
+            editedAddress = editedAddress.replace(State, "");
 
         }
-        if(editedAddress.contains(pincode)){
-            editedAddress= editedAddress.replace(pincode,"");
+        if (editedAddress.contains(pincode)) {
+            editedAddress = editedAddress.replace(pincode, "");
 
         }
-        if(editedAddress.contains(country)){
-            editedAddress=editedAddress.replace(country,"");
+        if (editedAddress.contains(country)) {
+            editedAddress = editedAddress.replace(country, "");
 
         }
-        if(editedAddress.contains(",")){
-            editedAddress=editedAddress.replace(","," ");
+        if (editedAddress.contains(",")) {
+            editedAddress = editedAddress.replace(",", " ");
 
         }
         return editedAddress;
     }
-    public void fnCreateLastKnownGPSLoction(String chekLastGPSLat,String chekLastGPSLong,String chekLastGpsAccuracy)
-    {
+
+    public void fnCreateLastKnownGPSLoction(String chekLastGPSLat, String chekLastGPSLong, String chekLastGpsAccuracy) {
 
         try {
 
-            JSONArray jArray=new JSONArray();
-            JSONObject jsonObjMain=new JSONObject();
+            JSONArray jArray = new JSONArray();
+            JSONObject jsonObjMain = new JSONObject();
 
 
             JSONObject jOnew = new JSONObject();
-            jOnew.put( "chekLastGPSLat",chekLastGPSLat);
-            jOnew.put( "chekLastGPSLong",chekLastGPSLong);
-            jOnew.put( "chekLastGpsAccuracy", chekLastGpsAccuracy);
+            jOnew.put("chekLastGPSLat", chekLastGPSLat);
+            jOnew.put("chekLastGPSLong", chekLastGPSLong);
+            jOnew.put("chekLastGpsAccuracy", chekLastGpsAccuracy);
 
 
             jArray.put(jOnew);
             jsonObjMain.put("GPSLastLocationDetils", jArray);
 
             File jsonTxtFolder = new File(Environment.getExternalStorageDirectory(), CommonInfo.AppLatLngJsonFile);
-            if (!jsonTxtFolder.exists())
-            {
+            if (!jsonTxtFolder.exists()) {
                 jsonTxtFolder.mkdirs();
 
             }
-            String txtFileNamenew="GPSLastLocation.txt";
-            File file = new File(jsonTxtFolder,txtFileNamenew);
-            String fpath = Environment.getExternalStorageDirectory()+"/"+CommonInfo.AppLatLngJsonFile+"/"+txtFileNamenew;
+            String txtFileNamenew = "GPSLastLocation.txt";
+            File file = new File(jsonTxtFolder, txtFileNamenew);
+            String fpath = Environment.getExternalStorageDirectory() + "/" + CommonInfo.AppLatLngJsonFile + "/" + txtFileNamenew;
 
 
             // If file does not exists, then create it
@@ -2304,16 +2072,13 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
         } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }
-        finally{
+        } finally {
 
         }
     }
 
 
-
-    protected void OpenPopUpDialog()
-    {
+    protected void OpenPopUpDialog() {
         dialog = new Dialog(StorelistActivity.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.menu_bar);
@@ -2322,16 +2087,15 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
         WindowManager.LayoutParams parms = dialog.getWindow().getAttributes();
 
         parms.gravity = Gravity.TOP | Gravity.LEFT;
-        parms.height=parms.MATCH_PARENT;
+        parms.height = parms.MATCH_PARENT;
         parms.dimAmount = (float) 0.5;
 
 
         final Button btnManageDSR = (Button) dialog.findViewById(R.id.btnManageDSR);
         btnManageDSR.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
-                Intent intent=new Intent(StorelistActivity.this,WebViewManageDSRActivity.class);
+            public void onClick(View view) {
+                Intent intent = new Intent(StorelistActivity.this, WebViewManageDSRActivity.class);
                 startActivity(intent);
                 // finish();
             }
@@ -2342,7 +2106,7 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
         butn_Census_report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(StorelistActivity.this,AddedOutletSummaryReportActivity.class);
+                Intent intent = new Intent(StorelistActivity.this, AddedOutletSummaryReportActivity.class);
                 // intent.putExtra("imei",imei);
                 // intent.putExtra("userDate", userDate);
                 // intent.putExtra("pickerDate", pickerDate);
@@ -2351,44 +2115,39 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
             }
         });
 
-        final   Button btnOutstandingtask = (Button) dialog.findViewById(R.id.btnOutstandingtask);
+        final Button btnOutstandingtask = (Button) dialog.findViewById(R.id.btnOutstandingtask);
         btnOutstandingtask.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
-                Intent intent=new Intent(StorelistActivity.this,ViewOutStandingTask.class);
+            public void onClick(View view) {
+                Intent intent = new Intent(StorelistActivity.this, ViewOutStandingTask.class);
                 startActivity(intent);
-               // finish();
+                // finish();
             }
         });
-        final   Button btnVisitPlan = (Button) dialog.findViewById(R.id.btnVisitPlan);
+        final Button btnVisitPlan = (Button) dialog.findViewById(R.id.btnVisitPlan);
         btnVisitPlan.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
-                Intent intent=new Intent(StorelistActivity.this,ViewVisitPlan.class);
+            public void onClick(View view) {
+                Intent intent = new Intent(StorelistActivity.this, ViewVisitPlan.class);
                 startActivity(intent);
                 //finish();
             }
         });
-        final   Button btnAppointment = (Button) dialog.findViewById(R.id.btnAppointment);
+        final Button btnAppointment = (Button) dialog.findViewById(R.id.btnAppointment);
         btnAppointment.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
-                Intent intent=new Intent(StorelistActivity.this,ViewAppointment.class);
+            public void onClick(View view) {
+                Intent intent = new Intent(StorelistActivity.this, ViewAppointment.class);
                 startActivity(intent);
-               // finish();
+                // finish();
             }
         });
 
         final Button butExecution = (Button) dialog.findViewById(R.id.butExecution);
         butExecution.setVisibility(View.GONE);
-        butExecution.setOnClickListener(new View.OnClickListener()
-        {
+        butExecution.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 GetInvoiceForDay task = new GetInvoiceForDay(StorelistActivity.this);
                 task.execute();
             }
@@ -2398,77 +2157,69 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
         butExecution.setVisibility(View.GONE);
         btnDSRTrack.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 /*Intent intent=new Intent(StorelistActivity.this,WebViewDSRTrackerActivity.class);
                 startActivity(intent);*/
                 openDSRTrackerAlert();
             }
         });
 
-        final   Button butHome = (Button) dialog.findViewById(R.id.butHome);
+        final Button butHome = (Button) dialog.findViewById(R.id.butHome);
         butHome.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
-                Intent intent=new Intent(StorelistActivity.this,AllButtonActivity.class);
+            public void onClick(View view) {
+                Intent intent = new Intent(StorelistActivity.this, AllButtonActivity.class);
                 startActivity(intent);
                 finish();
             }
         });
 
-        final   Button btnDistributorMap = (Button) dialog.findViewById(R.id.btnDistributorMap);
+        final Button btnDistributorMap = (Button) dialog.findViewById(R.id.btnDistributorMap);
         butExecution.setVisibility(View.GONE);
         btnDistributorMap.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
-                Intent intent=new Intent(StorelistActivity.this,DistributorMapActivity.class);
+            public void onClick(View view) {
+                Intent intent = new Intent(StorelistActivity.this, DistributorMapActivity.class);
                 startActivity(intent);
                 //finish();
             }
         });
 
-        final   Button btnDistributorStock = (Button) dialog.findViewById(R.id.btnDistributorStock);
+        final Button btnDistributorStock = (Button) dialog.findViewById(R.id.btnDistributorStock);
         butExecution.setVisibility(View.GONE);
         btnDistributorStock.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
-                int CstmrNodeId=0,CstomrNodeType= 0;
+            public void onClick(View view) {
+                int CstmrNodeId = 0, CstomrNodeType = 0;
                 //changes
-                if(imei==null)
-                {
-                    imei=CommonInfo.imei;
+                if (imei == null) {
+                    imei = CommonInfo.imei;
                 }
-                if(fDate==null)
-                {
+                if (fDate == null) {
                     Date date1 = new Date();
                     SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
                     fDate = sdf.format(date1).toString().trim();
                 }
-                Intent i=new Intent(StorelistActivity.this,DistributorEntryActivity.class);
+                Intent i = new Intent(StorelistActivity.this, DistributorEntryActivity.class);
                 i.putExtra("imei", imei);
                 i.putExtra("CstmrNodeId", CstmrNodeId);
                 i.putExtra("CstomrNodeType", CstomrNodeType);
                 i.putExtra("fDate", fDate);
                 startActivity(i);
-               // finish();
+                // finish();
             }
         });
 
 
-        final   Button butMarketVisit = (Button) dialog.findViewById(R.id.butMarketVisit);
+        final Button butMarketVisit = (Button) dialog.findViewById(R.id.butMarketVisit);
         butMarketVisit.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 int checkDataNotSync = dbengine.CheckUserDoneGetStoreOrNot();
                 Date date1 = new Date();
                 sdf = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
                 fDate = sdf.format(date1).toString().trim();
-                if (checkDataNotSync == 1)
-                {
+                if (checkDataNotSync == 1) {
                     dbengine.open();
                     String rID = dbengine.GetActiveRouteID();
                     dbengine.close();
@@ -2491,13 +2242,11 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
                     startActivity(storeIntent);
                     finish();
 
-                }
-                else
-                {
+                } else {
                     /*Intent i=new Intent(StorelistActivity.this,AllButtonActivity.class);
                     startActivity(i);
                     finish();*/
-                   // openMarketVisitAlert();
+                    // openMarketVisitAlert();
                     GetStoresForDay task = new GetStoresForDay(StorelistActivity.this);
                     task.execute();
                 }
@@ -2512,27 +2261,25 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
                 // TODO Auto-generated method stub
 
 
-                String rID="0";
+                String rID = "0";
                 but_SalesSummray.setBackgroundColor(Color.GREEN);
                 dialog.dismiss();
 
-                Intent i=new Intent(StorelistActivity.this,DetailReportSummaryActivityForAll.class);
+                Intent i = new Intent(StorelistActivity.this, DetailReportSummaryActivityForAll.class);
                 startActivity(i);
-               // finish();
-               // openReportAlert();
+                // finish();
+                // openReportAlert();
 
             }
         });
 
 
-
-        final   Button butn_refresh_data = (Button) dialog.findViewById(R.id.butn_refresh_data);
-        final   Button btn_upload_data = (Button) dialog.findViewById(R.id.btnSubmit);
-        Button btnSummary= (Button) dialog.findViewById(R.id.btnSummary);
+        final Button butn_refresh_data = (Button) dialog.findViewById(R.id.butn_refresh_data);
+        final Button btn_upload_data = (Button) dialog.findViewById(R.id.btnSubmit);
+        Button btnSummary = (Button) dialog.findViewById(R.id.btnSummary);
         btnSummary.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 //Intent i=new Intent(StorelistActivity.this,SummaryActivityOld.class);
                /* Intent i=new Intent(StorelistActivity.this,SummaryActivity.class);
                 startActivity(i);
@@ -2542,8 +2289,7 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
         File LTFoodFolder = new File(Environment.getExternalStorageDirectory(), CommonInfo.OrderXMLFolder);
 
-        if (!LTFoodFolder.exists())
-        {
+        if (!LTFoodFolder.exists()) {
             LTFoodFolder.mkdirs();
         }
 
@@ -2552,7 +2298,7 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
         funForCheckSaveExitData();
 
         // check number of files in folder
-        final String [] AllFilesNameNotSync= checkNumberOfFiles(del);
+        final String[] AllFilesNameNotSync = checkNumberOfFiles(del);
 
        /* if(dbEngineSO.fnCheckForPendingImages()==1 || dbEngineSO.fnCheckForPendingXMLFilesInTable()==1)
         {
@@ -2584,16 +2330,14 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
                 // TODO Auto-generated method stub
 
 
-
-
                 dialog.dismiss();
             }
         });
 
         dbengine.open();
-        String ApplicationVersion=dbengine.AppVersionID;
+        String ApplicationVersion = dbengine.AppVersionID;
         dbengine.close();
-        btnVersion.setText("Version No-V"+ApplicationVersion);
+        btnVersion.setText("Version No-V" + ApplicationVersion);
 
         // Version No-V12
 
@@ -2601,14 +2345,11 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
             @Override
             public void onClick(View v) {
 
-                flgUploadOrRefreshButtonClicked=1;
-                if(isOnline())
-                {
+                flgUploadOrRefreshButtonClicked = 1;
+                if (isOnline()) {
 
 
-
-                    try
-                    {
+                    try {
 
                         if (timerForDataSubmission != null) {
                             timerForDataSubmission.cancel();
@@ -2619,29 +2360,21 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
                         myTimerTaskForDataSubmission = new MyTimerTaskForDataSubmission();
                         timerForDataSubmission.schedule(myTimerTaskForDataSubmission, 180000);
 
-                        if(dbengine.fnCheckForPendingImages()==1)
-                        {
+                        if (dbengine.fnCheckForPendingImages() == 1) {
                             task = new ImageSync(StorelistActivity.this);
                             task.execute();
-                        }
-                        else if(dbengine.fnCheckForPendingXMLFilesInTable()==1)
-                        {
-                            task2= new FullSyncDataNow(StorelistActivity.this);
+                        } else if (dbengine.fnCheckForPendingXMLFilesInTable() == 1) {
+                            task2 = new FullSyncDataNow(StorelistActivity.this);
                             task2.execute();
                         }
 
 
-
-                    }
-                    catch(Exception e)
-                    {
+                    } catch (Exception e) {
 
                     }
 
 
-
-                } else
-                {
+                } else {
                     showNoConnAlert();
                     return;
 
@@ -2665,11 +2398,11 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
             }
         });
 
-        butn_refresh_data.setOnClickListener(new View.OnClickListener(){
+        butn_refresh_data.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                flgUploadOrRefreshButtonClicked=2;
+                flgUploadOrRefreshButtonClicked = 2;
                /* if(AllFilesNameNotSync.length>0)
                 {
 
@@ -2678,8 +2411,7 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
                 }
                 else
                 {*/
-                if(isOnline())
-                {
+                if (isOnline()) {
 
                     AlertDialog.Builder alertDialogBuilderNEw11 = new AlertDialog.Builder(StorelistActivity.this);
 
@@ -2689,9 +2421,8 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
                     // set dialog message
                     alertDialogBuilderNEw11.setMessage("Are you sure to refresh complete Data?");
                     alertDialogBuilderNEw11.setCancelable(false);
-                    alertDialogBuilderNEw11.setPositiveButton("Yes",new DialogInterface.OnClickListener()
-                    {
-                        public void onClick(DialogInterface dialogintrfc,int id) {
+                    alertDialogBuilderNEw11.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialogintrfc, int id) {
                             // if this button is clicked, close
                             // current activity
                             dialogintrfc.cancel();
@@ -2705,19 +2436,14 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
                             myTimerTaskForDataSubmission = new MyTimerTaskForDataSubmission();
                             timerForDataSubmission.schedule(myTimerTaskForDataSubmission, 180000);
 
-                            if(dbengine.fnCheckForPendingImages()==1)
-                            {
+                            if (dbengine.fnCheckForPendingImages() == 1) {
                                 task = new ImageSync(StorelistActivity.this);
                                 task.execute();
-                            }
-                            else if(dbengine.fnCheckForPendingXMLFilesInTable()==1)
-                            {
+                            } else if (dbengine.fnCheckForPendingXMLFilesInTable() == 1) {
                                 // new FullSyncDataNow(StorelistActivity.this).execute();
-                                task2= new FullSyncDataNow(StorelistActivity.this);
+                                task2 = new FullSyncDataNow(StorelistActivity.this);
                                 task2.execute();
-                            }
-                            else
-                            {
+                            } else {
                                 fnUploadDataAndGetFreshData();
                             }
 
@@ -2740,14 +2466,12 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
                     alertDialogBuilderNEw11.setIcon(R.drawable.info_ico);
                     AlertDialog alert121 = alertDialogBuilderNEw11.create();
                     alert121.show();
-                } else
-                {
+                } else {
                     showNoConnAlert();
                     return;
 
                 }
                 // }
-
 
 
                 dialog.dismiss();
@@ -2757,31 +2481,26 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
         });
 
 
-
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
     }
 
 
-    public void fnUploadDataAndGetFreshData()
-    {
-        try
-        {
-            GetStoreAllData getStoreAllDataAsync= new GetStoreAllData(StorelistActivity.this);
+    public void fnUploadDataAndGetFreshData() {
+        try {
+            GetStoreAllData getStoreAllDataAsync = new GetStoreAllData(StorelistActivity.this);
             getStoreAllDataAsync.execute();
             //////System.out.println("SRVC-OK: "+ new GetStoresForDay().execute().get());
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
 
         }
     }
 
     private class GetStoreAllData extends AsyncTask<Void, Void, Void> {
-        public GetStoreAllData(StorelistActivity activity)
-        {
+        public GetStoreAllData(StorelistActivity activity) {
             pDialog2STANDBY = new ProgressDialog(activity);
         }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -2803,10 +2522,8 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
                 dbengine.fnInsertOrUpdate_tblAllServicesCalledSuccessfull(1);
 
-                for(int mm = 1; mm<5; mm++)
-                {
-                    if(mm==2)
-                    {
+                for (int mm = 1; mm < 5; mm++) {
+                    if (mm == 2) {
                         //(Context ctx,String uuid,String CurDate,int DatabaseVersion,int ApplicationID)
                         newservice = newservice.getStoreAllDetails(getApplicationContext(), imei, fDate, DatabaseVersion, ApplicationID);
                         if (!newservice.director.toString().trim().equals("1")) {
@@ -2819,9 +2536,8 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
 
                     }
-                    if(mm==3)
-                    {
-                        newservice = newservice.callfnSingleCallAllWebServiceSO(getApplicationContext(),ApplicationID,imei);
+                    if (mm == 3) {
+                        newservice = newservice.callfnSingleCallAllWebServiceSO(getApplicationContext(), ApplicationID, imei);
                         if (!newservice.director.toString().trim().equals("1")) {
                             if (chkFlgForErrorToCloseApp == 0) {
                                 chkFlgForErrorToCloseApp = 1;
@@ -2831,8 +2547,7 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
                         }
 
                     }
-                    if(mm==4)
-                    {
+                    if (mm == 4) {
                         newservice = newservice.getQuotationDataFromServer(getApplicationContext(), fDate, imei, "0");
                         if (!newservice.director.toString().trim().equals("1")) {
                             if (chkFlgForErrorToCloseApp == 0) {
@@ -2843,8 +2558,7 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
                         }
 
                     }
-                    if(mm==1)
-                    {
+                    if (mm == 1) {
                         newservice = newservice.getSOSummary(getApplicationContext(), imei, fDate, DatabaseVersion, ApplicationID);
                         if (!newservice.director.toString().trim().equals("1")) {
                             if (chkFlgForErrorToCloseApp == 0) {
@@ -2855,10 +2569,6 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
                         }
                     }
                 }
-
-
-
-
 
 
             } catch (Exception e) {
@@ -2873,17 +2583,17 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
 
-            if(pDialog2STANDBY.isShowing())
-            {
-                pDialog2STANDBY.dismiss();
+            if (pDialog2STANDBY.isShowing()) {
+                if (!isFinishing() && !isDestroyed()) {
+                    pDialog2STANDBY.dismiss();
+                }
             }
             if (chkFlgForErrorToCloseApp == 1)   // if Webservice showing exception or not excute complete properly
             {
                 chkFlgForErrorToCloseApp = 0;
-                SharedPreferences sharedPreferences=getSharedPreferences("MyPref", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = getSharedPreferences("MyPref", MODE_PRIVATE);
                 SharedPreferences.Editor ed;
-                if(sharedPreferences.contains("ServerDate"))
-                {
+                if (sharedPreferences.contains("ServerDate")) {
                     ed = sharedPreferences.edit();
                     ed.putString("ServerDate", "0");
                     ed.commit();
@@ -2891,22 +2601,19 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
                 showErrorAlert("Error while retrieving data");
                 //clear sharedpreferences
 
-            }
-            else
-                {
+            } else {
                 dbengine.fnInsertOrUpdate_tblAllServicesCalledSuccessfull(0);
-                String userName=   dbengine.getUsername();
-                String storeCountDeatails=   dbengine.getTodatAndTotalStores();
-                String   TotalStores = storeCountDeatails.split(Pattern.quote("^"))[0];
-                String   TodayStores = storeCountDeatails.split(Pattern.quote("^"))[1];
+                String userName = dbengine.getUsername();
+                String storeCountDeatails = dbengine.getTodatAndTotalStores();
+                String TotalStores = storeCountDeatails.split(Pattern.quote("^"))[0];
+                String TodayStores = storeCountDeatails.split(Pattern.quote("^"))[1];
 
 
                 //if
 
-                Intent intent =new Intent(StorelistActivity.this,StorelistActivity.class);
+                Intent intent = new Intent(StorelistActivity.this, StorelistActivity.class);
                 StorelistActivity.this.startActivity(intent);
                 finish();
-
 
 
                 //intentPassToLauncherActivity("0", userName, TotalStores, TodayStores);
@@ -2921,27 +2628,22 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
     }
 
 
-
-    private class FullSyncDataNow extends AsyncTask<Void, Void, Void>
-    {
+    private class FullSyncDataNow extends AsyncTask<Void, Void, Void> {
 
 
+        int responseCode = 0;
 
-        int responseCode=0;
-        public FullSyncDataNow(StorelistActivity activity)
-        {
+        public FullSyncDataNow(StorelistActivity activity) {
             pDialogGetStores = new ProgressDialog(activity);
         }
 
         @Override
-        protected void onPreExecute()
-        {
+        protected void onPreExecute() {
             super.onPreExecute();
 
             File LTFoodXMLFolder = new File(Environment.getExternalStorageDirectory(), CommonInfo.OrderXMLFolder);
 
-            if (!LTFoodXMLFolder.exists())
-            {
+            if (!LTFoodXMLFolder.exists()) {
                 LTFoodXMLFolder.mkdirs();
             }
 
@@ -2958,77 +2660,56 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
         @Override
 
-        protected Void doInBackground(Void... params)
-        {
+        protected Void doInBackground(Void... params) {
 
 
-            try
-            {
-
+            try {
 
 
                 File del = new File(Environment.getExternalStorageDirectory(), CommonInfo.OrderXMLFolder);
 
                 // check number of files in folder
-                String [] AllFilesName= checkNumberOfFiles(del);
+                String[] AllFilesName = checkNumberOfFiles(del);
 
 
-                if(AllFilesName.length>0)
-                {
+                if (AllFilesName.length > 0) {
                     SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
 
 
-                    for(int vdo=0;vdo<AllFilesName.length;vdo++)
-                    {
-                        String fileUri=  AllFilesName[vdo];
+                    for (int vdo = 0; vdo < AllFilesName.length; vdo++) {
+                        String fileUri = AllFilesName[vdo];
 
 
                         //System.out.println("Sunil Again each file Name :" +fileUri);
 
-                        if(fileUri.contains(".zip"))
-                        {
-                            File file = new File(Environment.getExternalStorageDirectory().getPath()+ "/" + CommonInfo.OrderXMLFolder + "/" +fileUri);
+                        if (fileUri.contains(".zip")) {
+                            File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + CommonInfo.OrderXMLFolder + "/" + fileUri);
                             file.delete();
-                        }
-                        else
-                        {
-                            String f1=Environment.getExternalStorageDirectory().getPath()+ "/" + CommonInfo.OrderXMLFolder + "/" +fileUri;
+                        } else {
+                            String f1 = Environment.getExternalStorageDirectory().getPath() + "/" + CommonInfo.OrderXMLFolder + "/" + fileUri;
                             // System.out.println("Sunil Again each file full path"+f1);
-                            try
-                            {
-                                responseCode= upLoad2Server(f1,fileUri);
-                            }
-                            catch (Exception e)
-                            {
+                            try {
+                                responseCode = upLoad2Server(f1, fileUri);
+                            } catch (Exception e) {
                                 // TODO Auto-generated catch block
                                 e.printStackTrace();
                             }
                         }
-                        if(responseCode!=200)
-                        {
+                        if (responseCode != 200) {
                             break;
                         }
 
                     }
 
-                }
-                else
-                {
-                    responseCode=200;
+                } else {
+                    responseCode = 200;
                 }
 
 
-
-
-
-
-
-            } catch (Exception e)
-            {
+            } catch (Exception e) {
 
                 e.printStackTrace();
-                if(pDialogGetStores.isShowing())
-                {
+                if (pDialogGetStores.isShowing()) {
                     pDialogGetStores.dismiss();
                 }
             }
@@ -3043,39 +2724,31 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            if(pDialogGetStores.isShowing())
-            {
+            if (pDialogGetStores.isShowing()) {
                 pDialogGetStores.dismiss();
             }
 
             if (myTimerTaskForDataSubmission != null) {
                 myTimerTaskForDataSubmission.cancel();
-                myTimerTaskForDataSubmission=null;
+                myTimerTaskForDataSubmission = null;
             }
-            if (timerForDataSubmission!=null)
-            {
+            if (timerForDataSubmission != null) {
                 timerForDataSubmission.cancel();
                 timerForDataSubmission = null;
             }
 
-            if(responseCode == 200)
-            {
+            if (responseCode == 200) {
 
                 dbengine.fndeleteSbumittedStoreList(5);
                 dbengine.fndeleteSbumittedStoreList(4);
                 dbengine.deleteXmlTable("4");
-                if(flgUploadOrRefreshButtonClicked==1)
-                {
+                if (flgUploadOrRefreshButtonClicked == 1) {
                     showErrorAlert(getString(R.string.saveAlertOKMsg));
-                }
-                else
-                {
+                } else {
                     fnUploadDataAndGetFreshData();
                 }
 
-            }
-            else
-            {
+            } else {
                 showErrorAlert(getString(R.string.uploading_errorXMLFiles));
             }
 
@@ -3083,35 +2756,30 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
         }
     }
 
-    public void delXML(String delPath)
-    {
+    public void delXML(String delPath) {
         File file = new File(delPath);
         file.delete();
         File file1 = new File(delPath.toString().replace(".xml", ".zip"));
         file1.delete();
     }
 
-    public static String[] checkNumberOfFiles(File dir)
-    {
-        int NoOfFiles=0;
-        String [] Totalfiles = null;
+    public static String[] checkNumberOfFiles(File dir) {
+        int NoOfFiles = 0;
+        String[] Totalfiles = null;
 
-        if (dir.isDirectory())
-        {
+        if (dir.isDirectory()) {
             String[] children = dir.list();
-            NoOfFiles=children.length;
-            Totalfiles=new String[children.length];
+            NoOfFiles = children.length;
+            Totalfiles = new String[children.length];
 
-            for (int i=0; i<children.length; i++)
-            {
-                Totalfiles[i]=children[i];
+            for (int i = 0; i < children.length; i++) {
+                Totalfiles[i] = children[i];
             }
         }
         return Totalfiles;
     }
 
-    public static void zip(String[] files, String zipFile) throws IOException
-    {
+    public static void zip(String[] files, String zipFile) throws IOException {
         BufferedInputStream origin = null;
         final int BUFFER_SIZE = 2048;
 
@@ -3129,41 +2797,33 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
                     while ((count = origin.read(data, 0, BUFFER_SIZE)) != -1) {
                         out.write(data, 0, count);
                     }
-                }
-                finally {
+                } finally {
                     origin.close();
                 }
             }
-        }
-
-        finally {
+        } finally {
             out.close();
         }
     }
 
 
+    public int upLoad2Server(String sourceFileUri, String fileUri) {
 
-    public  int upLoad2Server(String sourceFileUri,String fileUri)
-    {
-
-        fileUri=fileUri.replace(".xml", "");
+        fileUri = fileUri.replace(".xml", "");
 
         String fileName = fileUri;
-        String zipFileName=fileUri;
+        String zipFileName = fileUri;
 
-        String newzipfile = Environment.getExternalStorageDirectory() + "/"+CommonInfo.OrderXMLFolder+"/" + fileName + ".zip";
+        String newzipfile = Environment.getExternalStorageDirectory() + "/" + CommonInfo.OrderXMLFolder + "/" + fileName + ".zip";
 
-        sourceFileUri=newzipfile;
+        sourceFileUri = newzipfile;
 
-        xmlForWeb[0]=         Environment.getExternalStorageDirectory() + "/"+CommonInfo.OrderXMLFolder+"/" + fileName + ".xml";
+        xmlForWeb[0] = Environment.getExternalStorageDirectory() + "/" + CommonInfo.OrderXMLFolder + "/" + fileName + ".xml";
 
 
-        try
-        {
-            zip(xmlForWeb,newzipfile);
-        }
-        catch (Exception e1)
-        {
+        try {
+            zip(xmlForWeb, newzipfile);
+        } catch (Exception e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
             //java.io.FileNotFoundException: /359648069495987.2.21.04.2016.12.44.02: open failed: EROFS (Read-only file system)
@@ -3182,9 +2842,11 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
         File file2send = new File(newzipfile);
 
-       // String urlString = CommonInfo.OrderSyncPath.trim()+"?CLIENTFILENAME=" + zipFileName;
-        String urlString = CommonInfo.OrderSyncPathSO.trim()+"?CLIENTFILENAME=" + zipFileName;
-       // String urlString = CommonInfo.OrderSyncPathSO.trim()+"?CLIENTFILENAME=" + xmlFileName+".zip";
+        // String urlString = CommonInfo.OrderSyncPath.trim()+"?CLIENTFILENAME=" + zipFileName;
+//        String urlString = CommonInfo.OrderSyncPathSO.trim()+"?CLIENTFILENAME=" + zipFileName;
+        String urlString = CommonInfo.COMMON_SYNC_PATH_URL.trim() + CommonInfo.ClientFileNameOrderSyncPathSO + "&CLIENTFILENAME=" + zipFileName;
+
+        // String urlString = CommonInfo.OrderSyncPathSO.trim()+"?CLIENTFILENAME=" + xmlFileName+".zip";
 
         try {
 
@@ -3220,8 +2882,7 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
             // read file and write it into form...
             bytesRead = fileInputStream.read(buffer, 0, bufferSize);
 
-            while (bytesRead > 0)
-            {
+            while (bytesRead > 0) {
                 dos.write(buffer, 0, bufferSize);
                 bytesAvailable = fileInputStream.available();
                 bufferSize = Math.min(bytesAvailable, maxBufferSize);
@@ -3238,24 +2899,21 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
             //Log.i("uploadFile", "HTTP Response is : " + serverResponseMessage + ": " + serverResponseCode);
 
-            if(serverResponseCode == 200)
-            {
+            if (serverResponseCode == 200) {
                 syncFLAG = 1;
 
                 SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
                 SharedPreferences.Editor editor = pref.edit();
                 // editor.remove(xmlForWeb[0]);
-                editor.putString(fileUri, ""+4);
+                editor.putString(fileUri, "" + 4);
                 editor.commit();
 
-                String FileSyncFlag=pref.getString(fileUri, ""+1);
+                String FileSyncFlag = pref.getString(fileUri, "" + 1);
                 dbengine.upDateTblXmlFile(fileName);
                 delXML(xmlForWeb[0].toString());
 
 
-            }
-            else
-            {
+            } else {
                 syncFLAG = 0;
             }
 
@@ -3264,15 +2922,11 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
             dos.flush();
             dos.close();
 
-        } catch (MalformedURLException ex)
-        {
+        } catch (MalformedURLException ex) {
             ex.printStackTrace();
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
-
 
 
         return serverResponseCode;
@@ -3280,16 +2934,13 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
     }
 
 
-    public void showErrorAlert(String msg)
-    {
+    public void showErrorAlert(String msg) {
         AlertDialog.Builder alertDialogNoConn = new AlertDialog.Builder(StorelistActivity.this);
         alertDialogNoConn.setTitle(R.string.genTermNoDataConnection);
         alertDialogNoConn.setMessage(msg);
         alertDialogNoConn.setNeutralButton(R.string.txtOk,
-                new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int which)
-                    {
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
 
                         // finish();
@@ -3300,16 +2951,14 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
         alert.show();
 
     }
-    public void showNoConnAlert()
-    {
+
+    public void showNoConnAlert() {
         AlertDialog.Builder alertDialogNoConn = new AlertDialog.Builder(StorelistActivity.this);
         alertDialogNoConn.setTitle(R.string.genTermNoDataConnection);
         alertDialogNoConn.setMessage(R.string.genTermNoDataConnectionFullMsg);
         alertDialogNoConn.setNeutralButton(R.string.txtOk,
-                new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int which)
-                    {
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
 
                         // finish();
@@ -3321,16 +2970,13 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
     }
 
-    public void alertSubmitPendingData()
-    {
+    public void alertSubmitPendingData() {
         AlertDialog.Builder alertDialogNoConn = new AlertDialog.Builder(StorelistActivity.this);
         alertDialogNoConn.setTitle(R.string.pending_data);
         alertDialogNoConn.setMessage(R.string.submit_pending_data);
         alertDialogNoConn.setNeutralButton(R.string.txtOk,
-                new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int which)
-                    {
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
 
                         // finish();
@@ -3343,8 +2989,7 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
     }
 
 
-    public void funForCheckSaveExitData()
-    {/*
+    public void funForCheckSaveExitData() {/*
         try
         {
             int checkSaveExitData = dbEngine.CheckIfSavedDataExist();
@@ -3411,20 +3056,15 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
     }
 
 
-    private class ImageSync extends AsyncTask<Void,Void,Boolean>
-    {
+    private class ImageSync extends AsyncTask<Void, Void, Boolean> {
         // ProgressDialog pDialogGetStores;
-        public ImageSync(StorelistActivity activity)
-        {
+        public ImageSync(StorelistActivity activity) {
             pDialog2STANDBY = new ProgressDialog(activity);
         }
 
         @Override
-        protected void onPreExecute()
-        {
+        protected void onPreExecute() {
             super.onPreExecute();
-
-
 
 
             pDialog2STANDBY.setTitle("Please Wait");
@@ -3442,47 +3082,37 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
             });*/
             pDialog2STANDBY.show();
         }
+
         @Override
-        protected Boolean doInBackground(Void... args)
-        {
-            boolean isErrorExist=false;
+        protected Boolean doInBackground(Void... args) {
+            boolean isErrorExist = false;
 
 
-            try
-            {
+            try {
                 //dbEngine.upDateCancelTask("0");
-                ArrayList<String> listImageDetails=new ArrayList<String>();
+                ArrayList<String> listImageDetails = new ArrayList<String>();
 
-                listImageDetails=dbengine.getImageDetails(5);
+                listImageDetails = dbengine.getImageDetails(5);
 
-                if(listImageDetails!=null && listImageDetails.size()>0)
-                {
-                    for(String imageDetail:listImageDetails)
-                    {
-                        String tempIdImage=imageDetail.split(Pattern.quote("^"))[0].toString();
-                        String imagePath=imageDetail.split(Pattern.quote("^"))[1].toString();
-                        String imageName=imageDetail.split(Pattern.quote("^"))[2].toString();
-                        String file_dj_path = Environment.getExternalStorageDirectory() + "/"+CommonInfo.ImagesFolder+"/"+imageName;
+                if (listImageDetails != null && listImageDetails.size() > 0) {
+                    for (String imageDetail : listImageDetails) {
+                        String tempIdImage = imageDetail.split(Pattern.quote("^"))[0].toString();
+                        String imagePath = imageDetail.split(Pattern.quote("^"))[1].toString();
+                        String imageName = imageDetail.split(Pattern.quote("^"))[2].toString();
+                        String file_dj_path = Environment.getExternalStorageDirectory() + "/" + CommonInfo.ImagesFolder + "/" + imageName;
                         File fImage = new File(file_dj_path);
-                        if (fImage.exists())
-                        {
+                        if (fImage.exists()) {
                             uploadImage(imagePath, imageName, tempIdImage);
                         }
-
 
 
                     }
                 }
 
 
-            }
-            catch (Exception e)
-            {
-                isErrorExist=true;
-            }
-
-            finally
-            {
+            } catch (Exception e) {
+                isErrorExist = true;
+            } finally {
                 Log.i("SvcMgr", "Service Execution Completed...");
             }
 
@@ -3490,46 +3120,37 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
         }
 
         @Override
-        protected void onPostExecute(Boolean resultError)
-        {
+        protected void onPostExecute(Boolean resultError) {
             super.onPostExecute(resultError);
 
-            if(pDialog2STANDBY.isShowing())
-            {
-                pDialog2STANDBY.dismiss();
-
+            if (pDialog2STANDBY.isShowing()) {
+                if (!isFinishing() && !isDestroyed()) {
+                    pDialog2STANDBY.dismiss();
+                }
             }
 
 
-            if(resultError)   // if Webservice showing exception or not excute complete properly
+            if (resultError)   // if Webservice showing exception or not excute complete properly
             {
 
 
                 if (myTimerTaskForDataSubmission != null) {
                     myTimerTaskForDataSubmission.cancel();
-                    myTimerTaskForDataSubmission=null;
+                    myTimerTaskForDataSubmission = null;
                 }
-                if (timerForDataSubmission!=null)
-                {
+                if (timerForDataSubmission != null) {
                     timerForDataSubmission.cancel();
                     timerForDataSubmission = null;
                 }
                 showErrorAlert(getString(R.string.uploading_error));
-            }
-            else
-            {
+            } else {
                 dbengine.fndeleteSbumittedStoreImagesOfSotre(4);
-                if(dbengine.fnCheckForPendingXMLFilesInTable()==1)
-                {
+                if (dbengine.fnCheckForPendingXMLFilesInTable() == 1) {
                     new FullSyncDataNow(StorelistActivity.this).execute();
-                }
-                else {
-                    if(flgUploadOrRefreshButtonClicked==2)
-                    {
+                } else {
+                    if (flgUploadOrRefreshButtonClicked == 2) {
                         fnUploadDataAndGetFreshData();
-                    }
-                    else if(flgUploadOrRefreshButtonClicked==1)
-                    {
+                    } else if (flgUploadOrRefreshButtonClicked == 1) {
                         showErrorAlert(getString(R.string.saveAlertOKMsg));
                     }
                 }
@@ -3540,18 +3161,16 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
     }
 
 
-
-    public void uploadImage(String sourceFileUri,String fileName,String tempIdImage) throws IOException
-    {
+    public void uploadImage(String sourceFileUri, String fileName, String tempIdImage) throws IOException {
         BitmapFactory.Options IMGoptions01 = new BitmapFactory.Options();
-        IMGoptions01.inDither=false;
-        IMGoptions01.inPurgeable=true;
-        IMGoptions01.inInputShareable=true;
-        IMGoptions01.inTempStorage = new byte[16*1024];
+        IMGoptions01.inDither = false;
+        IMGoptions01.inPurgeable = true;
+        IMGoptions01.inInputShareable = true;
+        IMGoptions01.inTempStorage = new byte[16 * 1024];
 
         //finalBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeFile(fnameIMG,IMGoptions01), 640, 480, false);
 
-        Bitmap bitmap = BitmapFactory.decodeFile(Uri.parse(sourceFileUri).getPath(),IMGoptions01);
+        Bitmap bitmap = BitmapFactory.decodeFile(Uri.parse(sourceFileUri).getPath(), IMGoptions01);
 
 //			/Uri.parse(sourceFileUri).getPath()
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -3567,7 +3186,7 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
         //     byte [] byte_arr = stream.toByteArray();
         String image_str = BitMapToString(bitmap);
-        ArrayList<NameValuePair> nameValuePairs = new  ArrayList<NameValuePair>();
+        ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 
         ////System.out.println("image_str: "+image_str);
 
@@ -3576,35 +3195,32 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
         //buffer.clear();
         //buffer = null;
         bitmap.recycle();
-        nameValuePairs.add(new BasicNameValuePair("image",image_str));
+        nameValuePairs.add(new BasicNameValuePair("image", image_str));
         nameValuePairs.add(new BasicNameValuePair("FileName", fileName));
         nameValuePairs.add(new BasicNameValuePair("TempID", tempIdImage));
-        try
-        {
+        try {
 
             HttpParams httpParams = new BasicHttpParams();
             int some_reasonable_timeout = (int) (30 * DateUtils.SECOND_IN_MILLIS);
 
             //HttpConnectionParams.setConnectionTimeout(httpParams, some_reasonable_timeout);
 
-            HttpConnectionParams.setSoTimeout(httpParams, some_reasonable_timeout+2000);
+            HttpConnectionParams.setSoTimeout(httpParams, some_reasonable_timeout + 2000);
 
 
             HttpClient httpclient = new DefaultHttpClient(httpParams);
-            HttpPost httppost = new HttpPost(CommonInfo.ImageSyncPath);
-
-
+//            HttpPost httppost = new HttpPost(CommonInfo.ImageSyncPath);
+            HttpPost httppost = new HttpPost(CommonInfo.COMMON_SYNC_PATH_URL.trim() + CommonInfo.ClientFileNameImageSyncPath);
 
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
             HttpResponse response = httpclient.execute(httppost);
 
             String the_string_response = convertResponseToString(response);
-            if(the_string_response.equals("Abhinav"))
-            {
+            if (the_string_response.equalsIgnoreCase("success")) {
                 dbengine.updateSSttImage(fileName, 4);
                 dbengine.fndeleteSbumittedStoreImagesOfSotre(4);
 
-                String file_dj_path = Environment.getExternalStorageDirectory() + "/"+CommonInfo.ImagesFolder+"/"+fileName;
+                String file_dj_path = Environment.getExternalStorageDirectory() + "/" + CommonInfo.ImagesFolder + "/" + fileName;
                 File fdelete = new File(file_dj_path);
                 if (fdelete.exists()) {
                     if (fdelete.delete()) {
@@ -3617,14 +3233,14 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
             }
 
-        }catch(Exception e)
-        {
+        } catch (Exception e) {
 
             System.out.println(e);
             //	IMGsyOK = 1;
 
         }
     }
+
     public void callBroadCast() {
         if (Build.VERSION.SDK_INT >= 14) {
             Log.e("-->", " >= 14");
@@ -3642,8 +3258,7 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
     }
 
 
-    public String convertResponseToString(HttpResponse response) throws IllegalStateException, IOException
-    {
+    public String convertResponseToString(HttpResponse response) throws IllegalStateException, IOException {
 
         String res = "";
         StringBuffer buffer = new StringBuffer();
@@ -3651,30 +3266,20 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
         int contentLength = (int) response.getEntity().getContentLength(); //getting content length…..
         //System.out.println("contentLength : " + contentLength);
         //Toast.makeText(MainActivity.this, "contentLength : " + contentLength, Toast.LENGTH_LONG).show();
-        if (contentLength < 0)
-        {
-        }
-        else
-        {
+        if (contentLength < 0) {
+        } else {
             byte[] data = new byte[512];
             int len = 0;
-            try
-            {
-                while (-1 != (len = inputStream.read(data)) )
-                {
+            try {
+                while (-1 != (len = inputStream.read(data))) {
                     buffer.append(new String(data, 0, len)); //converting to string and appending  to stringbuffer…..
                 }
-            }
-            catch (IOException e)
-            {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
-            try
-            {
+            try {
                 inputStream.close(); // closing the stream…..
-            }
-            catch (IOException e)
-            {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             res = buffer.toString();     // converting stringbuffer to string…..
@@ -3687,99 +3292,79 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
     }
 
 
- /*   public String BitMapToString(Bitmap bitmap)
-    {
-        int h1=bitmap.getHeight();
-        int w1=bitmap.getWidth();
-        h1=h1/8;
-        w1=w1/8;
-        bitmap=Bitmap.createScaledBitmap(bitmap, w1, h1, true);
+    /*   public String BitMapToString(Bitmap bitmap)
+       {
+           int h1=bitmap.getHeight();
+           int w1=bitmap.getWidth();
+           h1=h1/8;
+           w1=w1/8;
+           bitmap=Bitmap.createScaledBitmap(bitmap, w1, h1, true);
 
-        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG,100, baos);
-        byte [] arr=baos.toByteArray();
-        String result= Base64.encodeToString(arr, Base64.DEFAULT);
+           ByteArrayOutputStream baos=new  ByteArrayOutputStream();
+           bitmap.compress(Bitmap.CompressFormat.JPEG,100, baos);
+           byte [] arr=baos.toByteArray();
+           String result= Base64.encodeToString(arr, Base64.DEFAULT);
+           return result;
+       }
+   */
+    public String BitMapToString(Bitmap bitmap) {
+        int h1 = bitmap.getHeight();
+        int w1 = bitmap.getWidth();
+
+        if (w1 > 768 || h1 > 1024) {
+            bitmap = Bitmap.createScaledBitmap(bitmap, 1024, 768, true);
+
+        } else {
+
+            bitmap = Bitmap.createScaledBitmap(bitmap, w1, h1, true);
+        }
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] arr = baos.toByteArray();
+        String result = Base64.encodeToString(arr, Base64.DEFAULT);
         return result;
     }
-*/
- public String BitMapToString(Bitmap bitmap)
- {
-     int h1=bitmap.getHeight();
-     int w1=bitmap.getWidth();
 
-     if(w1 > 768 || h1 > 1024){
-         bitmap=Bitmap.createScaledBitmap(bitmap,1024,768,true);
-
-     }
-
-
-     else {
-
-         bitmap=Bitmap.createScaledBitmap(bitmap,w1,h1,true);
-     }
-
-     ByteArrayOutputStream baos=new  ByteArrayOutputStream();
-     bitmap.compress(Bitmap.CompressFormat.JPEG,100, baos);
-     byte [] arr=baos.toByteArray();
-     String result=Base64.encodeToString(arr, Base64.DEFAULT);
-     return result;
- }
-
-    public void filterStoreList(int CoverageIDOfSpinner,int RouteIDOfSpinner)
-    {
+    public void filterStoreList(int CoverageIDOfSpinner, int RouteIDOfSpinner) {
         if (parentOfAllDynamicData != null && parentOfAllDynamicData.getChildCount() > 0) {
             // int rowCunt=parentOfAllDynamicData.getChildCount();
-            for(Map.Entry<String, String> entry:hmapStoresFromDataBase.entrySet()) {
+            for (Map.Entry<String, String> entry : hmapStoresFromDataBase.entrySet()) {
                 //StoreID,StoreName,DateAdded,CoverageAreaID,RouteNodeID,StoreCategoryType,StoreSectionCount,flgApproveOrRejectOrNoActionOrReVisit
 
                 //   ////StoreName,DateAdded,CoverageAreaID,RouteNodeID,StoreCategoryType,StoreSectionCount,flgApproveOrRejectOrNoActionOrReVisit
-                String storeID=entry.getKey().toString().trim();
-                String StoreDetails=entry.getValue().toString().trim();
+                String storeID = entry.getKey().toString().trim();
+                String StoreDetails = entry.getValue().toString().trim();
                 int CoverageAreaIDIdOfStore = Integer.parseInt(StoreDetails.split(Pattern.quote("^"))[2]);
                 int RouteNodeIDIdOfStore = Integer.parseInt(StoreDetails.split(Pattern.quote("^"))[3]);
-                String StoreCategoryTypeOfStore=StoreDetails.split(Pattern.quote("^"))[4];
+                String StoreCategoryTypeOfStore = StoreDetails.split(Pattern.quote("^"))[4];
                 //storeID+"^"+CoverageAreaID+"^"+RouteNodeID+"^"+StoreCategoryType
 
                 //dynamic_container.setTag(storeID+"^"+CoverageAreaID+"^"+RouteNodeID+"^"+StoreCategoryType);
 
-                View dynamic_container=(View) parentOfAllDynamicData.findViewWithTag(storeID +"^"+CoverageAreaIDIdOfStore +"^"+RouteNodeIDIdOfStore +"^"+StoreCategoryTypeOfStore);
+                View dynamic_container = (View) parentOfAllDynamicData.findViewWithTag(storeID + "^" + CoverageAreaIDIdOfStore + "^" + RouteNodeIDIdOfStore + "^" + StoreCategoryTypeOfStore);
                 // String asdasdad=" dynamic_container tag got is :-" + dynamic_container.getTag();
-                if(CoverageIDOfSpinner==0 && RouteIDOfSpinner==0)
-                {
+                if (CoverageIDOfSpinner == 0 && RouteIDOfSpinner == 0) {
                     dynamic_container.setVisibility(View.VISIBLE);
-                }
-                else
-                {
-                    if(CoverageIDOfSpinner!=0 && RouteIDOfSpinner!=0)
-                    {
-                        if(CoverageAreaIDIdOfStore==CoverageIDOfSpinner && RouteNodeIDIdOfStore==RouteIDOfSpinner)
-                        {
+                } else {
+                    if (CoverageIDOfSpinner != 0 && RouteIDOfSpinner != 0) {
+                        if (CoverageAreaIDIdOfStore == CoverageIDOfSpinner && RouteNodeIDIdOfStore == RouteIDOfSpinner) {
                             dynamic_container.setVisibility(View.VISIBLE);
-                        }
-                        else
-                        {
+                        } else {
                             dynamic_container.setVisibility(View.GONE);
                         }
                     }
-                    if(CoverageIDOfSpinner!=0 && RouteIDOfSpinner==0)
-                    {
-                        if(CoverageAreaIDIdOfStore==CoverageIDOfSpinner)
-                        {
+                    if (CoverageIDOfSpinner != 0 && RouteIDOfSpinner == 0) {
+                        if (CoverageAreaIDIdOfStore == CoverageIDOfSpinner) {
                             dynamic_container.setVisibility(View.VISIBLE);
-                        }
-                        else
-                        {
+                        } else {
                             dynamic_container.setVisibility(View.GONE);
                         }
                     }
-                    if(CoverageIDOfSpinner==0 && RouteIDOfSpinner!=0)
-                    {
-                        if(RouteNodeIDIdOfStore==RouteIDOfSpinner)
-                        {
+                    if (CoverageIDOfSpinner == 0 && RouteIDOfSpinner != 0) {
+                        if (RouteNodeIDIdOfStore == RouteIDOfSpinner) {
                             dynamic_container.setVisibility(View.VISIBLE);
-                        }
-                        else
-                        {
+                        } else {
                             dynamic_container.setVisibility(View.GONE);
                         }
                     }
@@ -3790,30 +3375,25 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
     }
 
-    public void setBtnBackgroundOfLineOnline()
-    {
-        if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
-        {
+    public void setBtnBackgroundOfLineOnline() {
+        if (CommonInfo.flgLTFoodsSOOnlineOffLine == 0) {
             offlineBtn.setBackground(getResources().getDrawable(R.drawable.btn_background));
             offlineBtn.setTextColor(Color.parseColor("#FFFFFF"));
             onlineBtn.setBackground(getResources().getDrawable(R.drawable.logo_background));
             onlineBtn.setTextColor(Color.parseColor("#FFFF4424"));
 
-        }
-        else
-        {
+        } else {
             onlineBtn.setBackground(getResources().getDrawable(R.drawable.btn_background));
             onlineBtn.setTextColor(Color.parseColor("#FFFFFF"));
             offlineBtn.setBackground(getResources().getDrawable(R.drawable.logo_background));
             offlineBtn.setTextColor(Color.parseColor("#FFFF4424"));
         }
     }
-    class MyTimerTaskForDataSubmission extends TimerTask
-    {
+
+    class MyTimerTaskForDataSubmission extends TimerTask {
 
         @Override
-        public void run()
-        {
+        public void run() {
 
             StorelistActivity.this.runOnUiThread(new Runnable() {
 
@@ -3823,27 +3403,27 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
                         timerForDataSubmission.cancel();
                         timerForDataSubmission = null;
                     }
-                    if(task!=null){
-                        if(task.getStatus()==AsyncTask.Status.RUNNING)
-                        {
+                    if (task != null) {
+                        if (task.getStatus() == AsyncTask.Status.RUNNING) {
                             task.cancel(true);
 
                         }
                     }
-                    if(task2!=null) {
+                    if (task2 != null) {
                         if (task2.getStatus() == AsyncTask.Status.RUNNING) {
                             task2.cancel(true);
 
                         }
                     }
-                        if(pDialog2STANDBY!=null) {
-                            if (pDialog2STANDBY.isShowing()) {
+                    if (pDialog2STANDBY != null) {
+                        if (pDialog2STANDBY.isShowing()) {
+                            if (!isFinishing() && !isDestroyed()) {
                                 pDialog2STANDBY.dismiss();
-
                             }
-
                         }
-                    if(pDialogGetStores!=null) {
+                    }
+
+                    if (pDialogGetStores != null) {
                         if (pDialogGetStores.isShowing()) {
                             pDialogGetStores.dismiss();
 
@@ -3851,29 +3431,27 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
                     }
 
-                }});
+                }
+            });
         }
 
     }
-    public String getAddressOfProviders(String latti, String longi){
 
-        StringBuilder FULLADDRESS2 =new StringBuilder();
+    public String getAddressOfProviders(String latti, String longi) {
+
+        StringBuilder FULLADDRESS2 = new StringBuilder();
         Geocoder geocoder;
         List<Address> addresses;
         geocoder = new Geocoder(StorelistActivity.this, Locale.ENGLISH);
 
 
-
         try {
             addresses = geocoder.getFromLocation(Double.parseDouble(latti), Double.parseDouble(longi), 1);
 
-            if (addresses == null || addresses.size()  == 0 || addresses.get(0).getAddressLine(0)==null)
-            {
-                FULLADDRESS2=  FULLADDRESS2.append("NA");
-            }
-            else
-            {
-                FULLADDRESS2 =FULLADDRESS2.append(addresses.get(0).getAddressLine(0));
+            if (addresses == null || addresses.size() == 0 || addresses.get(0).getAddressLine(0) == null) {
+                FULLADDRESS2 = FULLADDRESS2.append("NA");
+            } else {
+                FULLADDRESS2 = FULLADDRESS2.append(addresses.get(0).getAddressLine(0));
             }
 
         } catch (NumberFormatException e) {
@@ -3889,38 +3467,38 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
     }
 
-   /* public String getAddressOfProviders(String latti, String longi){
+    /* public String getAddressOfProviders(String latti, String longi){
 
-        StringBuilder FULLADDRESS2 =new StringBuilder();
-        Geocoder geocoder;
-        List<Address> addresses;
-        geocoder = new Geocoder(this, Locale.getDefault());
+         StringBuilder FULLADDRESS2 =new StringBuilder();
+         Geocoder geocoder;
+         List<Address> addresses;
+         geocoder = new Geocoder(this, Locale.getDefault());
 
 
 
-        try {
-            addresses = geocoder.getFromLocation(Double.parseDouble(latti), Double.parseDouble(longi), 1);
+         try {
+             addresses = geocoder.getFromLocation(Double.parseDouble(latti), Double.parseDouble(longi), 1);
 
-            if (addresses == null || addresses.size()  == 0)
-            {
-                FULLADDRESS2=  FULLADDRESS2.append("NA");
-            }
-            else
-            {
-                for(Address address : addresses) {
-                    //  String outputAddress = "";
-                    for(int i = 0; i < address.getMaxAddressLineIndex(); i++) {
-                        if(i==1)
-                        {
-                            FULLADDRESS2.append(address.getAddressLine(i));
-                        }
-                        else if(i==2)
-                        {
-                            FULLADDRESS2.append(",").append(address.getAddressLine(i));
-                        }
-                    }
-                }
-		      *//* //String address = addresses.get(0).getAddressLine(0);
+             if (addresses == null || addresses.size()  == 0)
+             {
+                 FULLADDRESS2=  FULLADDRESS2.append("NA");
+             }
+             else
+             {
+                 for(Address address : addresses) {
+                     //  String outputAddress = "";
+                     for(int i = 0; i < address.getMaxAddressLineIndex(); i++) {
+                         if(i==1)
+                         {
+                             FULLADDRESS2.append(address.getAddressLine(i));
+                         }
+                         else if(i==2)
+                         {
+                             FULLADDRESS2.append(",").append(address.getAddressLine(i));
+                         }
+                     }
+                 }
+               *//* //String address = addresses.get(0).getAddressLine(0);
 		       String address = addresses.get(0).getAddressLine(1); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
 		       String city = addresses.get(0).getLocality();
 		       String state = addresses.get(0).getAdminArea();
@@ -3944,24 +3522,23 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
         return FULLADDRESS2.toString();
 
     }*/
-    void openMarketVisitAlert()
-    {
-        final android.support.v7.app.AlertDialog.Builder alert=new android.support.v7.app.AlertDialog.Builder(StorelistActivity.this);
-        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    void openMarketVisitAlert() {
+        final android.support.v7.app.AlertDialog.Builder alert = new android.support.v7.app.AlertDialog.Builder(StorelistActivity.this);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.market_visit_alert, null);
         alert.setView(view);
 
         alert.setCancelable(false);
 
-        final RadioButton rb_myVisit= (RadioButton) view.findViewById(R.id.rb_myVisit);
-        final RadioButton rb_dsrVisit= (RadioButton) view.findViewById(R.id.rb_dsrVisit);
-        final RadioButton rb_jointWorking= (RadioButton) view.findViewById(R.id.rb_jointWorking);
-        final Spinner spinner_dsrVisit= (Spinner) view.findViewById(R.id.spinner_dsrVisit);
-        final Spinner spinner_jointWorking= (Spinner) view.findViewById(R.id.spinner_jointWorking);
-        Button btn_proceed= (Button) view.findViewById(R.id.btn_proceed);
-        Button btn_cancel= (Button) view.findViewById(R.id.btn_cancel);
+        final RadioButton rb_myVisit = (RadioButton) view.findViewById(R.id.rb_myVisit);
+        final RadioButton rb_dsrVisit = (RadioButton) view.findViewById(R.id.rb_dsrVisit);
+        final RadioButton rb_jointWorking = (RadioButton) view.findViewById(R.id.rb_jointWorking);
+        final Spinner spinner_dsrVisit = (Spinner) view.findViewById(R.id.spinner_dsrVisit);
+        final Spinner spinner_jointWorking = (Spinner) view.findViewById(R.id.spinner_jointWorking);
+        Button btn_proceed = (Button) view.findViewById(R.id.btn_proceed);
+        Button btn_cancel = (Button) view.findViewById(R.id.btn_cancel);
 
-        final android.support.v7.app.AlertDialog dialog=alert.create();
+        final android.support.v7.app.AlertDialog dialog = alert.create();
         dialog.show();
 
         btn_cancel.setOnClickListener(new View.OnClickListener() {
@@ -3973,60 +3550,50 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
         btn_proceed.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 dialog.dismiss();
-                if(rb_myVisit.isChecked())
-                {
+                if (rb_myVisit.isChecked()) {
                     /*String SONodeIdAndNodeType= dbengine.fnGetPersonNodeIDAndPersonNodeTypeForSO();
 
                     CommonInfo.PersonNodeID=Integer.parseInt(SONodeIdAndNodeType.split(Pattern.quote("^"))[0]);
                     CommonInfo.PersonNodeType=Integer.parseInt(SONodeIdAndNodeType.split(Pattern.quote("^"))[1]);*/
 
 
-                    String SONodeIdAndNodeType= dbengine.fnGetPersonNodeIDAndPersonNodeTypeForSO();
+                    String SONodeIdAndNodeType = dbengine.fnGetPersonNodeIDAndPersonNodeTypeForSO();
 
-                    int tempSalesmanNodeId=Integer.parseInt(SONodeIdAndNodeType.split(Pattern.quote("^"))[0]);
-                    int tempSalesmanNodeType=Integer.parseInt(SONodeIdAndNodeType.split(Pattern.quote("^"))[1]);
-                    shardPrefForSalesman(tempSalesmanNodeId,tempSalesmanNodeType);
+                    int tempSalesmanNodeId = Integer.parseInt(SONodeIdAndNodeType.split(Pattern.quote("^"))[0]);
+                    int tempSalesmanNodeType = Integer.parseInt(SONodeIdAndNodeType.split(Pattern.quote("^"))[1]);
+                    shardPrefForSalesman(tempSalesmanNodeId, tempSalesmanNodeType);
                     flgDataScopeSharedPref(1);
 
-                    shardPrefForCoverageArea(0,0);
+                    shardPrefForCoverageArea(0, 0);
                     flgDSRSOSharedPref(1);
-                    Intent i=new Intent(StorelistActivity.this,LauncherActivity.class);
+                    Intent i = new Intent(StorelistActivity.this, LauncherActivity.class);
                     startActivity(i);
                     finish();
-                }
-                else if(rb_dsrVisit.isChecked())
-                {
-                    if(!SelectedDSRValue.equals("") && !SelectedDSRValue.equals("Select DSM") && !SelectedDSRValue.equals("No DSM") )
-                    {
+                } else if (rb_dsrVisit.isChecked()) {
+                    if (!SelectedDSRValue.equals("") && !SelectedDSRValue.equals("Select DSM") && !SelectedDSRValue.equals("No DSM")) {
 
-                        String DSRNodeIdAndNodeType= dbengine.fnGetDSRNodeIdAndNodeType(SelectedDSRValue);
-                        int tempCoverageAreaNodeID=Integer.parseInt(DSRNodeIdAndNodeType.split(Pattern.quote("^"))[0]);
-                        int tempCoverageAreaNodeType=Integer.parseInt(DSRNodeIdAndNodeType.split(Pattern.quote("^"))[1]);
-                        shardPrefForCoverageArea(tempCoverageAreaNodeID,tempCoverageAreaNodeType);
+                        String DSRNodeIdAndNodeType = dbengine.fnGetDSRNodeIdAndNodeType(SelectedDSRValue);
+                        int tempCoverageAreaNodeID = Integer.parseInt(DSRNodeIdAndNodeType.split(Pattern.quote("^"))[0]);
+                        int tempCoverageAreaNodeType = Integer.parseInt(DSRNodeIdAndNodeType.split(Pattern.quote("^"))[1]);
+                        shardPrefForCoverageArea(tempCoverageAreaNodeID, tempCoverageAreaNodeType);
                         flgDSRSOSharedPref(2);
 
 
-                        String DSRPersonNodeIdAndNodeType= dbengine.fnGetDSRPersonNodeIdAndNodeType(SelectedDSRValue);
-                        int tempSalesmanNodeId=Integer.parseInt(DSRPersonNodeIdAndNodeType.split(Pattern.quote("^"))[0]);
-                        int tempSalesmanNodeType=Integer.parseInt(DSRPersonNodeIdAndNodeType.split(Pattern.quote("^"))[1]);
-                        shardPrefForSalesman(tempSalesmanNodeId,tempSalesmanNodeType);
+                        String DSRPersonNodeIdAndNodeType = dbengine.fnGetDSRPersonNodeIdAndNodeType(SelectedDSRValue);
+                        int tempSalesmanNodeId = Integer.parseInt(DSRPersonNodeIdAndNodeType.split(Pattern.quote("^"))[0]);
+                        int tempSalesmanNodeType = Integer.parseInt(DSRPersonNodeIdAndNodeType.split(Pattern.quote("^"))[1]);
+                        shardPrefForSalesman(tempSalesmanNodeId, tempSalesmanNodeType);
                         flgDataScopeSharedPref(2);
                         Intent i = new Intent(StorelistActivity.this, LauncherActivity.class);
                         startActivity(i);
                         finish();
-                    }
-                    else
-                    {
+                    } else {
                         showAlertForEveryOne("Please select DSM to Proceeds.");
                     }
-                }
-                else if(rb_jointWorking.isChecked())
-                {
-                    if(!SelectedDSRValue.equals("") && !SelectedDSRValue.equals("Select DSM") && !SelectedDSRValue.equals("No DSM") )
-                    {
+                } else if (rb_jointWorking.isChecked()) {
+                    if (!SelectedDSRValue.equals("") && !SelectedDSRValue.equals("Select DSM") && !SelectedDSRValue.equals("No DSM")) {
                         // Find GPS
                        /* String DSRNodeIdAndNodeType= dbengine.fnGetDSRNodeIdAndNodeType(SelectedDSRValue);
                         CommonInfo.CoverageAreaNodeID=Integer.parseInt(DSRNodeIdAndNodeType.split(Pattern.quote("^"))[0]);
@@ -4041,14 +3608,10 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
                         Intent i = new Intent(AllButtonActivity.this, LauncherActivity.class);
                         startActivity(i);
                         finish();*/
-                    }
-                    else
-                    {
+                    } else {
                         showAlertForEveryOne("Please select DSM to Proceeds.");
                     }
-                }
-                else
-                {
+                } else {
                     showAlertForEveryOne("Please select atleast one option to Proceeds.");
                 }
             }
@@ -4056,10 +3619,8 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
         rb_myVisit.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if(rb_myVisit.isChecked())
-                {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (rb_myVisit.isChecked()) {
                     rb_dsrVisit.setChecked(false);
                     rb_jointWorking.setChecked(false);
                     spinner_dsrVisit.setVisibility(View.GONE);
@@ -4070,33 +3631,28 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
         rb_dsrVisit.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if(rb_dsrVisit.isChecked())
-                {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (rb_dsrVisit.isChecked()) {
                     rb_myVisit.setChecked(false);
                     rb_jointWorking.setChecked(false);
                     spinner_jointWorking.setVisibility(View.GONE);
 
-                    ArrayAdapter adapterCategory=new ArrayAdapter(StorelistActivity.this, android.R.layout.simple_spinner_item,drsNames);
+                    ArrayAdapter adapterCategory = new ArrayAdapter(StorelistActivity.this, android.R.layout.simple_spinner_item, drsNames);
                     adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinner_dsrVisit.setAdapter(adapterCategory);
                     spinner_dsrVisit.setVisibility(View.VISIBLE);
 
-                    spinner_dsrVisit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-                    {
+                    spinner_dsrVisit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
                         @Override
-                        public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3)
-                        {
+                        public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                             // TODO Auto-generated method stub
                             SelectedDSRValue = spinner_dsrVisit.getSelectedItem().toString();
 
                         }
 
                         @Override
-                        public void onNothingSelected(AdapterView<?> arg0)
-                        {
+                        public void onNothingSelected(AdapterView<?> arg0) {
                             // TODO Auto-generated method stub
 
                         }
@@ -4108,33 +3664,28 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
         rb_jointWorking.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if(rb_jointWorking.isChecked())
-                {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (rb_jointWorking.isChecked()) {
                     rb_myVisit.setChecked(false);
                     rb_dsrVisit.setChecked(false);
                     spinner_dsrVisit.setVisibility(View.GONE);
 
-                    ArrayAdapter adapterCategory=new ArrayAdapter(StorelistActivity.this, android.R.layout.simple_spinner_item,drsNames);
+                    ArrayAdapter adapterCategory = new ArrayAdapter(StorelistActivity.this, android.R.layout.simple_spinner_item, drsNames);
                     adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinner_jointWorking.setAdapter(adapterCategory);
                     spinner_jointWorking.setVisibility(View.VISIBLE);
 
-                    spinner_jointWorking.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-                    {
+                    spinner_jointWorking.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
                         @Override
-                        public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3)
-                        {
+                        public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                             // TODO Auto-generated method stub
                             SelectedDSRValue = spinner_jointWorking.getSelectedItem().toString();
 
                         }
 
                         @Override
-                        public void onNothingSelected(AdapterView<?> arg0)
-                        {
+                        public void onNothingSelected(AdapterView<?> arg0) {
                             // TODO Auto-generated method stub
 
                         }
@@ -4147,18 +3698,15 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
         dialog.show();
     }
 
-    public void showAlertForEveryOne(String msg)
-    {
+    public void showAlertForEveryOne(String msg) {
         //AlertDialog.Builder alertDialogNoConn = new AlertDialog.Builder(new ContextThemeWrapper(LauncherActivity.this, R.style.Dialog));
         android.support.v7.app.AlertDialog.Builder alertDialogNoConn = new android.support.v7.app.AlertDialog.Builder(StorelistActivity.this);
 
         alertDialogNoConn.setTitle(R.string.AlertDialogHeaderMsg);
         alertDialogNoConn.setMessage(msg);
         alertDialogNoConn.setCancelable(false);
-        alertDialogNoConn.setNeutralButton(R.string.AlertDialogOkButton,new DialogInterface.OnClickListener()
-        {
-            public void onClick(DialogInterface dialog, int which)
-            {
+        alertDialogNoConn.setNeutralButton(R.string.AlertDialogOkButton, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 //finish();
             }
@@ -4167,27 +3715,27 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
         android.support.v7.app.AlertDialog alert = alertDialogNoConn.create();
         alert.show();
     }
-    void openReportAlert()
-    {
-        final android.support.v7.app.AlertDialog.Builder alert=new android.support.v7.app.AlertDialog.Builder(StorelistActivity.this);
-        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+    void openReportAlert() {
+        final android.support.v7.app.AlertDialog.Builder alert = new android.support.v7.app.AlertDialog.Builder(StorelistActivity.this);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.report_visit_alert, null);
         alert.setView(view);
 
         alert.setCancelable(false);
 
-        final RadioButton rb_myReport= (RadioButton) view.findViewById(R.id.rb_myReport);
-        final RadioButton rb_dsrReport= (RadioButton) view.findViewById(R.id.rb_dsrReport);
-        final RadioButton rb_WholeReport= (RadioButton) view.findViewById(R.id.rb_WholeReport);
-        final Spinner spinner_dsrVisit= (Spinner) view.findViewById(R.id.spinner_dsrVisit);
+        final RadioButton rb_myReport = (RadioButton) view.findViewById(R.id.rb_myReport);
+        final RadioButton rb_dsrReport = (RadioButton) view.findViewById(R.id.rb_dsrReport);
+        final RadioButton rb_WholeReport = (RadioButton) view.findViewById(R.id.rb_WholeReport);
+        final Spinner spinner_dsrVisit = (Spinner) view.findViewById(R.id.spinner_dsrVisit);
 
-        final RadioButton rb_distrbtrScope= (RadioButton) view.findViewById(R.id.rb_distrbtrScope);
-        final Spinner spinner_distrbtrScope= (Spinner) view.findViewById(R.id.spinner_distrbtrScope);
+        final RadioButton rb_distrbtrScope = (RadioButton) view.findViewById(R.id.rb_distrbtrScope);
+        final Spinner spinner_distrbtrScope = (Spinner) view.findViewById(R.id.spinner_distrbtrScope);
 
-        Button btn_proceed= (Button) view.findViewById(R.id.btn_proceed);
-        Button btn_cancel= (Button) view.findViewById(R.id.btn_cancel);
+        Button btn_proceed = (Button) view.findViewById(R.id.btn_proceed);
+        Button btn_cancel = (Button) view.findViewById(R.id.btn_cancel);
 
-        final android.support.v7.app.AlertDialog dialog=alert.create();
+        final android.support.v7.app.AlertDialog dialog = alert.create();
         dialog.show();
 
         btn_cancel.setOnClickListener(new View.OnClickListener() {
@@ -4199,79 +3747,63 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
         btn_proceed.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 dialog.dismiss();
-                if(rb_myReport.isChecked())
-                {
-                    String SONodeIdAndNodeType= dbengine.fnGetPersonNodeIDAndPersonNodeTypeForSO();
+                if (rb_myReport.isChecked()) {
+                    String SONodeIdAndNodeType = dbengine.fnGetPersonNodeIDAndPersonNodeTypeForSO();
 
-                    int tempSalesmanNodeId=Integer.parseInt(SONodeIdAndNodeType.split(Pattern.quote("^"))[0]);
-                    int tempSalesmanNodeType=Integer.parseInt(SONodeIdAndNodeType.split(Pattern.quote("^"))[1]);
-                    shardPrefForSalesman(tempSalesmanNodeId,tempSalesmanNodeType);
+                    int tempSalesmanNodeId = Integer.parseInt(SONodeIdAndNodeType.split(Pattern.quote("^"))[0]);
+                    int tempSalesmanNodeType = Integer.parseInt(SONodeIdAndNodeType.split(Pattern.quote("^"))[1]);
+                    shardPrefForSalesman(tempSalesmanNodeId, tempSalesmanNodeType);
 
                     flgDataScopeSharedPref(1);
                    /* CommonInfo.SalesmanNodeId=0;
                     CommonInfo.SalesmanNodeType=0;
                     CommonInfo.flgDataScope=1;*/
-                    Intent i=new Intent(StorelistActivity.this,DetailReportSummaryActivityForAll.class);
+                    Intent i = new Intent(StorelistActivity.this, DetailReportSummaryActivityForAll.class);
                     startActivity(i);
                     finish();
-                }
-                else if(rb_WholeReport.isChecked())
-                {
+                } else if (rb_WholeReport.isChecked()) {
                     /*String SONodeIdAndNodeType= dbengine.fnGetPersonNodeIDAndPersonNodeTypeForSO();
 
                     CommonInfo.PersonNodeID=Integer.parseInt(SONodeIdAndNodeType.split(Pattern.quote("^"))[0]);
                     CommonInfo.PersonNodeType=Integer.parseInt(SONodeIdAndNodeType.split(Pattern.quote("^"))[1]);*/
-                    shardPrefForSalesman(0,0);
+                    shardPrefForSalesman(0, 0);
                     flgDataScopeSharedPref(3);
-                    Intent i=new Intent(StorelistActivity.this,DetailReportSummaryActivityForAll.class);
+                    Intent i = new Intent(StorelistActivity.this, DetailReportSummaryActivityForAll.class);
                     startActivity(i);
                     finish();
-                }
-                else if(rb_dsrReport.isChecked())
-                {
-                    if(!SelectedDSRValue.equals("") && !SelectedDSRValue.equals("Select DSM") && !SelectedDSRValue.equals("No DSM") )
-                    {
+                } else if (rb_dsrReport.isChecked()) {
+                    if (!SelectedDSRValue.equals("") && !SelectedDSRValue.equals("Select DSM") && !SelectedDSRValue.equals("No DSM")) {
 
-                        String DSRNodeIdAndNodeType= dbengine.fnGetDSRPersonNodeIdAndNodeType(SelectedDSRValue);
-                        int tempSalesmanNodeId=Integer.parseInt(DSRNodeIdAndNodeType.split(Pattern.quote("^"))[0]);
-                        int tempSalesmanNodeType=Integer.parseInt(DSRNodeIdAndNodeType.split(Pattern.quote("^"))[1]);
-                        shardPrefForSalesman(tempSalesmanNodeId,tempSalesmanNodeType);
+                        String DSRNodeIdAndNodeType = dbengine.fnGetDSRPersonNodeIdAndNodeType(SelectedDSRValue);
+                        int tempSalesmanNodeId = Integer.parseInt(DSRNodeIdAndNodeType.split(Pattern.quote("^"))[0]);
+                        int tempSalesmanNodeType = Integer.parseInt(DSRNodeIdAndNodeType.split(Pattern.quote("^"))[1]);
+                        shardPrefForSalesman(tempSalesmanNodeId, tempSalesmanNodeType);
                         flgDataScopeSharedPref(2);
                         Intent i = new Intent(StorelistActivity.this, DetailReportSummaryActivityForAll.class);
                         startActivity(i);
                         finish();
-                    }
-                    else
-                    {
+                    } else {
                         showAlertForEveryOne("Please select DSM to Proceed.");
                     }
-                }
-                else if(rb_distrbtrScope.isChecked())
-                {
-                    if(!SelectedDistrbtrName.equals("") && !SelectedDistrbtrName.equals("Select Distributor") && !SelectedDistrbtrName.equals("No Distributor") )
-                    {
-                        String DbrNodeIdAndNodeType= hmapDistrbtrList.get(SelectedDistrbtrName);
-                        int tempSalesmanNodeId=Integer.parseInt(DbrNodeIdAndNodeType.split(Pattern.quote("^"))[0]);
-                        int tempSalesmanNodeType=Integer.parseInt(DbrNodeIdAndNodeType.split(Pattern.quote("^"))[1]);
+                } else if (rb_distrbtrScope.isChecked()) {
+                    if (!SelectedDistrbtrName.equals("") && !SelectedDistrbtrName.equals("Select Distributor") && !SelectedDistrbtrName.equals("No Distributor")) {
+                        String DbrNodeIdAndNodeType = hmapDistrbtrList.get(SelectedDistrbtrName);
+                        int tempSalesmanNodeId = Integer.parseInt(DbrNodeIdAndNodeType.split(Pattern.quote("^"))[0]);
+                        int tempSalesmanNodeType = Integer.parseInt(DbrNodeIdAndNodeType.split(Pattern.quote("^"))[1]);
 
-                        shardPrefForSalesman(tempSalesmanNodeId,tempSalesmanNodeType);
+                        shardPrefForSalesman(tempSalesmanNodeId, tempSalesmanNodeType);
 
                         flgDataScopeSharedPref(4);
 
                         Intent i = new Intent(StorelistActivity.this, DetailReportSummaryActivityForAll.class);
                         startActivity(i);
                         finish();
-                    }
-                    else
-                    {
+                    } else {
                         showAlertForEveryOne("Please select Distributor to Proceed.");
                     }
-                }
-                else
-                {
+                } else {
                     showAlertForEveryOne("Please select atleast one option to Proceed.");
                 }
             }
@@ -4279,10 +3811,8 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
         rb_myReport.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if(rb_myReport.isChecked())
-                {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (rb_myReport.isChecked()) {
                     rb_dsrReport.setChecked(false);
                     rb_WholeReport.setChecked(false);
                     spinner_dsrVisit.setVisibility(View.GONE);
@@ -4293,10 +3823,8 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
         });
         rb_WholeReport.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if(rb_WholeReport.isChecked())
-                {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (rb_WholeReport.isChecked()) {
                     rb_dsrReport.setChecked(false);
                     rb_myReport.setChecked(false);
                     spinner_dsrVisit.setVisibility(View.GONE);
@@ -4308,26 +3836,22 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
         rb_dsrReport.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if(rb_dsrReport.isChecked())
-                {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (rb_dsrReport.isChecked()) {
                     rb_myReport.setChecked(false);
                     rb_WholeReport.setChecked(false);
                     rb_distrbtrScope.setChecked(false);
                     spinner_distrbtrScope.setVisibility(View.GONE);
 
-                    ArrayAdapter adapterCategory=new ArrayAdapter(StorelistActivity.this, android.R.layout.simple_spinner_item,drsNames);
+                    ArrayAdapter adapterCategory = new ArrayAdapter(StorelistActivity.this, android.R.layout.simple_spinner_item, drsNames);
                     adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinner_dsrVisit.setAdapter(adapterCategory);
                     spinner_dsrVisit.setVisibility(View.VISIBLE);
 
-                    spinner_dsrVisit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-                    {
+                    spinner_dsrVisit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
                         @Override
-                        public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3)
-                        {
+                        public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                             // TODO Auto-generated method stub
                             SelectedDSRValue = spinner_dsrVisit.getSelectedItem().toString();
                             /*ReasonText=spinnerReasonSelected;
@@ -4347,8 +3871,7 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
                         }
 
                         @Override
-                        public void onNothingSelected(AdapterView<?> arg0)
-                        {
+                        public void onNothingSelected(AdapterView<?> arg0) {
                             // TODO Auto-generated method stub
 
                         }
@@ -4360,30 +3883,25 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
         rb_distrbtrScope.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if(rb_distrbtrScope.isChecked())
-                {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (rb_distrbtrScope.isChecked()) {
                     rb_myReport.setChecked(false);
                     rb_WholeReport.setChecked(false);
                     rb_dsrReport.setChecked(false);
 
-                    ArrayAdapter adapterCategory=new ArrayAdapter(StorelistActivity.this, android.R.layout.simple_spinner_item,DbrArray);
+                    ArrayAdapter adapterCategory = new ArrayAdapter(StorelistActivity.this, android.R.layout.simple_spinner_item, DbrArray);
                     adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinner_distrbtrScope.setAdapter(adapterCategory);
                     spinner_distrbtrScope.setVisibility(View.VISIBLE);
 
-                    spinner_distrbtrScope.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-                    {
+                    spinner_distrbtrScope.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
-                        public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3)
-                        {
+                        public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                             SelectedDistrbtrName = spinner_distrbtrScope.getSelectedItem().toString();
                         }
 
                         @Override
-                        public void onNothingSelected(AdapterView<?> arg0)
-                        {
+                        public void onNothingSelected(AdapterView<?> arg0) {
                         }
                     });
                 }
@@ -4393,22 +3911,19 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
         dialog.show();
     }
 
-    private class GetInvoiceForDay extends AsyncTask<Void, Void, Void>
-    {
+    private class GetInvoiceForDay extends AsyncTask<Void, Void, Void> {
         ServiceWorker newservice = new ServiceWorker();
-        String rID="0";
+        String rID = "0";
 
         ProgressDialog pDialogGetInvoiceForDay;
 
-        public GetInvoiceForDay(StorelistActivity activity)
-        {
+        public GetInvoiceForDay(StorelistActivity activity) {
             pDialogGetInvoiceForDay = new ProgressDialog(activity);
         }
 
 
         @Override
-        protected void onPreExecute()
-        {
+        protected void onPreExecute() {
             super.onPreExecute();
 
 
@@ -4423,71 +3938,55 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
         }
 
         @Override
-        protected Void doInBackground(Void... params)
-        {
+        protected Void doInBackground(Void... params) {
 
             try {
 
-                HashMap<String,String> hmapInvoiceOrderIDandStatus=new HashMap<String, String>();
-                hmapInvoiceOrderIDandStatus=dbengine.fetchHmapInvoiceOrderIDandStatus();
+                HashMap<String, String> hmapInvoiceOrderIDandStatus = new HashMap<String, String>();
+                hmapInvoiceOrderIDandStatus = dbengine.fetchHmapInvoiceOrderIDandStatus();
 
-                for(int mm = 1; mm < 5  ; mm++)
-                {
-                    if(mm==1)
-                    {
-                        newservice = newservice.callInvoiceButtonStoreMstr(getApplicationContext(), fDate, imei, rID,hmapInvoiceOrderIDandStatus);
+                for (int mm = 1; mm < 5; mm++) {
+                    if (mm == 1) {
+                        newservice = newservice.callInvoiceButtonStoreMstr(getApplicationContext(), fDate, imei, rID, hmapInvoiceOrderIDandStatus);
 
-                        if(!newservice.director.toString().trim().equals("1"))
-                        {
-                            if(chkFlgForErrorToCloseApp==0)
-                            {
-                                chkFlgForErrorToCloseApp=1;
+                        if (!newservice.director.toString().trim().equals("1")) {
+                            if (chkFlgForErrorToCloseApp == 0) {
+                                chkFlgForErrorToCloseApp = 1;
                             }
 
                         }
 
                     }
-                    if(mm==2)
-                    {
+                    if (mm == 2) {
                         newservice = newservice.callInvoiceButtonProductMstr(getApplicationContext(), fDate, imei, rID);
 
-                        if(!newservice.director.toString().trim().equals("1"))
-                        {
-                            if(chkFlgForErrorToCloseApp==0)
-                            {
-                                chkFlgForErrorToCloseApp=1;
+                        if (!newservice.director.toString().trim().equals("1")) {
+                            if (chkFlgForErrorToCloseApp == 0) {
+                                chkFlgForErrorToCloseApp = 1;
                             }
 
                         }
 
                     }
-                    if(mm==3)
-                    {
-                        newservice = newservice.callInvoiceButtonStoreProductwiseOrder(getApplicationContext(), fDate, imei, rID,hmapInvoiceOrderIDandStatus);
+                    if (mm == 3) {
+                        newservice = newservice.callInvoiceButtonStoreProductwiseOrder(getApplicationContext(), fDate, imei, rID, hmapInvoiceOrderIDandStatus);
                     }
-                    if(mm==4)
-                    {
+                    if (mm == 4) {
                         dbengine.open();
-                        int check1=dbengine.counttblCatagoryMstr();
+                        int check1 = dbengine.counttblCatagoryMstr();
                         dbengine.close();
-                        if(check1==0)
-                        {
+                        if (check1 == 0) {
                             newservice = newservice.getCategory(getApplicationContext(), imei);
                         }
                     }
 
 
-
                 }
 
 
-            } catch (Exception e)
-            {
+            } catch (Exception e) {
                 Log.i("SvcMgr", "Service Execution Failed!", e);
-            }
-
-            finally
-            {
+            } finally {
                 Log.i("SvcMgr", "Service Execution Completed...");
             }
 
@@ -4495,24 +3994,21 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
         }
 
         @Override
-        protected void onCancelled()
-        {
+        protected void onCancelled() {
             Log.i("SvcMgr", "Service Execution Cancelled");
         }
 
         @Override
-        protected void onPostExecute(Void result)
-        {
+        protected void onPostExecute(Void result) {
             super.onPostExecute(result);
 
 
-            if(pDialogGetInvoiceForDay.isShowing())
-            {
+            if (pDialogGetInvoiceForDay.isShowing()) {
                 pDialogGetInvoiceForDay.dismiss();
             }
 
             Date currDate = new Date();
-            SimpleDateFormat currDateFormat = new SimpleDateFormat("dd-MMM-yyyy",Locale.ENGLISH);
+            SimpleDateFormat currDateFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
 
             String currSysDate = currDateFormat.format(currDate).toString();
 
@@ -4522,26 +4018,21 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
             storeIntent.putExtra("pickerDate", fDate);
 
 
-            if(chkFlgForErrorToCloseApp==0)
-            {
-                chkFlgForErrorToCloseApp=0;
+            if (chkFlgForErrorToCloseApp == 0) {
+                chkFlgForErrorToCloseApp = 0;
                 startActivity(storeIntent);
                 finish();
-            }
-            else
-            {
+            } else {
                 android.support.v7.app.AlertDialog.Builder alertDialogNoConn = new android.support.v7.app.AlertDialog.Builder(StorelistActivity.this);
                 alertDialogNoConn.setTitle("Information");
                 alertDialogNoConn.setMessage("There is no Invoice Pending");
                 alertDialogNoConn.setCancelable(false);
                 alertDialogNoConn.setNeutralButton(R.string.AlertDialogOkButton,
-                        new DialogInterface.OnClickListener()
-                        {
-                            public void onClick(DialogInterface dialog, int which)
-                            {
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                                 // but_Invoice.setEnabled(true);
-                                chkFlgForErrorToCloseApp=0;
+                                chkFlgForErrorToCloseApp = 0;
                             }
                         });
                 alertDialogNoConn.setIcon(R.drawable.info_ico);
@@ -4552,9 +4043,8 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
             }
         }
     }
-    public void shardPrefForCoverageArea(int coverageAreaNodeID,int coverageAreaNodeType) {
 
-
+    public void shardPrefForCoverageArea(int coverageAreaNodeID, int coverageAreaNodeType) {
 
 
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -4568,9 +4058,7 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
     }
 
 
-    public void shardPrefForSalesman(int salesmanNodeId,int salesmanNodeType) {
-
-
+    public void shardPrefForSalesman(int salesmanNodeId, int salesmanNodeType) {
 
 
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -4583,8 +4071,7 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
     }
 
-    public void flgDataScopeSharedPref(int _flgDataScope)
-    {
+    public void flgDataScopeSharedPref(int _flgDataScope) {
         SharedPreferences.Editor editor = sharedPref.edit();
 
 
@@ -4593,8 +4080,8 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
 
     }
-    public void flgDSRSOSharedPref(int _flgDSRSO)
-    {
+
+    public void flgDSRSOSharedPref(int _flgDSRSO) {
         SharedPreferences.Editor editor = sharedPref.edit();
 
 
@@ -4604,23 +4091,22 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
     }
 
-    void openDSRTrackerAlert()
-    {
-        final android.support.v7.app.AlertDialog.Builder alert=new android.support.v7.app.AlertDialog.Builder(StorelistActivity.this);
-        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    void openDSRTrackerAlert() {
+        final android.support.v7.app.AlertDialog.Builder alert = new android.support.v7.app.AlertDialog.Builder(StorelistActivity.this);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.dsr_tracker_alert, null);
         alert.setView(view);
 
         alert.setCancelable(false);
 
-        final RadioButton rb_dataReport= (RadioButton) view.findViewById(R.id.rb_dataReport);
-        final RadioButton rb_onMap= (RadioButton) view.findViewById(R.id.rb_onMap);
+        final RadioButton rb_dataReport = (RadioButton) view.findViewById(R.id.rb_dataReport);
+        final RadioButton rb_onMap = (RadioButton) view.findViewById(R.id.rb_onMap);
 
 
-        Button btn_proceed= (Button) view.findViewById(R.id.btn_proceed);
-        Button btn_cancel= (Button) view.findViewById(R.id.btn_cancel);
+        Button btn_proceed = (Button) view.findViewById(R.id.btn_proceed);
+        Button btn_cancel = (Button) view.findViewById(R.id.btn_cancel);
 
-        final android.support.v7.app.AlertDialog dialog=alert.create();
+        final android.support.v7.app.AlertDialog dialog = alert.create();
         dialog.show();
 
         btn_cancel.setOnClickListener(new View.OnClickListener() {
@@ -4632,24 +4118,17 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
         btn_proceed.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 dialog.dismiss();
-                if(rb_dataReport.isChecked())
-                {
-                    Intent i=new Intent(StorelistActivity.this,WebViewDSRDataReportActivity.class);
+                if (rb_dataReport.isChecked()) {
+                    Intent i = new Intent(StorelistActivity.this, WebViewDSRDataReportActivity.class);
                     startActivity(i);
 
-                }
-                else if(rb_onMap.isChecked())
-                {
+                } else if (rb_onMap.isChecked()) {
                     Intent i = new Intent(StorelistActivity.this, WebViewDSRTrackerActivity.class);
                     startActivity(i);
 
-                }
-
-                else
-                {
+                } else {
                     showAlertForEveryOne("Please select atleast one option to Proceeds.");
                 }
             }
@@ -4657,10 +4136,8 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
         rb_dataReport.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if(rb_dataReport.isChecked())
-                {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (rb_dataReport.isChecked()) {
                     rb_onMap.setChecked(false);
 
                 }
@@ -4669,10 +4146,8 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
         rb_onMap.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if(rb_onMap.isChecked())
-                {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (rb_onMap.isChecked()) {
                     rb_dataReport.setChecked(false);
 
                 }
@@ -4680,20 +4155,16 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
         });
 
 
-
         dialog.show();
     }
 
-    public void showAlertBox(String msg)
-    {
+    public void showAlertBox(String msg) {
         AlertDialog.Builder alertDialogNoConn = new AlertDialog.Builder(StorelistActivity.this);
         alertDialogNoConn.setTitle("Information");
         alertDialogNoConn.setMessage(msg);
 
-        alertDialogNoConn.setNeutralButton(R.string.txtOk,new DialogInterface.OnClickListener()
-        {
-            public void onClick(DialogInterface dialog, int which)
-            {
+        alertDialogNoConn.setNeutralButton(R.string.txtOk, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
 
 
@@ -4705,8 +4176,7 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
     }
 
-    public void showAlertException(String title,String msg)
-    {
+    public void showAlertException(String title, String msg) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(StorelistActivity.this);
 
         // Setting Dialog Title
@@ -4718,7 +4188,7 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
         alertDialog.setCancelable(false);
         // Setting Positive "Yes" Button
         alertDialog.setPositiveButton("Retry", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog,int which) {
+            public void onClick(DialogInterface dialog, int which) {
 
                 new GetStoresForDay(StorelistActivity.this).execute();
                 dialog.dismiss();
@@ -4737,24 +4207,21 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
         alertDialog.show();
     }
 
-    private class GetStoresForDay extends AsyncTask<Void, Void, Void>
-    {
+    private class GetStoresForDay extends AsyncTask<Void, Void, Void> {
 
 
-        public GetStoresForDay(StorelistActivity activity)
-        {
+        public GetStoresForDay(StorelistActivity activity) {
             pDialogGetStores = new ProgressDialog(activity);
         }
+
         @Override
-        protected void onPreExecute()
-        {
+        protected void onPreExecute() {
             super.onPreExecute();
 
 
             dbengine.open();
-            String getPDADate=dbengine.fnGetPdaDate();
-            String getServerDate=dbengine.fnGetServerDate();
-
+            String getPDADate = dbengine.fnGetPdaDate();
+            String getServerDate = dbengine.fnGetServerDate();
 
 
             dbengine.close();
@@ -4762,10 +4229,9 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
             //System.out.println("Checking  Oncreate Date PDA GetStoresForDay:"+getPDADate);
             //System.out.println("Checking  Oncreate Date Server GetStoresForDay :"+getServerDate);
 
-            if(!getPDADate.equals(""))  // || !getPDADate.equals("NA") || !getPDADate.equals("Null") || !getPDADate.equals("NULL")
+            if (!getPDADate.equals(""))  // || !getPDADate.equals("NA") || !getPDADate.equals("Null") || !getPDADate.equals("NULL")
             {
-                if(!getServerDate.equals(getPDADate))
-                {
+                if (!getServerDate.equals(getPDADate)) {
 
                     showAlertBox("Your Phone  Date is not Up to date.Please Correct the Date.");
                    /* dbengine.open();
@@ -4775,10 +4241,6 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
                     return;
                 }
             }
-
-
-
-
 
 
             dbengine.open();
@@ -4796,19 +4258,17 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
     		}*/
 
 
-
-
             long syncTIMESTAMP = System.currentTimeMillis();
             Date dateobj = new Date(syncTIMESTAMP);
-            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss",Locale.ENGLISH);
+            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss", Locale.ENGLISH);
             String startTS = df.format(dateobj);
 
-            int DayEndFlg=0;
-            int ChangeRouteFlg=0;
+            int DayEndFlg = 0;
+            int ChangeRouteFlg = 0;
 
-            int DatabaseVersion=dbengine.DATABASE_VERSION;
-            String AppVersionID=dbengine.AppVersionID;
-            dbengine.insertTblDayStartEndDetails(imei,startTS,rID,DayEndFlg,ChangeRouteFlg,fDate,AppVersionID);//DatabaseVersion;//getVersionNumber
+            int DatabaseVersion = dbengine.DATABASE_VERSION;
+            String AppVersionID = dbengine.AppVersionID;
+            dbengine.insertTblDayStartEndDetails(imei, startTS, rID, DayEndFlg, ChangeRouteFlg, fDate, AppVersionID);//DatabaseVersion;//getVersionNumber
             dbengine.close();
 
 
@@ -4821,77 +4281,63 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
         }
 
         @Override
-        protected Void doInBackground(Void... args)
-        {
+        protected Void doInBackground(Void... args) {
             ServiceWorker newservice = new ServiceWorker();
 
-            try
-            {
-                for(int mm = 1; mm < 41 ; mm++)
-                {
+            try {
+                for (int mm = 1; mm < 41; mm++) {
 
-                    if(mm==1)
-                    {
+                    if (mm == 1) {
 
                         newservice = newservice.getallStores(getApplicationContext(), fDate, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=1)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 1) {
+                            serviceException = true;
                             break;
                         }
                     }
-                    if(mm==2)
-                    {
+                    if (mm == 2) {
 
                         newservice = newservice.getallProduct(getApplicationContext(), fDate, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=2)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 2) {
+                            serviceException = true;
                             break;
                         }
                     }
-                    if(mm==3)
-                    {
+                    if (mm == 3) {
 
                         newservice = newservice.getCategory(getApplicationContext(), imei);
-                        if(newservice.flagExecutedServiceSuccesfully!=3)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 3) {
+                            serviceException = true;
                             break;
                         }
 
                     }
-                    if(mm==4)
-                    {
+                    if (mm == 4) {
 
                         Date currDateNew = new Date();
-                        SimpleDateFormat currDateFormatNew = new SimpleDateFormat("dd-MMM-yyyy",Locale.ENGLISH);
+                        SimpleDateFormat currDateFormatNew = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
 
                         String currSysDateNew = currDateFormatNew.format(currDateNew).toString();
                         newservice = newservice.getAllNewSchemeStructure(getApplicationContext(), currSysDateNew, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=4)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 4) {
+                            serviceException = true;
                             break;
                         }
 
                     }
-                    if(mm==5)
-                    {
+                    if (mm == 5) {
 
                         Date currDateNew = new Date();
-                        SimpleDateFormat currDateFormatNew = new SimpleDateFormat("dd-MMM-yyyy",Locale.ENGLISH);
+                        SimpleDateFormat currDateFormatNew = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
 
                         String currSysDateNew = currDateFormatNew.format(currDateNew).toString();
                         newservice = newservice.getallPDASchAppListForSecondPage(getApplicationContext(), currSysDateNew, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=5)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 5) {
+                            serviceException = true;
                             break;
                         }
                     }
-                    if(mm==6)
-                    {
+                    if (mm == 6) {
 					/*Date currDateNew = new Date();
 					SimpleDateFormat currDateFormatNew = new SimpleDateFormat("dd-MMM-yyyy",Locale.ENGLISH);
 
@@ -4904,8 +4350,7 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 					}*/
 
                     }
-                    if(mm==7)
-                    {
+                    if (mm == 7) {
 
 
 
@@ -4921,79 +4366,61 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 					}*/
 
 
+                    }
+                    if (mm == 8) {
 
                     }
-                    if(mm==8)
-                    {
-
-                    }
-                    if(mm==9)
-                    {
+                    if (mm == 9) {
                         newservice = newservice.fnGetPDACollectionMaster(getApplicationContext(), fDate, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=40)
-                        {
-                            System.out.println("GRLTyre = "+mm);
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 40) {
+                            System.out.println("GRLTyre = " + mm);
+                            serviceException = true;
                             break;
                         }
                     }
-                    if(mm==10)
-                    {
+                    if (mm == 10) {
 
                     }
-                    if(mm==11)
-                    {
+                    if (mm == 11) {
 
                     }
-                    if(mm==12)
-                    {
+                    if (mm == 12) {
 
                     }
-                    if(mm==13)
-                    {
+                    if (mm == 13) {
 
                     }
-                    if(mm==14)
-                    {
+                    if (mm == 14) {
 
                     }
-                    if(mm==15)
-                    {
+                    if (mm == 15) {
 
                     }
-                    if(mm==16)
-                    {
+                    if (mm == 16) {
 
                     }
-                    if(mm==17)
-                    {
+                    if (mm == 17) {
 
                     }
-                    if(mm==18)
-                    {
+                    if (mm == 18) {
 
                     }
-                    if(mm==19)
-                    {
+                    if (mm == 19) {
 
                     }
-                    if(mm==20)
-                    {
+                    if (mm == 20) {
 
                     }
-                    if(mm==21)
-                    {
+                    if (mm == 21) {
                         newservice = newservice.GetPDAIsSchemeApplicable(getApplicationContext(), fDate, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=21)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 21) {
+                            serviceException = true;
                             break;
                         }
 
                     }
 
-                    if(mm==22)
-                    {
+                    if (mm == 22) {
 						/*newservice = newservice.getallPDAtblSyncSummuryDetails(getApplicationContext(), fDate, imei, rID);
 						if(newservice.flagExecutedServiceSuccesfully!=22)
 						{
@@ -5002,12 +4429,10 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 						}
 						*/
                     }
-                    if(mm==23)
-                    {
+                    if (mm == 23) {
                         //newservice = newservice.getallPDAtblSyncSummuryForProductDetails(getApplicationContext(), fDate, imei, rID);
                     }
-                    if(mm==24)
-                    {
+                    if (mm == 24) {
 					/*newservice = newservice.GetSchemeCoupon(getApplicationContext(), fDate, imei, rID);
 					if(newservice.flagExecutedServiceSuccesfully!=24)
 					{
@@ -5015,8 +4440,7 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 						break;
 					}*/
                     }
-                    if(mm==25)
-                    {
+                    if (mm == 25) {
 				/*	newservice = newservice.GetSchemeCouponSlab(getApplicationContext(), fDate, imei, rID);
 					if(newservice.flagExecutedServiceSuccesfully!=25)
 					{
@@ -5024,8 +4448,7 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 						break;
 					}*/
                     }
-                    if(mm==26)
-                    {
+                    if (mm == 26) {
 				/*	newservice = newservice.GetDaySummaryNew(getApplicationContext(), fDate, imei, rID);
 					if(newservice.flagExecutedServiceSuccesfully!=26)
 					{
@@ -5033,17 +4456,16 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 						break;
 					}*/
                     }
-                    if(mm==27)
-                    {/*
+                    if (mm == 27) {/*
 					newservice = newservice.GetOrderDetailsOnLastSalesSummary(getApplicationContext(), fDate, imei, rID);
 					if(newservice.flagExecutedServiceSuccesfully!=27)
 					{
 						serviceException="GetOrderDetailsOnLastSalesSummary";
 						break;
 					}
-					*/}
-                    if(mm==28)
-                    {
+					*/
+                    }
+                    if (mm == 28) {
 				/*	newservice = newservice.GetVisitDetailsOnLastSalesSummary(getApplicationContext(), fDate, imei, rID);
 					if(newservice.flagExecutedServiceSuccesfully!=28)
 					{
@@ -5051,77 +4473,61 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 						break;
 					}*/
                     }
-                    if(mm==29)
-                    {
+                    if (mm == 29) {
                         newservice = newservice.GetLODDetailsOnLastSalesSummary(getApplicationContext(), fDate, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=29)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 29) {
+                            serviceException = true;
                             break;
                         }
                     }
 
-                    if(mm==31)
-                    {
+                    if (mm == 31) {
                         newservice = newservice.GetCallspForPDAGetLastVisitDate(getApplicationContext(), fDate, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=31)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 31) {
+                            serviceException = true;
                             break;
                         }
                     }
-                    if(mm==32)
-                    {
+                    if (mm == 32) {
                         newservice = newservice.GetCallspForPDAGetLastOrderDate(getApplicationContext(), fDate, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=32)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 32) {
+                            serviceException = true;
                             break;
                         }
                     }
-                    if(mm==33)
-                    {
+                    if (mm == 33) {
                         newservice = newservice.GetCallspForPDAGetLastVisitDetails(getApplicationContext(), fDate, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=33)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 33) {
+                            serviceException = true;
                             break;
                         }
                     }
-                    if(mm==34)
-                    {
+                    if (mm == 34) {
                         newservice = newservice.GetCallspForPDAGetLastOrderDetails(getApplicationContext(), fDate, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=34)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 34) {
+                            serviceException = true;
                             break;
                         }
                     }
-                    if(mm==35)
-                    {
+                    if (mm == 35) {
                         newservice = newservice.GetCallspForPDAGetLastOrderDetails_TotalValues(getApplicationContext(), fDate, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=35)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 35) {
+                            serviceException = true;
                             break;
                         }
                     }
-                    if(mm==36)
-                    {
+                    if (mm == 36) {
                         newservice = newservice.GetCallspForPDAGetExecutionSummary(getApplicationContext(), fDate, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=36)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 36) {
+                            serviceException = true;
                             break;
                         }
                     }
 
-                    if(mm==37)
-                    {
+                    if (mm == 37) {
                         newservice = newservice.getQuotationDataFromServer(getApplicationContext(), fDate, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=37)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 37) {
+                            serviceException = true;
                             break;
                         }
                     }
@@ -5132,23 +4538,19 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
 				}*/
 
-                    if(mm == 38)
-                    {
+                    if (mm == 38) {
                         newservice = newservice.getFSDOutletFeedbackData(getApplicationContext(), fDate, imei, rID);
-                        if(newservice.flagExecutedServiceSuccesfully!=38)
-                        {
-                            serviceException=true;
+                        if (newservice.flagExecutedServiceSuccesfully != 38) {
+                            serviceException = true;
                             break;
                         }
 
                     }
-                    if(mm == 39)
-                    {
+                    if (mm == 39) {
                         newservice = newservice.fnGetAccountLastSummary(getApplicationContext(), fDate, imei, rID);
 
                     }
-                    if(mm == 40)
-                    {
+                    if (mm == 40) {
                         newservice = newservice.fnGetFeedbckCompetitorData(getApplicationContext(), fDate, imei, rID);
 
                     }
@@ -5156,13 +4558,9 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
                 }
 
 
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 Log.i("SvcMgr", "Service Execution Failed!", e);
-            }
-            finally
-            {
+            } finally {
                 Log.i("SvcMgr", "Service Execution Completed...");
             }
             return null;
@@ -5170,49 +4568,38 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
 
 
         @Override
-        protected void onPostExecute(Void result)
-        {
+        protected void onPostExecute(Void result) {
             super.onPostExecute(result);
 
             Log.i("SvcMgr", "Service Execution cycle completed");
 
-            try
-            {
-                if(pDialogGetStores.isShowing())
-                {
+            try {
+                if (pDialogGetStores.isShowing()) {
                     pDialogGetStores.dismiss();
                 }
-            }
-            catch(Exception e)
-            {
+            } catch (Exception e) {
 
             }
-            if(serviceException)
-            {
-                try
-                {
+            if (serviceException) {
+                try {
                     // but_GetStore.setEnabled(true);
-                    showAlertException("Error.....","Error while Retrieving Data!\n Please Retry");
-                }
-                catch(Exception e)
-                {
+                    showAlertException("Error.....", "Error while Retrieving Data!\n Please Retry");
+                } catch (Exception e) {
 
                 }
                 dbengine.open();
-                serviceException=false;
+                serviceException = false;
                 dbengine.maintainPDADate();
                 dbengine.dropRoutesTBL();
                 dbengine.reCreateDB();
 
                 dbengine.close();
-            }
-            else
-            {
+            } else {
 
                 String currSysDate;
 
                 Date currDate = new Date();
-                SimpleDateFormat currDateFormat = new SimpleDateFormat("dd-MMM-yyyy",Locale.ENGLISH);
+                SimpleDateFormat currDateFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
 
                 currSysDate = currDateFormat.format(currDate).toString();
 
@@ -5229,5 +4616,13 @@ if(CommonInfo.flgLTFoodsSOOnlineOffLine==0)
             }
 
         }
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (countDownTimer != null && isCountdownRunning)
+            countDownTimer.onFinish();
     }
 }

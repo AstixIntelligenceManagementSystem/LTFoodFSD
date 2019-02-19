@@ -59,7 +59,7 @@ public class BaseActivity  extends Activity
         {
 
         }
-        if(CommonInfo.imei.trim().equals(null) || CommonInfo.imei.trim().equals(""))
+        if(CommonInfo.imei == null || CommonInfo.imei.trim().equals(""))
         {
             CommonInfo.imei=imei;
         }

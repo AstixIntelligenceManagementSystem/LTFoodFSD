@@ -2077,7 +2077,7 @@ if(Totalfiles.length>0) {
                     String SignPath_string="0";
                     view.setDrawingCacheEnabled(true);
                     mSignature.save(view, StoredPath);
-                    SignName_string=pic_name +CommonInfo.imei+ ".png";
+                    SignName_string=pic_name + ".png";
                     SignPath_string=StoredPath;
                     long syncTIMESTAMP = System.currentTimeMillis();
                     Date dateobj = new Date(syncTIMESTAMP);

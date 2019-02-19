@@ -280,7 +280,7 @@ public class NewStoreFormSO extends Fragment  {
         inflaterSection=(LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         TelephonyManager tManager = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
         imei = tManager.getDeviceId();
-        if(CommonInfo.imei.trim().equals(null) || CommonInfo.imei.trim().equals(""))
+        if(CommonInfo.imei == null || CommonInfo.imei.trim().equals(""))
         {
             CommonInfo.imei=imei;
         }
